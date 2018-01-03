@@ -50,45 +50,111 @@ int main()
 		printf("OK:创建监听!\n");
 	}
 
+	//等待客户端连接
+	sockaddr_in sinClient = {};
+	int sinLen = sizeof(sockaddr_in);
+	SOCKET _client = INVALID_SOCKET;
+	_client = accept(_socket, (sockaddr*)&sinClient, &sinLen);
+	if (_client == INVALID_SOCKET)
+	{
+		printf("Error:客户端连接!\n");
+	}
+	else
+	{
+		printf("OK:客户端连接!\n");
+	}
+
 	while (true)
 	{
 
-		//等待客户端连接
-		sockaddr_in sinClient = {};
-		int sinLen = sizeof(sockaddr_in);
-		SOCKET _client = INVALID_SOCKET;
-		_client = accept(_socket, (sockaddr*)&sinClient, &sinLen);
-		if (_client == INVALID_SOCKET)
+		//接收客户端消息
+		char cmd[256] = {};
+		int size = recv(_client, cmd, 256, 0);
+		if (SOCKET_ERROR == size)
 		{
-			printf("Error:客户端连接!\n");
+			printf("Error:接收客户端消息!\n");
+			break;
+		}
+		else if (size == 0)
+		{
+			printf("OK:客户端关闭连接!\n");
+			break;
+		}
+
+		//处理客户端消息
+		printf("接受客户端命令! - %s\n", cmd);
+
+		if (0 == strcmp(cmd, "-Version"))
+		{
+			//向客户端发送消息
+			char buffer[] = "Version:1.0";
+			size = send(_client, buffer, sizeof(buffer), 0);
+			if (SOCKET_ERROR == size)
+			{
+				printf("Error:向客户端发送消息!\n");
+				break;
+			}
+			else
+			{
+				printf("OK:向客户端发送消息!\n");
+			}
+		}
+		else if (0 == strcmp(cmd, "-User"))
+		{
+			//向客户端发送消息
+			char buffer[] = "User:Admin";
+			size = send(_client, buffer, sizeof(buffer), 0);
+			if (SOCKET_ERROR == size)
+			{
+				printf("Error:向客户端发送消息!\n");
+				break;
+			}
+			else
+			{
+				printf("OK:向客户端发送消息!\n");
+			}
+		}
+		else if (0 == strcmp(cmd, "-Pwd"))
+		{
+			//向客户端发送消息
+			char buffer[] = "Pwd:00";
+			size = send(_client, buffer, sizeof(buffer), 0);
+			if (SOCKET_ERROR == size)
+			{
+				printf("Error:向客户端发送消息!\n");
+				break;
+			}
+			else
+			{
+				printf("OK:向客户端发送消息!\n");
+			}
 		}
 		else
 		{
-			printf("OK:客户端连接!\n");
+			//向客户端发送消息
+			char buffer[] = "未知的命令。";
+			size = send(_client, buffer, sizeof(buffer), 0);
+			if (SOCKET_ERROR == size)
+			{
+				printf("Error:向客户端发送消息!\n");
+				break;
+			}
+			else
+			{
+				printf("OK:向客户端发送消息!\n");
+			}
 		}
 
-		//向客户端发送消息
-		char buffer[] = "Hello! I`m Server!";
-		int size = send(_client, "Hello! I`m Server!", sizeof(buffer), 0);
-		if (SOCKET_ERROR  == size)
-		{
-			printf("Error:向客户端发送消息!\n");
-		}
-		else
-		{
-			printf("OK:向客户端发送消息!\n");
-		}
+	}
 
-		//关闭客户端连接
-		if (SOCKET_ERROR == closesocket(_client))
-		{
-			printf("Error:关闭客户端连接!\n");
-		}
-		else
-		{
-			printf("OK:关闭客户端连接!\n");
-		}
-
+	//关闭客户端连接
+	if (SOCKET_ERROR == closesocket(_client))
+	{
+		printf("Error:关闭客户端连接!\n");
+	}
+	else
+	{
+		printf("OK:关闭客户端连接!\n");
 	}
 
 	//关闭网络

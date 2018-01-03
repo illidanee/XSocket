@@ -41,18 +41,48 @@ int main()
 		printf("OK:连接服务器!\n");
 	}
 
-	//接受服务器数据
-	char buffer[256] = {};
-	int size = recv(_socket, buffer, 256, 0);
-	if (SOCKET_ERROR == size)
+	while (true)
 	{
-		printf("Error:接受服务器数据!\n");
-	}
-	else
-	{
-		printf("OK:接受服务器数据! - %s\n", buffer);
-	}
+		//输入命令
+		char cmd[256] = {};
+		scanf("%s", cmd);
 
+		if (0 == strcmp(cmd, "q"))
+		{
+			printf("OK:退出程序!\n");
+			break;
+		}
+
+		//发送命令
+		int size = send(_socket, cmd, sizeof(cmd), 0);
+		if (SOCKET_ERROR == size)
+		{
+			printf("Error:发送命令!\n");
+			break;
+		}
+		else
+		{
+			printf("OK:发送命令!\n");
+		}
+
+		//接受服务器消息
+		char buffer[256] = {};
+		size = recv(_socket, buffer, 256, 0);
+		if (SOCKET_ERROR == size)
+		{
+			printf("Error:接受服务器消息!\n");
+			break;
+		}
+		else if (0 == size)
+		{
+			printf("OK:服务器关闭连接!\n");
+			break;
+		}
+
+
+		printf("OK:接受服务器数据! - %s\n", buffer);
+
+	}
 	//关闭连接
 	if (SOCKET_ERROR == closesocket(_socket))
 	{
