@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BB4C80E5-0F84-4029-9C74-45F555218D1F}</ProjectGuid>
+    <ProjectGuid>{6561863E-1D5E-4828-A58B-2D2C4183268D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>XSocket</RootNamespace>
+    <RootNamespace>TCPServer10</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
