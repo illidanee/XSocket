@@ -4,6 +4,12 @@
 #include <windows.h>
 #include <WinSock2.h>
 
+struct Msg
+{
+	int age;
+	char name[32];
+};
+
 int main()
 {
 	//打开网络
@@ -79,8 +85,8 @@ int main()
 			break;
 		}
 
-
-		printf("OK:接受服务器数据! - %s\n", buffer);
+		Msg* msg = (Msg*)buffer;
+		printf("OK:接受服务器数据! - %s - %d\n", msg->name, msg->age);
 
 	}
 	//关闭连接

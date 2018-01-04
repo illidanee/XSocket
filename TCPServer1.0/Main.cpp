@@ -4,6 +4,12 @@
 #include <windows.h>
 #include <WinSock2.h>
 
+struct Msg
+{
+	int age;
+	char name[32];
+};
+
 int main()
 {
 	//打开网络
@@ -82,43 +88,13 @@ int main()
 		}
 
 		//处理客户端消息
-		printf("接受客户端命令! - %s\n", cmd);
+		printf("接受客户端命令! : %s\n", cmd);
 
-		if (0 == strcmp(cmd, "-Version"))
+		if (0 == strcmp(cmd, "-Info"))
 		{
 			//向客户端发送消息
-			char buffer[] = "Version:1.0";
-			size = send(_client, buffer, sizeof(buffer), 0);
-			if (SOCKET_ERROR == size)
-			{
-				printf("Error:向客户端发送消息!\n");
-				break;
-			}
-			else
-			{
-				printf("OK:向客户端发送消息!\n");
-			}
-		}
-		else if (0 == strcmp(cmd, "-User"))
-		{
-			//向客户端发送消息
-			char buffer[] = "User:Admin";
-			size = send(_client, buffer, sizeof(buffer), 0);
-			if (SOCKET_ERROR == size)
-			{
-				printf("Error:向客户端发送消息!\n");
-				break;
-			}
-			else
-			{
-				printf("OK:向客户端发送消息!\n");
-			}
-		}
-		else if (0 == strcmp(cmd, "-Pwd"))
-		{
-			//向客户端发送消息
-			char buffer[] = "Pwd:00";
-			size = send(_client, buffer, sizeof(buffer), 0);
+			Msg msg = {80, "张三"};
+			size = send(_client, (char*)&msg, sizeof(Msg), 0);
 			if (SOCKET_ERROR == size)
 			{
 				printf("Error:向客户端发送消息!\n");
@@ -132,8 +108,8 @@ int main()
 		else
 		{
 			//向客户端发送消息
-			char buffer[] = "未知的命令。";
-			size = send(_client, buffer, sizeof(buffer), 0);
+			Msg msg = { 0, "未知" };
+			size = send(_client, (char*)&msg, sizeof(Msg), 0);
 			if (SOCKET_ERROR == size)
 			{
 				printf("Error:向客户端发送消息!\n");
