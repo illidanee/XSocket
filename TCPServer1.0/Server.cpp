@@ -8,7 +8,9 @@ enum MGS_TYPE
 {
 	MSG_ERROR,
 	MSG_LOGIN,
-	MSG_LOGOUT
+	MSG_LOGIN_RES,
+	MSG_LOGOUT,
+	MSG_LOGOUT_RES
 };
 
 struct MsgHeader
@@ -17,24 +19,46 @@ struct MsgHeader
 	int msgLength;
 };
 
-struct Login
+struct Login : public MsgHeader
 {
+	Login()
+	{
+		msgType = MSG_LOGIN;
+		msgLength = sizeof(Login);
+	}
 	char name[32];
 	char pwd[32];
 };
 
-struct LoginRes
+struct LoginRes : public MsgHeader
 {
+	LoginRes()
+	{
+		msgType = MSG_LOGIN_RES;
+		msgLength = sizeof(LoginRes);
+		res = 1;
+	}
 	int res;
 };
 
-struct Logout
+struct Logout : public MsgHeader
 {
+	Logout()
+	{
+		msgType = MSG_LOGOUT;
+		msgLength = sizeof(Logout);
+	}
 	char name[32];
 };
 
-struct LogoutRes
+struct LogoutRes : public MsgHeader
 {
+	LogoutRes()
+	{
+		msgType = MSG_LOGOUT_RES;
+		msgLength = sizeof(LogoutRes);
+		res = 1;
+	}
 	int res;
 };
 
@@ -101,12 +125,12 @@ int main()
 	while (true)
 	{
 
-		//接收客户端消息
+		//接收客户端请求
 		MsgHeader request = {};
 		int size = recv(_client, (char*)&request, sizeof(MsgHeader), 0);
 		if (SOCKET_ERROR == size)
 		{
-			printf("Error:接收客户端消息!\n");
+			printf("Error:接收客户端请求!\n");
 			break;
 		}
 		else if (size == 0)
@@ -115,35 +139,31 @@ int main()
 			break;
 		}
 
-		//显示客户端消息
-		printf("--接收客户端命令：Type:%d - Length:%d\n", request.msgType, request.msgLength);
+		//显示客户端请求
+		printf("--接收客户端请求：Type:%d - Length:%d\n", request.msgType, request.msgLength);
 
-		//处理客户端消息
+		//处理客户端请求
 		switch (request.msgType)
 		{
 		case MSG_LOGIN:
 		{
-			Login login = {};
-			recv(_client, (char*)&login, sizeof(Login), 0);
+			Login login;
+			recv(_client, (char*)&login + sizeof(MsgHeader), sizeof(Login) - sizeof(MsgHeader), 0);
 
 			printf("--登入消息内容：Name:%s - Pwd:%s\n", login.name, login.pwd);
 
-			LoginRes respond = { 1 };
-			MsgHeader head = { MSG_LOGIN, sizeof(LoginRes) };
-			send(_client, (char*)&head, sizeof(MsgHeader), 0);
+			LoginRes respond;
 			send(_client, (char*)&respond, sizeof(LoginRes), 0);
 		}
 		break;
 		case MSG_LOGOUT:
 		{
-			Logout logout = {};
-			recv(_client, (char*)&logout, sizeof(Logout), 0);
+			Logout logout;
+			recv(_client, (char*)&logout + sizeof(MsgHeader), sizeof(Logout) - sizeof(MsgHeader), 0);
 
 			printf("--登出消息内容：Name:%s\n", logout.name);
 
-			LogoutRes respond = { 1 };
-			MsgHeader head = { MSG_LOGOUT, sizeof(LogoutRes) };
-			send(_client, (char*)&head, sizeof(MsgHeader), 0);
+			LogoutRes respond;
 			send(_client, (char*)&respond, sizeof(LogoutRes), 0);
 		}
 		break;

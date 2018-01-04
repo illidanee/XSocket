@@ -8,7 +8,9 @@ enum MGS_TYPE
 {
 	MSG_ERROR,
 	MSG_LOGIN,
-	MSG_LOGOUT
+	MSG_LOGIN_RES,
+	MSG_LOGOUT,
+	MSG_LOGOUT_RES
 };
 
 struct MsgHeader
@@ -17,27 +19,48 @@ struct MsgHeader
 	int msgLength;
 };
 
-struct Login
+struct Login : public MsgHeader
 {
+	Login()
+	{
+		msgType = MSG_LOGIN;
+		msgLength = sizeof(Login);
+	}
 	char name[32];
 	char pwd[32];
 };
 
-struct LoginRes
+struct LoginRes : public MsgHeader
 {
+	LoginRes()
+	{
+		msgType = MSG_LOGIN_RES;
+		msgLength = sizeof(LoginRes);
+		res = 1;
+	}
 	int res;
 };
 
-struct Logout
+struct Logout : public MsgHeader
 {
+	Logout()
+	{
+		msgType = MSG_LOGOUT;
+		msgLength = sizeof(Logout);
+	}
 	char name[32];
 };
 
-struct LogoutRes
+struct LogoutRes : public MsgHeader
 {
+	LogoutRes()
+	{
+		msgType = MSG_LOGOUT_RES;
+		msgLength = sizeof(LogoutRes);
+		res = 1;
+	}
 	int res;
 };
-
 
 int main()
 {
@@ -90,19 +113,18 @@ int main()
 			break;
 		}
 
-		//发送服务器请求
+		//发送客户端请求
 		if (0 == strcmp(cmd, "Login"))
 		{
-			Login login = { "admin", "admin" };
-			MsgHeader head = { MSG_LOGIN , sizeof(Login)};
-			send(_socket, (char*)&head, sizeof(MsgHeader), 0);
+			Login login;
+			strcpy(login.name, "admin");
+			strcpy(login.pwd, "12345");
 			send(_socket, (char*)&login, sizeof(Login), 0);
 		}
 		else if (0 == strcmp(cmd, "Logout"))
 		{
-			Logout logout = { "admin" };
-			MsgHeader head = { MSG_LOGOUT , sizeof(Logout) };
-			send(_socket, (char*)&head, sizeof(MsgHeader), 0);
+			Logout logout;
+			strcpy(logout.name, "admin");
 			send(_socket, (char*)&logout, sizeof(Logout), 0);
 		}
 		else
@@ -116,7 +138,7 @@ int main()
 		int size = recv(_socket, (char*)&respond, sizeof(MsgHeader), 0);
 		if (SOCKET_ERROR == size)
 		{
-			printf("Error:接受服务器消息!\n");
+			printf("Error:接收服务器响应!\n");
 			break;
 		}
 		else if (0 == size)
@@ -126,23 +148,23 @@ int main()
 		}
 
 		//显示服务器响应
-		printf("--接受客户端命令：Type:%d - Length:%d\n", respond.msgType, respond.msgLength);
+		printf("--接收服务器响应：Type:%d - Length:%d\n", respond.msgType, respond.msgLength);
 
 		//处理服务器响应
 		switch (respond.msgType)
 		{
-		case MSG_LOGIN:
+		case MSG_LOGIN_RES:
 		{
-			LoginRes result = {};
-			recv(_socket, (char*)&result, sizeof(LoginRes), 0);
+			LoginRes result;
+			recv(_socket, (char*)&result + sizeof(MsgHeader), sizeof(LoginRes) - sizeof(MsgHeader), 0);
 
 			printf("--登入结果：Res:%d\n", result.res);
 		}
 		break;
-		case MSG_LOGOUT:
+		case MSG_LOGOUT_RES:
 		{
-			LogoutRes result = {};
-			recv(_socket, (char*)&result, sizeof(LogoutRes), 0);
+			LogoutRes result;
+			recv(_socket, (char*)&result + sizeof(MsgHeader), sizeof(LogoutRes) - sizeof(MsgHeader), 0);
 
 			printf("--登出结果：Res:%d\n", result.res);
 		}
