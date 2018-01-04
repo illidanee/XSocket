@@ -126,8 +126,9 @@ int main()
 	{
 
 		//接收客户端请求
-		MsgHeader request = {};
-		int size = recv(_client, (char*)&request, sizeof(MsgHeader), 0);
+		char buffer[1024] = {};
+		int size = recv(_client, buffer, sizeof(MsgHeader), 0);
+		MsgHeader* request = (MsgHeader*)buffer;
 		if (SOCKET_ERROR == size)
 		{
 			printf("Error:接收客户端请求!\n");
@@ -140,17 +141,17 @@ int main()
 		}
 
 		//显示客户端请求
-		printf("--接收客户端请求：Type:%d - Length:%d\n", request.msgType, request.msgLength);
+		printf("--接收客户端请求：Type:%d - Length:%d\n", request->msgType, request->msgLength);
 
 		//处理客户端请求
-		switch (request.msgType)
+		switch (request->msgType)
 		{
 		case MSG_LOGIN:
 		{
-			Login login;
-			recv(_client, (char*)&login + sizeof(MsgHeader), sizeof(Login) - sizeof(MsgHeader), 0);
+			recv(_client, buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
+			Login* login = (Login*)buffer;
 
-			printf("--登入消息内容：Name:%s - Pwd:%s\n", login.name, login.pwd);
+			printf("--登入消息内容：Name:%s - Pwd:%s\n", login->name, login->pwd);
 
 			LoginRes respond;
 			send(_client, (char*)&respond, sizeof(LoginRes), 0);
@@ -158,10 +159,10 @@ int main()
 		break;
 		case MSG_LOGOUT:
 		{
-			Logout logout;
-			recv(_client, (char*)&logout + sizeof(MsgHeader), sizeof(Logout) - sizeof(MsgHeader), 0);
+			recv(_client, buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
+			Logout* logout = (Logout*)buffer;
 
-			printf("--登出消息内容：Name:%s\n", logout.name);
+			printf("--登出消息内容：Name:%s\n", logout->name);
 
 			LogoutRes respond;
 			send(_client, (char*)&respond, sizeof(LogoutRes), 0);
