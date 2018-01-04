@@ -4,10 +4,38 @@
 #include <windows.h>
 #include <WinSock2.h>
 
-struct Msg
+enum MGS_TYPE
 {
-	int age;
+	MSG_ERROR,
+	MSG_LOGIN,
+	MSG_LOGOUT
+};
+
+struct MsgHeader
+{
+	MGS_TYPE msgType;
+	int msgLength;
+};
+
+struct Login
+{
 	char name[32];
+	char pwd[32];
+};
+
+struct LoginRes
+{
+	int res;
+};
+
+struct Logout
+{
+	char name[32];
+};
+
+struct LogoutRes
+{
+	int res;
 };
 
 int main()
@@ -74,8 +102,8 @@ int main()
 	{
 
 		//接收客户端消息
-		char cmd[256] = {};
-		int size = recv(_client, cmd, 256, 0);
+		MsgHeader request = {};
+		int size = recv(_client, (char*)&request, sizeof(MsgHeader), 0);
 		if (SOCKET_ERROR == size)
 		{
 			printf("Error:接收客户端消息!\n");
@@ -87,38 +115,42 @@ int main()
 			break;
 		}
 
-		//处理客户端消息
-		printf("接受客户端命令! : %s\n", cmd);
+		//显示客户端消息
+		printf("--接收客户端命令：Type:%d - Length:%d\n", request.msgType, request.msgLength);
 
-		if (0 == strcmp(cmd, "-Info"))
+		//处理客户端消息
+		switch (request.msgType)
 		{
-			//向客户端发送消息
-			Msg msg = {80, "张三"};
-			size = send(_client, (char*)&msg, sizeof(Msg), 0);
-			if (SOCKET_ERROR == size)
-			{
-				printf("Error:向客户端发送消息!\n");
-				break;
-			}
-			else
-			{
-				printf("OK:向客户端发送消息!\n");
-			}
+		case MSG_LOGIN:
+		{
+			Login login = {};
+			recv(_client, (char*)&login, sizeof(Login), 0);
+
+			printf("--登入消息内容：Name:%s - Pwd:%s\n", login.name, login.pwd);
+
+			LoginRes respond = { 1 };
+			MsgHeader head = { MSG_LOGIN, sizeof(LoginRes) };
+			send(_client, (char*)&head, sizeof(MsgHeader), 0);
+			send(_client, (char*)&respond, sizeof(LoginRes), 0);
 		}
-		else
+		break;
+		case MSG_LOGOUT:
 		{
-			//向客户端发送消息
-			Msg msg = { 0, "未知" };
-			size = send(_client, (char*)&msg, sizeof(Msg), 0);
-			if (SOCKET_ERROR == size)
-			{
-				printf("Error:向客户端发送消息!\n");
-				break;
-			}
-			else
-			{
-				printf("OK:向客户端发送消息!\n");
-			}
+			Logout logout = {};
+			recv(_client, (char*)&logout, sizeof(Logout), 0);
+
+			printf("--登出消息内容：Name:%s\n", logout.name);
+
+			LogoutRes respond = { 1 };
+			MsgHeader head = { MSG_LOGOUT, sizeof(LogoutRes) };
+			send(_client, (char*)&head, sizeof(MsgHeader), 0);
+			send(_client, (char*)&respond, sizeof(LogoutRes), 0);
+		}
+		break;
+		default:
+		{
+
+		}
 		}
 
 	}

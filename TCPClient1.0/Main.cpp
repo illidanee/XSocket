@@ -4,11 +4,40 @@
 #include <windows.h>
 #include <WinSock2.h>
 
-struct Msg
+enum MGS_TYPE
 {
-	int age;
+	MSG_ERROR,
+	MSG_LOGIN,
+	MSG_LOGOUT
+};
+
+struct MsgHeader
+{
+	MGS_TYPE msgType;
+	int msgLength;
+};
+
+struct Login
+{
+	char name[32];
+	char pwd[32];
+};
+
+struct LoginRes
+{
+	int res;
+};
+
+struct Logout
+{
 	char name[32];
 };
+
+struct LogoutRes
+{
+	int res;
+};
+
 
 int main()
 {
@@ -49,31 +78,42 @@ int main()
 
 	while (true)
 	{
+
 		//输入命令
 		char cmd[256] = {};
 		scanf("%s", cmd);
 
+		//退出
 		if (0 == strcmp(cmd, "q"))
 		{
 			printf("OK:退出程序!\n");
 			break;
 		}
 
-		//发送命令
-		int size = send(_socket, cmd, sizeof(cmd), 0);
-		if (SOCKET_ERROR == size)
+		//发送服务器请求
+		if (0 == strcmp(cmd, "Login"))
 		{
-			printf("Error:发送命令!\n");
-			break;
+			Login login = { "admin", "admin" };
+			MsgHeader head = { MSG_LOGIN , sizeof(Login)};
+			send(_socket, (char*)&head, sizeof(MsgHeader), 0);
+			send(_socket, (char*)&login, sizeof(Login), 0);
+		}
+		else if (0 == strcmp(cmd, "Logout"))
+		{
+			Logout logout = { "admin" };
+			MsgHeader head = { MSG_LOGOUT , sizeof(Logout) };
+			send(_socket, (char*)&head, sizeof(MsgHeader), 0);
+			send(_socket, (char*)&logout, sizeof(Logout), 0);
 		}
 		else
 		{
-			printf("OK:发送命令!\n");
+			printf("WARNING:无效的命令!\n");
+			continue;
 		}
 
-		//接受服务器消息
-		char buffer[256] = {};
-		size = recv(_socket, buffer, 256, 0);
+		//接收服务器响应
+		MsgHeader respond = {};
+		int size = recv(_socket, (char*)&respond, sizeof(MsgHeader), 0);
 		if (SOCKET_ERROR == size)
 		{
 			printf("Error:接受服务器消息!\n");
@@ -85,8 +125,33 @@ int main()
 			break;
 		}
 
-		Msg* msg = (Msg*)buffer;
-		printf("OK:接受服务器数据! - %s - %d\n", msg->name, msg->age);
+		//显示服务器响应
+		printf("--接受客户端命令：Type:%d - Length:%d\n", respond.msgType, respond.msgLength);
+
+		//处理服务器响应
+		switch (respond.msgType)
+		{
+		case MSG_LOGIN:
+		{
+			LoginRes result = {};
+			recv(_socket, (char*)&result, sizeof(LoginRes), 0);
+
+			printf("--登入结果：Res:%d\n", result.res);
+		}
+		break;
+		case MSG_LOGOUT:
+		{
+			LogoutRes result = {};
+			recv(_socket, (char*)&result, sizeof(LogoutRes), 0);
+
+			printf("--登出结果：Res:%d\n", result.res);
+		}
+		break;
+		default:
+		{
+
+		}
+		}
 
 	}
 	//关闭连接
