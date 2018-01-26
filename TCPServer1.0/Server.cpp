@@ -12,7 +12,8 @@ enum MGS_TYPE
 	MSG_LOGIN,
 	MSG_LOGIN_RES,
 	MSG_LOGOUT,
-	MSG_LOGOUT_RES
+	MSG_LOGOUT_RES,
+	MSG_NEWUSER
 };
 
 struct MsgHeader
@@ -21,47 +22,58 @@ struct MsgHeader
 	int msgLength;
 };
 
-struct Login : public MsgHeader
+struct MsgLogin : public MsgHeader
 {
-	Login()
+	MsgLogin()
 	{
 		msgType = MSG_LOGIN;
-		msgLength = sizeof(Login);
+		msgLength = sizeof(MsgLogin);
 	}
 	char name[32];
 	char pwd[32];
 };
 
-struct LoginRes : public MsgHeader
+struct MsgLoginRes : public MsgHeader
 {
-	LoginRes()
+	MsgLoginRes()
 	{
 		msgType = MSG_LOGIN_RES;
-		msgLength = sizeof(LoginRes);
-		res = 1;
+		msgLength = sizeof(MsgLoginRes);
+		res = 0;
 	}
 	int res;
 };
 
-struct Logout : public MsgHeader
+struct MsgLogout : public MsgHeader
 {
-	Logout()
+	MsgLogout()
 	{
 		msgType = MSG_LOGOUT;
-		msgLength = sizeof(Logout);
+		msgLength = sizeof(MsgLogout);
 	}
 	char name[32];
 };
 
-struct LogoutRes : public MsgHeader
+struct MsgLogoutRes : public MsgHeader
 {
-	LogoutRes()
+	MsgLogoutRes()
 	{
 		msgType = MSG_LOGOUT_RES;
-		msgLength = sizeof(LogoutRes);
-		res = 1;
+		msgLength = sizeof(MsgLogoutRes);
+		res = 0;
 	}
 	int res;
+};
+
+struct MsgNewUser : public MsgHeader
+{
+	MsgNewUser()
+	{
+		msgType = MSG_NEWUSER;
+		msgLength = sizeof(MsgNewUser);
+		user = 0;
+	}
+	int user;
 };
 
 std::vector<SOCKET> g_AllClients;
@@ -74,17 +86,17 @@ int HandleMsg(SOCKET client)
 	MsgHeader* request = (MsgHeader*)buffer;
 	if (SOCKET_ERROR == size)
 	{
-		printf("Error:接收客户端请求!\n"); //点X强行关闭。
+		printf("Error:接收客户端<Socket=%d>请求!\n", client); //点X强行关闭。
 		return -1;
 	}
 	else if (size == 0)
 	{
-		printf("OK:客户端关闭连接!\n");	 //用q命令关闭。
+		printf("OK:客户端<Socket=%d>关闭连接!\n", client);	 //用q命令关闭。
 		return -2;
 	}
 
 	//显示客户端请求
-	printf("--接收客户端请求：Type:%d - Length:%d\n", request->msgType, request->msgLength);
+	printf("--接收客户端<Socket=%d>请求：Type:%d - Length:%d\n", client, request->msgType, request->msgLength);
 
 	//处理客户端请求
 	switch (request->msgType)
@@ -92,23 +104,23 @@ int HandleMsg(SOCKET client)
 	case MSG_LOGIN:
 	{
 		recv(client, buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
-		Login* login = (Login*)buffer;
+		MsgLogin* login = (MsgLogin*)buffer;
 
 		printf("--登入消息内容：Name:%s - Pwd:%s\n", login->name, login->pwd);
 
-		LoginRes respond;
-		send(client, (char*)&respond, sizeof(LoginRes), 0);
+		MsgLoginRes respond;
+		send(client, (char*)&respond, sizeof(MsgLoginRes), 0);
 	}
 	break;
 	case MSG_LOGOUT:
 	{
 		recv(client, buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
-		Logout* logout = (Logout*)buffer;
+		MsgLogout* logout = (MsgLogout*)buffer;
 
 		printf("--登出消息内容：Name:%s\n", logout->name);
 
-		LogoutRes respond;
-		send(client, (char*)&respond, sizeof(LogoutRes), 0);
+		MsgLogoutRes respond;
+		send(client, (char*)&respond, sizeof(MsgLogoutRes), 0);
 	}
 	break;
 	default:
@@ -169,16 +181,8 @@ int main()
 	while (true)
 	{
 		fd_set fdRead;
-		fd_set fdWrite;
-		fd_set fdExp;
-
 		FD_ZERO(&fdRead);
-		FD_ZERO(&fdWrite);
-		FD_ZERO(&fdExp);
-
 		FD_SET(_socket, &fdRead);
-		FD_SET(_socket, &fdWrite);
-		FD_SET(_socket, &fdExp);
 
 		for (size_t i = 0; i < g_AllClients.size(); ++i)
 		{
@@ -187,7 +191,7 @@ int main()
 		
 		timeval tv = { 0, 0 };
 
-		int ret = select(0, &fdRead, &fdWrite, &fdExp, &tv);
+		int ret = select(0, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:Select错误!\n");
@@ -205,20 +209,32 @@ int main()
 			_client = accept(_socket, (sockaddr*)&sinClient, &sinLen);
 			if (_client == INVALID_SOCKET)
 			{
-				printf("Error:客户端连接!\n");
+				printf("Error:客户端<Socket=%d>连接!\n", _client);
 			}
 			else
 			{
-				printf("OK:客户端连接!\n");
+				printf("OK:客户端<Socket=%d>连接!\n", _client);
 
+				//转发客户登陆消息
+				MsgNewUser msgNewUser;
+				msgNewUser.user = _client;
+
+				for (std::vector<SOCKET>::iterator it = g_AllClients.begin(); it != g_AllClients.end(); ++it)
+				{
+					send(*it, (char*)&msgNewUser, sizeof(MsgNewUser), 0);
+				}
+
+				//添加客户端
 				g_AllClients.push_back(_client);
 			}
 		}
 
 		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
 		{
-			if (HandleMsg(fdRead.fd_array[i]) < 0)
+			int ret = HandleMsg(fdRead.fd_array[i]);
+			if (ret < 0)
 			{
+				//删除客户端
 				std::vector<SOCKET>::iterator iter = find(g_AllClients.begin(), g_AllClients.end(), fdRead.fd_array[i]);
 				if (iter != g_AllClients.end())
 					g_AllClients.erase(iter);
@@ -226,11 +242,11 @@ int main()
 				//关闭客户端连接
 				if (SOCKET_ERROR == closesocket(fdRead.fd_array[i]))
 				{
-					printf("Error:关闭客户端连接!\n");
+					printf("Error:关闭客户端<Socket=%d>连接!\n", fdRead.fd_array[i]);
 				}
 				else
 				{
-					printf("OK:关闭客户端连接!\n");
+					printf("OK:关闭客户端<Socket=%d>连接!\n", fdRead.fd_array[i]);
 				}
 			}
 		}
