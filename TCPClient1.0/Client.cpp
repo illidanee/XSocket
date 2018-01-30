@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <stdio.h>
+#include <thread>
 #include <windows.h>
 #include <WinSock2.h>
 
@@ -130,6 +131,36 @@ int HandleMsg(SOCKET client)
 	return 0;
 }
 
+bool gRun = true;
+
+void CmdThread(SOCKET socket)
+{
+	while (true)
+	{
+		char buffer[32] = {};
+		scanf("%s", buffer);
+		if (0 == strcmp(buffer, "Login"))
+		{
+			MsgLogin login = {};
+			memcpy(login.name, "illidan", sizeof("illidan"));
+			memcpy(login.pwd, "12345", sizeof("12345"));
+			send(socket, (char*)&login, sizeof(MsgLogin), 0);
+		}
+		else if (0 == strcmp(buffer, "Logout"))
+		{
+			MsgLogout logout = {};
+			memcpy(logout.name, "illidan", sizeof("illidan"));
+			send(socket, (char*)&logout, sizeof(MsgLogout), 0);
+		}
+		else if (0 == strcmp(buffer, "Exit"))
+		{
+			gRun = false;
+			printf("OK:退出!\n");
+			break;
+		}
+	}
+}
+
 int main()
 {
 	//打开网络
@@ -167,7 +198,10 @@ int main()
 		printf("OK:连接服务器!\n");
 	}
 
-	while (true)
+	std::thread t1(CmdThread, _socket);
+	t1.detach();
+
+	while (gRun)
 	{
 		fd_set fdRead;
 		FD_ZERO(&fdRead);
@@ -193,11 +227,6 @@ int main()
 				break;
 			}
 		}
-
-		MsgLogin login = {};
-		memcpy(login.name,"illidan", sizeof("illidan"));
-		memcpy(login.pwd, "12345", sizeof("12345"));
-		send(_socket, (char*)&login, sizeof(MsgLogin), 0);
 	}
 
 	//关闭连接
