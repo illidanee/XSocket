@@ -160,15 +160,10 @@ void CmdThread(SOCKET socket)
 		}
 		else if (0 == strcmp(buffer, "Logout"))
 		{
+            gRun = false;
 			MsgLogout logout = {};
 			memcpy(logout.name, "illidan", sizeof("illidan"));
 			send(socket, (char*)&logout, sizeof(MsgLogout), 0);
-		}
-		else if (0 == strcmp(buffer, "Exit"))
-		{
-			gRun = false;
-			printf("OK:Exit!\n");
-			break;
 		}
 	}
 }
@@ -200,7 +195,7 @@ int main()
 #ifdef _WIN32
 	sinServer.sin_addr.S_un.S_addr = inet_addr("192.168.0.90");
 #else
-    sinServer.sin_addr.s_addr = inet_addr("192.168.0.90");
+    sinServer.sin_addr.s_addr = inet_addr("192.168.0.99");
 #endif // _WIN32
 	sinServer.sin_port = htons(9090);
 	int sinLen = sizeof(sockaddr_in);
@@ -222,7 +217,7 @@ int main()
 		FD_ZERO(&fdRead);
 		FD_SET(_socket, &fdRead);
 
-		timeval tv = { 1, 0 };
+		timeval tv = { 0, 0 };
 
 		int ret = select(0, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
@@ -262,14 +257,13 @@ int main()
 #else
     if (SOCKET_ERROR == close(_socket))
 	{
-		printf("Error:¹Ø±ÕÁ¬œÓ!\n");
+		printf("Error:!\n");
 	}
 	else
 	{
-		printf("OK:¹Ø±ÕÁ¬œÓ!\n");
+		printf("OK:!\n");
 	}
 #endif // _WIN32
 
-	getchar();
 	return 0;
 }

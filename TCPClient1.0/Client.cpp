@@ -207,7 +207,7 @@ int main()
 		FD_ZERO(&fdRead);
 		FD_SET(_socket, &fdRead);
 
-		timeval tv = { 1, 0 };
+		timeval tv = { 0, 0 };
 
 		int ret = select(0, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
