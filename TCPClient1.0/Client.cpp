@@ -160,10 +160,14 @@ void CmdThread(SOCKET socket)
 		}
 		else if (0 == strcmp(buffer, "Logout"))
 		{
-			gRun = false;
 			MsgLogout logout = {};
 			memcpy(logout.name, "illidan", sizeof("illidan"));
 			send(socket, (char*)&logout, sizeof(MsgLogout), 0);
+		}
+		else if (0 == strcmp(buffer, "Exit"))
+		{
+			gRun = false;
+			break;
 		}
 	}
 }
@@ -219,7 +223,7 @@ int main()
 
 		timeval tv = { 0, 0 };
 
-		int ret = select(0, &fdRead, NULL, NULL, &tv);
+		int ret = select(_socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:Select Error!\n");
@@ -246,7 +250,7 @@ int main()
 	}
 	else
 	{
-		printf("OK:!\n"); 
+		printf("OK:!\n");
 	}
 
 	int iError = WSACleanup();
