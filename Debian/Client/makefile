@@ -5,7 +5,7 @@
 CC = g++
 
 #Flag
-FLAG_COM = -std=c++11 -DDEBUG -g
+FLAG = -std=c++11 -DDEBUG -g
 
 #Library
 LIBS = -pthread
@@ -14,16 +14,19 @@ LIBS = -pthread
 #        Project Setting
 #--------------------------------------------------------------------------------
 #Include Dir
-hDir = include
+IncDir = include
 
 #LibDir
-sDir = src
+SrcDir = src
 
 #Temp Dir
-TempDir = tmp
+TmpDir = tmp
 
+#--------------------------------------------------------------------------------
+#        Project Setting
+#--------------------------------------------------------------------------------
 #Project Name
-ProjectName = Demo
+ProjectName = main
 
 #Src List (etc: a.cpp b.cpp c.cpp …)
 SrcList = $(shell ls *.cpp)
@@ -32,17 +35,37 @@ SrcList = $(shell ls *.cpp)
 BaseList = $(basename $(SrcList))
 
 #Obj List (etc: dir/a dir/b dir/c …)
-ObjList = $(addsuffix .o, $(addprefix $(TempDir)/,$(BaseList)))
+ObjList = $(addsuffix .o, $(addprefix $(TmpDir)/,$(BaseList)))
+
+#--------------------------------------------------------------------------------
+#        .d Ruler File Generate
+#--------------------------------------------------------------------------------
+dFileList = $(addsuffix .d, $(addprefix $(TmpDir)/,$(BaseList)))
+include $(dFileList)
+
+$(TmpDir)/%.d : %.cpp
+	@if test ! -d $(TmpDir); then\
+		mkdir -p $(TmpDir);\
+	fi;
+	@set -e; rm -f $@;
+	@$(CC) -MM $< > $@.$$$$;\
+		sed 's/^\(.*\)\.o[ :]*/$(TmpDir)\/\1\.o $(TmpDir)\/\1\.d : /g' < $@.$$$$ > $@;\
+		rm -f $@.$$$$;\
+
+$(TmpDir)/%.o : %.cpp
+	@if test ! -d $(TmpDir); then\
+		mkdir -p $(TmpDir);\
+	fi;
+	$(CC) $(FLAG) -c $< -o $@
 
 #--------------------------------------------------------------------------------
 #        Cmd Setting
 #--------------------------------------------------------------------------------
 #Define Cmd
-.PHONY : info all clean 
+.PHONY : info all clean
 
 info : 
-	@echo $(BaseList)
-
+	@echo $(dFileList)
 
 #Compile All
 all : $(ProjectName)
@@ -51,15 +74,9 @@ all : $(ProjectName)
 	@echo "-----------------------------------------------------------------"
 
 $(ProjectName) : $(ObjList)
-	$(CC) $(FLAG_COM) $(LIBS) $^ -o $@
-
-$(TempDir)/%.o : %.cpp
-	@if test ! -d $(TempDir); then\
-		mkdir -p $(TempDir);\
-	fi;
-	$(CC) $(FLAG_COM) -c $< -o $@
+	$(CC) $(FLAG) $(LIBS) $^ -o $@
 
 #Clean
 clean :
 	rm -f  $(ProjectName)
-	rm -rf $(TempDir)
+	rm -rf $(TmpDir)

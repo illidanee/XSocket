@@ -12,7 +12,6 @@ private:
     int id;
     int name;
     int a;
-int ab;
 };
 
 
