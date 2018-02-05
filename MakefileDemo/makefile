@@ -41,7 +41,7 @@ ObjList = $(addsuffix .o, $(addprefix $(TmpDir)/,$(BaseList)))
 #        .d Ruler File Generate
 #--------------------------------------------------------------------------------
 dFileList = $(addsuffix .d, $(addprefix $(TmpDir)/,$(BaseList)))
-include $(dFileList)
+-include $(dFileList)
 
 $(TmpDir)/%.d : %.cpp
 	@if test ! -d $(TmpDir); then\
