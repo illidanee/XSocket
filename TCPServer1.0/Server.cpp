@@ -1,10 +1,23 @@
-#define WIN32_LEAN_AND_MEAN
-
+#include <stdio.h>
 #include <vector>
 
-#include <stdio.h>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>
 #include <WinSock2.h>
+#pragma comment(lib, "ws2_32.lib")
+#else
+#include <unistd.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+#define SOCKET int
+#define INVALID_SOCKET  (SOCKET)(~0)
+#define SOCKET_ERROR    (-1)
+#endif // _WIN32
+
 
 enum MGS_TYPE
 {
@@ -80,25 +93,22 @@ std::vector<SOCKET> g_AllClients;
 
 int HandleMsg(SOCKET client)
 {
-	//接收客户端请求
 	char buffer[1024] = {};
 	int size = recv(client, buffer, sizeof(MsgHeader), 0);
 	MsgHeader* request = (MsgHeader*)buffer;
 	if (SOCKET_ERROR == size)
 	{
-		printf("Error:接收客户端<Socket=%d>请求!\n", client); //点X强行关闭。
+		printf("Error:Client<Socket=%d> Recv Header!\n", client);
 		return -1;
 	}
 	else if (size == 0)
 	{
-		printf("OK:客户端<Socket=%d>关闭连接!\n", client);	 //用q命令关闭。
+		printf("OK:Client<Socket=%d> Recv Header!\n", client);
 		return -2;
 	}
 
-	//显示客户端请求
-	printf("--接收客户端<Socket=%d>请求：Type:%d - Length:%d\n", client, request->msgType, request->msgLength);
+	printf("--Client<Socket=%d> Msg Type:%d - Length:%d\n", client, request->msgType, request->msgLength);
 
-	//处理客户端请求
 	switch (request->msgType)
 	{
 	case MSG_LOGIN:
@@ -106,7 +116,7 @@ int HandleMsg(SOCKET client)
 		recv(client, buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
 		MsgLogin* login = (MsgLogin*)buffer;
 
-		printf("--登入消息内容：Name:%s - Pwd:%s\n", login->name, login->pwd);
+		printf("--MSG_LOGIN : Name:%s - Pwd:%s\n", login->name, login->pwd);
 
 		MsgLoginRes respond;
 		send(client, (char*)&respond, sizeof(MsgLoginRes), 0);
@@ -117,7 +127,7 @@ int HandleMsg(SOCKET client)
 		recv(client, buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
 		MsgLogout* logout = (MsgLogout*)buffer;
 
-		printf("--登出消息内容：Name:%s\n", logout->name);
+		printf("--MSG_LOGOUT : Name:%s\n", logout->name);
 
 		MsgLogoutRes respond;
 		send(client, (char*)&respond, sizeof(MsgLogoutRes), 0);
@@ -134,7 +144,8 @@ int HandleMsg(SOCKET client)
 
 int main()
 {
-	//打开网络
+
+#ifdef _WIN32
 	WORD wsaVersion = MAKEWORD(2, 2);
 	WSADATA wsaData = {};
 	int iErrorNo = WSAStartup(wsaVersion, &wsaData);
@@ -142,40 +153,43 @@ int main()
 	{
 		printf("Error:WSA start up failed!\n");
 	}
+#endif
 
-	//创建Socket
+	//Create Socket
 	SOCKET _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (SOCKET_ERROR == _socket)
 	{
-		printf("Error:创建Socket!\n");
+		printf("Error:Create Socket!\n");
 	}
 	else
 	{
-		printf("OK:创建Socket!\n");
+		printf("OK:Create Socket!\n");
 	}
 
-	//绑定IP和端口
 	sockaddr_in sin = {};
 	sin.sin_family = AF_INET;
+#ifdef _WIN32
 	sin.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+#else
+	sin.sin_addr.s_addr = htonl(INADDR_ANY);
+#endif
 	sin.sin_port = htons(9090);
 	if (SOCKET_ERROR == bind(_socket, (sockaddr*)&sin, sizeof(sockaddr_in)))
 	{
-		printf("Error:绑定IP和端口!\n");
+		printf("Error:Bind Socket!\n");
 	}
 	else
 	{
-		printf("OK:绑定IP和端口!\n");
+		printf("OK:Bind Socket!\n");
 	}
 
-	//创建监听
 	if (SOCKET_ERROR == listen(_socket, 10))
 	{
-		printf("Error:创建监听!\n");
+		printf("Error:Listen!\n");
 	}
 	else
 	{
-		printf("OK:创建监听!\n");
+		printf("OK:Listen!\n");
 	}
 
 	while (true)
@@ -184,17 +198,20 @@ int main()
 		FD_ZERO(&fdRead);
 		FD_SET(_socket, &fdRead);
 
+		SOCKET MaxSocket = _socket;
 		for (size_t i = 0; i < g_AllClients.size(); ++i)
 		{
 			FD_SET(g_AllClients[i], &fdRead);
+			if (MaxSocket < g_AllClients[i])
+				MaxSocket = g_AllClients[i];
 		}
-		
+
 		timeval tv = { 0, 0 };
 
-		int ret = select(0, &fdRead, NULL, NULL, &tv);
+		int ret = select(MaxSocket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
-			printf("Error:Select错误!\n");
+			printf("Error:Select!\n");
 			break;
 		}
 
@@ -202,20 +219,22 @@ int main()
 		{
 			FD_CLR(_socket, &fdRead);
 
-			//等待客户端连接
 			sockaddr_in sinClient = {};
 			int sinLen = sizeof(sockaddr_in);
 			SOCKET _client = INVALID_SOCKET;
+#ifdef _WIN32
 			_client = accept(_socket, (sockaddr*)&sinClient, &sinLen);
+#else
+			_client = accept(_socket, (sockaddr*)&sinClient, (socklen_t*)&sinLen);
+#endif
 			if (_client == INVALID_SOCKET)
 			{
-				printf("Error:客户端<Socket=%d>连接!\n", _client);
+				printf("Error:Client<Socket=%d> Accept!\n", _client);
 			}
 			else
 			{
-				printf("OK:客户端<Socket=%d>连接!\n", _client);
+				printf("OK:Client<Socket=%d> Accept!\n", _client);
 
-				//转发客户登陆消息
 				MsgNewUser msgNewUser;
 				msgNewUser.user = _client;
 
@@ -224,57 +243,84 @@ int main()
 					send(*it, (char*)&msgNewUser, sizeof(MsgNewUser), 0);
 				}
 
-				//添加客户端
 				g_AllClients.push_back(_client);
 			}
 		}
 
-		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
+		for (std::vector<SOCKET>::iterator iter = g_AllClients.begin(); iter != g_AllClients.end(); )
 		{
-			int ret = HandleMsg(fdRead.fd_array[i]);
-			if (ret < 0)
+			if (FD_ISSET(*iter, &fdRead))
 			{
-				//删除客户端
-				std::vector<SOCKET>::iterator iter = find(g_AllClients.begin(), g_AllClients.end(), fdRead.fd_array[i]);
-				if (iter != g_AllClients.end())
-					g_AllClients.erase(iter);
+				int ret = HandleMsg(*iter);
+				if (ret < 0)
+				{
 
-				//关闭客户端连接
-				if (SOCKET_ERROR == closesocket(fdRead.fd_array[i]))
-				{
-					printf("Error:关闭客户端<Socket=%d>连接!\n", fdRead.fd_array[i]);
-				}
-				else
-				{
-					printf("OK:关闭客户端<Socket=%d>连接!\n", fdRead.fd_array[i]);
+#ifdef _WIN32
+					if (SOCKET_ERROR == closesocket(*iter))
+					{
+						printf("Error:Client<Socket=%d> Close!\n", *iter);
+					}
+					else
+					{
+						printf("OK:Client<Socket=%d> Close!\n", *iter);
+					}
+#else
+					if (SOCKET_ERROR == close(*iter))
+					{
+						printf("Error:Client<Socket=%d> Close!\n", *iter);
+					}
+					else
+					{
+						printf("OK:Client<Socket=%d> Close!\n", *iter);
+					}
+#endif
+
+					iter = g_AllClients.erase(iter);
+					continue;
 				}
 			}
+
+			++iter;
 		}
 	}
 
-	//关闭客户端连接
+#ifdef _WIN32
 	for (std::vector<SOCKET>::iterator it = g_AllClients.begin(); it != g_AllClients.end(); ++it)
 	{
-		//关闭客户端连接
 		if (SOCKET_ERROR == closesocket(*it))
 		{
-			printf("Error:关闭客户端连接!\n");
+			printf("Error:Close All!\n");
 		}
 		else
 		{
-			printf("OK:关闭客户端连接!\n");
+			printf("OK:Close All!\n");
 		}
 	}
 	g_AllClients.clear();
 
-	//关闭网络
+	closesocket(_socket);
+
 	int iError = WSACleanup();
 	if (SOCKET_ERROR == iError)
 	{
 		printf("Error:WSA clean up failed!\n");
 	}
+#else
+	for (std::vector<SOCKET>::iterator it = g_AllClients.begin(); it != g_AllClients.end(); ++it)
+	{
+		if (SOCKET_ERROR == close(*it))
+		{
+			printf("Error:Close All!\n");
+		}
+		else
+		{
+			printf("OK:Close All!\n");
+		}
+	}
+	g_AllClients.clear();
 
-	//退出
-	getchar();
+	close(_socket);
+#endif
+
 	return 0;
 }
