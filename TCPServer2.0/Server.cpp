@@ -2,7 +2,7 @@
 
 Server::Server()
 {
-	_Socket = NULL;
+	_Socket = INVALID_SOCKET;
 	memset(_Buffer, 0, sizeof(_Buffer));
 }
 
