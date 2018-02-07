@@ -71,7 +71,7 @@ int Client::Connect(const char* ip, unsigned short port)
 #else
 	sinServer.sin_addr.s_addr = inet_addr("192.168.0.90");
 #endif // _WIN32
-	sinServer.sin_port = htons(9090);
+	sinServer.sin_port = htons(port);
 	int sinLen = sizeof(sockaddr_in);
 	if (SOCKET_ERROR == connect(_socket, (sockaddr*)&sinServer, sinLen))
 	{
