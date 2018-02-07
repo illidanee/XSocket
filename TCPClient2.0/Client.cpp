@@ -125,32 +125,34 @@ int Client::IsRun()
 
 int Client::OnRun()
 {
-	fd_set fdRead;
-	FD_ZERO(&fdRead);
-	FD_SET(_socket, &fdRead);
-
-	timeval tv = { 0, 0 };
-
-	int ret = select(_socket + 1, &fdRead, NULL, NULL, &tv);
-	if (SOCKET_ERROR == ret)
+	if (IsRun())
 	{
-		printf("Error:select!\n");
-		Close();
-		return -1;
-	}
+		fd_set fdRead;
+		FD_ZERO(&fdRead);
+		FD_SET(_socket, &fdRead);
 
-	if (FD_ISSET(_socket, &fdRead))
-	{
-		FD_CLR(_socket, &fdRead);
+		timeval tv = { 0, 0 };
 
-		int ret = RecvData();
-		if (ret < 0)
+		int ret = select(_socket + 1, &fdRead, NULL, NULL, &tv);
+		if (SOCKET_ERROR == ret)
 		{
+			printf("Error:select!\n");
 			Close();
-			return -2;
+			return -1;
+		}
+
+		if (FD_ISSET(_socket, &fdRead))
+		{
+			FD_CLR(_socket, &fdRead);
+
+			int ret = RecvData();
+			if (ret < 0)
+			{
+				Close();
+				return -2;
+			}
 		}
 	}
-
 	return 0;
 }
 

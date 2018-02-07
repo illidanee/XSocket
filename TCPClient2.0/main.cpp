@@ -49,7 +49,7 @@ int main()
 	std::thread t2(CmdThread, &client2);
 	t2.detach();
 
-	while (client.IsRun() && client2.IsRun())
+	while (client.IsRun() || client2.IsRun())
 	{
 		client.OnRun();
 		client2.OnRun();
