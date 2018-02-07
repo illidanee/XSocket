@@ -39,24 +39,15 @@ int main()
 	client.Init();
 	client.Connect("192.168.0.90", 9090);
 
-	Client client2;
-	client2.Init();
-	client2.Connect("192.168.0.90", 9091);
-
 	std::thread t1(CmdThread, &client);
 	t1.detach();
 
-	std::thread t2(CmdThread, &client2);
-	t2.detach();
-
-	while (client.IsRun() || client2.IsRun())
+	while (client.IsRun())
 	{
 		client.OnRun();
-		client2.OnRun();
 	}
 
 	client.Done();
-	client2.Done();
 
 	return 0;
 }
