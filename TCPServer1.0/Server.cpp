@@ -98,12 +98,12 @@ int HandleMsg(SOCKET client)
 	MsgHeader* request = (MsgHeader*)buffer;
 	if (SOCKET_ERROR == size)
 	{
-		printf("Error:Client<Socket=%d> Recv Header!\n", client);
+		printf("OK:Client<Socket=%d> off!\n", client);
 		return -1;
 	}
 	else if (size == 0)
 	{
-		printf("OK:Client<Socket=%d> Recv Header!\n", client);
+		printf("OK:Client<Socket=%d> quit!\n", client);
 		return -2;
 	}
 
