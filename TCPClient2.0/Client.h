@@ -25,7 +25,7 @@ class Client
 {
 private:
 	SOCKET _Socket;
-	char _Buffer[1024];
+	char _Buffer[409600000];
 
 public:
 	Client();

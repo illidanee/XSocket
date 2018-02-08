@@ -65,9 +65,9 @@ int Client::Connect(const char* ip, unsigned short port)
 	sockaddr_in sinServer = {};
 	sinServer.sin_family = AF_INET;
 #ifdef _WIN32
-	sinServer.sin_addr.S_un.S_addr = inet_addr("192.168.0.99");
+	sinServer.sin_addr.S_un.S_addr = inet_addr(ip);
 #else
-	sinServer.sin_addr.s_addr = inet_addr("192.168.0.99");
+	sinServer.sin_addr.s_addr = inet_addr(ip);
 #endif // _WIN32
 	sinServer.sin_port = htons(port);
 	int sinLen = sizeof(sockaddr_in);
@@ -163,7 +163,10 @@ int Client::SendData(MsgHeader* pHeader)
 
 int Client::RecvData()
 {
-	int size = recv(_Socket, _Buffer, sizeof(MsgHeader), 0);
+	int size = recv(_Socket, _Buffer, 409600000, 0);
+	printf("--Recv Len = %d \n", size);
+	return 0;
+
 	if (SOCKET_ERROR == size)
 	{
 		printf("OK:Server off!\n");

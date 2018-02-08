@@ -2,19 +2,19 @@
 
 int main()
 {
-	Server server;
-	server.Init();
-	server.Open();
-	server.Bind(NULL, 9090);
-	server.Listen(10);
+	Server* server = new Server;
+	server->Init();
+	server->Open();
+	server->Bind(NULL, 9090);
+	server->Listen(10);
 
-	while (server.IsRun())
+	while (server->IsRun())
 	{
-		server.OnRun();
+		server->OnRun();
 	}
 
-	server.CloseAll();
-	server.Close();
+	server->CloseAll();
+	server->Close();
 
 	return 0;
 }

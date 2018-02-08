@@ -286,7 +286,12 @@ int Server::OnRun()
 
 int Server::RecvData(SOCKET client)
 {
-	int size = recv(client, _Buffer, sizeof(MsgHeader), 0);
+	int size = recv(client, _Buffer, 409600000, 0);
+	printf("--Recv Len = %d \n", size);
+	MsgLoginRes respond;
+	SendData(client, &respond);
+	return 0;
+
 	if (SOCKET_ERROR == size)
 	{
 		printf("OK<Socket=%d>:Client<Socket=%d> off!\n", (int)_Socket, (int)client);

@@ -35,19 +35,26 @@ void CmdThread(Client* client)
 int main()
 {
 
-	Client client;
-	client.Init();
-	client.Connect("192.168.0.90", 9090);
+	Client* client = new Client;
+	client->Init();
+	//client->Connect("192.168.0.90", 9090);
+	client->Connect("144.202.1.68", 9090);
 
-	std::thread t1(CmdThread, &client);
+	std::thread t1(CmdThread, client);
 	t1.detach();
 
-	while (client.IsRun())
+	MsgLogin login;
+	memcpy(login.name, "illidan", sizeof("illidan"));
+	memcpy(login.pwd, "12345", sizeof("12345"));
+
+	while (client->IsRun())
 	{
-		client.OnRun();
+		client->OnRun();
+
+		client->SendData(&login);
 	}
 
-	client.Done();
+	client->Done();
 
 	return 0;
 }

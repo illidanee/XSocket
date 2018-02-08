@@ -28,7 +28,7 @@ private:
 	SOCKET _Socket;
 	std::vector<SOCKET> _AllClients;
 
-	char _Buffer[1024];
+	char _Buffer[409600000];
 
 public:
 	Server();

@@ -37,6 +37,7 @@ struct MsgLoginRes : public MsgHeader
 		res = 0;
 	}
 	int res;
+	char data[1024];
 };
 
 struct MsgLogout : public MsgHeader
