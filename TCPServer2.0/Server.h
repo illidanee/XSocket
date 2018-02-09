@@ -1,6 +1,7 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
+//标准头文件
 #include <iostream>
 #include <vector>
 
@@ -20,18 +21,44 @@
 #define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
+//协议头文件
 #include "MsgProtocol.h"
 
+#define _BUFFER_SIZE_ 1024000
+
+//客户端信息类
+class ClientInfo
+{
+private:
+	SOCKET _Socket;							//客户端Socket
+	char _DataBuffer[_BUFFER_SIZE_ * 100];	//数据缓冲区
+	int _StartPos;							//数据缓冲区中可以放入数据的起始位置
+
+public:
+	ClientInfo(SOCKET client)
+	{
+		_Socket = client;
+		memset(_DataBuffer, 0, sizeof(_DataBuffer));
+		_StartPos = 0;
+	}
+
+	SOCKET GetSocket() { return _Socket; }
+	char* GetDataBuffer() { return _DataBuffer; }
+	int GetStartPos() { return _StartPos; }
+	void SetStartPos(int startPos) { _StartPos = startPos; }
+};
+
+//Server类
 class Server
 {
 private:
-	SOCKET _Socket;
-	std::vector<SOCKET> _AllClients;
+	SOCKET _Socket;							//服务器Socket
+	std::vector<ClientInfo*> _AllClients;	//客户端信息
 
-	char _Buffer[409600000];
+	char _RecvBuffer[_BUFFER_SIZE_];		//接收缓冲区
 
 public:
-	Server();
+	Server();							
 	~Server();
 
 	int Init();
@@ -43,15 +70,16 @@ public:
 	int Accept();
 	int Close();
 
-	int CloseOne(SOCKET client);
+	int CloseOne(ClientInfo* pClientInfo);
 	int CloseAll();
 
 	int IsRun();
 	int OnRun();
 
-	int RecvData(SOCKET client);
-	int SendData(SOCKET client, MsgHeader* pHeader);
+	int SendData(ClientInfo* pClientInfo, MsgHeader* pHeader);
 	int SendDataToAll(MsgHeader* pHeader);
+	int RecvData(ClientInfo* pClientInfo);
+	virtual int OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader);
 };
 
 #endif

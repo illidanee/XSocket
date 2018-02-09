@@ -1,6 +1,7 @@
 #ifndef __CLIENT_H__
 #define __CLIENT_H__
 
+//标准头文件
 #include <iostream>
 
 #ifdef _WIN32
@@ -19,13 +20,20 @@
 	#define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
+//协议头文件
 #include "MsgProtocol.h"
 
+#define _BUFFER_SIZE_ 1024000
+
+//Client类
 class Client
 {
 private:
-	SOCKET _Socket;
-	char _Buffer[409600000];
+	SOCKET _Socket;							//客户端Socket
+
+	char _RecvBuffer[_BUFFER_SIZE_];		//接收缓冲区
+	char _DataBuffer[_BUFFER_SIZE_ * 100];	//数据缓冲区
+	int _StartPos;							//数据缓冲区中可以放入数据的起始位置
 
 public:
 	Client();
@@ -34,6 +42,7 @@ public:
 	int Init();
 	int Done();
 
+	int Open();
 	int Connect(const char* ip, unsigned short port);
 	int Close();
 
@@ -42,6 +51,7 @@ public:
 
 	int SendData(MsgHeader* pHeader);
 	int RecvData();
+	virtual int OnNetMsg(MsgHeader* pHeader);
 };
 
 #endif

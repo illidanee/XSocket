@@ -3,7 +3,7 @@
 Server::Server()
 {
 	_Socket = INVALID_SOCKET;
-	memset(_Buffer, 0, sizeof(_Buffer));
+	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
 }
 
 Server::~Server()
@@ -119,26 +119,26 @@ int Server::Accept()
 {
 	sockaddr_in sinClient = {};
 	int sinLen = sizeof(sockaddr_in);
-	SOCKET _client = INVALID_SOCKET;
+	SOCKET client = INVALID_SOCKET;
 #ifdef _WIN32
-	_client = accept(_Socket, (sockaddr*)&sinClient, &sinLen);
+	client = accept(_Socket, (sockaddr*)&sinClient, &sinLen);
 #else
-	_client = accept(_Socket, (sockaddr*)&sinClient, (socklen_t*)&sinLen);
+	client = accept(_Socket, (sockaddr*)&sinClient, (socklen_t*)&sinLen);
 #endif
-	if (_client == INVALID_SOCKET)
+	if (client == INVALID_SOCKET)
 	{
 		printf("Error<Socket=%d>:accept!\n", (int)_Socket);
 		return -1;
 	}
 	else
 	{
-		printf("OK<Socket=%d>:accept Client<Socket=%d>!\n", (int)_Socket, (int)_client);
+		printf("OK<Socket=%d>:accept Client<Socket=%d>!\n", (int)_Socket, (int)client);
 
 		MsgNewUser msgNewUser;
-		msgNewUser.user = (int)_client;
+		msgNewUser._UserID = (int)client;
 		SendDataToAll(&msgNewUser);
 
-		_AllClients.push_back(_client);
+		_AllClients.push_back(new ClientInfo(client));
 	}
 	
 	return 0;
@@ -173,60 +173,44 @@ int Server::Close()
 	return 0;
 }
 
-int Server::CloseOne(SOCKET client)
+int Server::CloseOne(ClientInfo* pClientInfo)
 {
+	if (pClientInfo)
+	{
 #ifdef _WIN32
-	if (SOCKET_ERROR == closesocket(client))
-	{
-		printf("Error<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)client);
-	}
-	else
-	{
-		printf("OK<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)client);
-	}
+		if (SOCKET_ERROR == closesocket(pClientInfo->GetSocket()))
+		{
+			printf("Error<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
+		}
+		else
+		{
+			printf("OK<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
+		}
 #else
-	if (SOCKET_ERROR == close(client))
-	{
-		printf("Error:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)client);
-	}
-	else
-	{
-		printf("OK:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)client);
-	}
+		if (SOCKET_ERROR == close(pClientInfo->GetSocket()))
+		{
+			printf("Error:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
+		}
+		else
+		{
+			printf("OK:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
+		}
 #endif
+		delete pClientInfo;
+		pClientInfo = NULL;
+	}
 
 	return 0;
 }
 
 int Server::CloseAll()
 {
-#ifdef _WIN32
-	for (std::vector<SOCKET>::iterator it = _AllClients.begin(); it != _AllClients.end(); ++it)
+	for (std::vector<ClientInfo*>::iterator it = _AllClients.begin(); it != _AllClients.end(); ++it)
 	{
-		if (SOCKET_ERROR == closesocket(*it))
-		{
-			printf("Error<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)*it);
-		}
-		else
-		{
-			printf("OK<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)*it);
-		}
+		CloseOne(*it);
 	}
 	_AllClients.clear();
-#else
-	for (std::vector<SOCKET>::iterator it = _AllClients.begin(); it != _AllClients.end(); ++it)
-	{
-		if (SOCKET_ERROR == close(*it))
-		{
-			printf("Error:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)*it);
-		}
-		else
-		{
-			printf("OK:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)*it);
-		}
-	}
-	_AllClients.clear();
-#endif
+
 	return 0;
 }
 
@@ -246,9 +230,9 @@ int Server::OnRun()
 		SOCKET MaxSocket = _Socket;
 		for (size_t i = 0; i < _AllClients.size(); ++i)
 		{
-			FD_SET(_AllClients[i], &fdRead);
-			if (MaxSocket < _AllClients[i])
-				MaxSocket = _AllClients[i];
+			FD_SET(_AllClients[i]->GetSocket(), &fdRead);
+			if (MaxSocket < _AllClients[i]->GetSocket())
+				MaxSocket = _AllClients[i]->GetSocket();
 		}
 
 		timeval tv = { 0, 0 };
@@ -265,9 +249,9 @@ int Server::OnRun()
 			Accept();
 		}
 
-		for (std::vector<SOCKET>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
+		for (std::vector<ClientInfo*>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
 		{
-			if (FD_ISSET(*iter, &fdRead))
+			if (FD_ISSET((*iter)->GetSocket(), &fdRead))
 			{
 				int ret = RecvData(*iter);
 				if (ret < 0)
@@ -284,71 +268,99 @@ int Server::OnRun()
 	return 0;
 }
 
-int Server::RecvData(SOCKET client)
+int Server::SendData(ClientInfo* pClientInfo, MsgHeader* pHeader)
 {
-	int size = recv(client, _Buffer, 409600000, 0);
-	printf("--Recv Len = %d \n", size);
-	MsgLoginRes respond;
-	SendData(client, &respond);
-	return 0;
-
-	if (SOCKET_ERROR == size)
-	{
-		printf("OK<Socket=%d>:Client<Socket=%d> off!\n", (int)_Socket, (int)client);
-		return -1;
-	}
-	else if (size == 0)
-	{
-		printf("OK<Socket=%d>:Client<Socket=%d> quit!\n", (int)_Socket, (int)client);
-		return -2;
-	}
-
-	MsgHeader* request = (MsgHeader*)_Buffer;
-	printf("----<Socket=%d> From Client<Socket=%d> = Msg Type:%d - Length:%d\n", (int)_Socket, (int)client, request->msgType, request->msgLength);
-	recv(client, _Buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
-
-	switch (request->msgType)
-	{
-	case MSG_LOGIN:
-	{
-		MsgLogin* login = (MsgLogin*)request;
-		printf("----<Socket=%d> From Client<Socket=%d> = MSG_LOGIN : Name:%s - Pwd:%s\n", (int)_Socket, (int)client, login->name, login->pwd);
-
-		MsgLoginRes respond;
-		SendData(client, &respond);
-	}
-	break;
-	case MSG_LOGOUT:
-	{
-		MsgLogout* logout = (MsgLogout*)request;
-		printf("----<Socket=%d> From Client<Socket=%d> = MSG_LOGOUT : Name:%s\n", (int)_Socket, (int)client, logout->name);
-
-		MsgLogoutRes respond;
-		SendData(client, &respond);
-	}
-	break;
-	default:
-	{
-
-	}
-	}
-
-	return 0;
-}
-
-int Server::SendData(SOCKET client, MsgHeader* pHeader)
-{
-	if (IsRun() && pHeader)
-		return send(client, (const char*)pHeader, pHeader->msgLength, 0);
+	if (IsRun() && pClientInfo && pHeader)
+		return send(pClientInfo->GetSocket(), (const char*)pHeader, pHeader->_MsgLength, 0);
 
 	return -1;
 }
 
 int Server::SendDataToAll(MsgHeader* pHeader)
 {
-	for (std::vector<SOCKET>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+	for (std::vector<ClientInfo*>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 	{
 		SendData(*iter, pHeader);
+	}
+
+	return 0;
+}
+
+//unsigned long n = 0;
+int Server::RecvData(ClientInfo* pClientInfo)
+{
+	//接收数据到接收缓冲区中
+	int size = recv(pClientInfo->GetSocket(), _RecvBuffer, _BUFFER_SIZE_, 0);
+	if (SOCKET_ERROR == size)
+	{
+		printf("OK<Socket=%d>:Client<Socket=%d> off!\n", (int)_Socket, (int)pClientInfo->GetSocket());
+		return -1;
+	}
+	else if (size == 0)
+	{
+		printf("OK<Socket=%d>:Client<Socket=%d> quit!\n", (int)_Socket, (int)pClientInfo->GetSocket());
+		return -2;
+	}
+
+	//将接收缓冲区数据拷贝到数据缓冲区
+	memcpy(pClientInfo->GetDataBuffer() + pClientInfo->GetStartPos(), _RecvBuffer, size);
+	pClientInfo->SetStartPos(pClientInfo->GetStartPos() + size);
+
+	//数据缓冲区长度大于消息头长度
+	while (pClientInfo->GetStartPos() >= sizeof(MsgHeader))
+	{
+		MsgHeader* pHeader = (MsgHeader*)pClientInfo->GetDataBuffer();
+		//数据缓冲区长度大于消息长度
+		if (pClientInfo->GetStartPos() >= pHeader->_MsgLength)
+		{
+			//数据缓冲区剩余未处理数据长度
+			int len = pClientInfo->GetStartPos() - pHeader->_MsgLength;
+			//printf("----%d - <Socket=%d> From Client<Socket=%d> = Msg Type:%d - Length:%d\n", n++, (int)_Socket, (int)pClientInfo->GetSocket(), pHeader->_MsgType, pHeader->_MsgLength);
+			OnNetMsg(pClientInfo, pHeader);
+
+			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
+			memcpy(pClientInfo->GetDataBuffer(), pClientInfo->GetDataBuffer() + pHeader->_MsgLength, len);
+			pClientInfo->SetStartPos(len);
+		}
+		else
+		{
+			//数据缓冲区剩余未处理数据不够一条完整消息
+			break;
+		}
+	}
+
+	return 0;
+}
+
+int Server::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
+{
+	switch (pHeader->_MsgType)
+	{
+	case MSG_LOGIN:
+	{
+		MsgLogin* login = (MsgLogin*)pHeader;
+		//printf("----<Socket=%d> From Client<Socket=%d> = MSG_LOGIN : Name:%s - Pwd:%s\n", (int)_Socket, (int)pClientInfo->GetSocket(), login->_Name, login->_Pwd);
+
+		MsgLoginRes respond;
+		SendData(pClientInfo, &respond);
+	}
+	break;
+	case MSG_LOGOUT:
+	{
+		MsgLogout* logout = (MsgLogout*)pHeader;
+		//printf("----<Socket=%d> From Client<Socket=%d> = MSG_LOGOUT : Name:%s\n", (int)_Socket, (int)pClientInfo->GetSocket(), logout->_Name);
+
+		MsgLogoutRes respond;
+		SendData(pClientInfo, &respond);
+	}
+	break;
+	default:
+	{
+		//printf("----<Socket=%d> From Client<Socket=%d> = MSG_Error\n", (int)_Socket, (int)pClientInfo->GetSocket());
+
+		MsgError respond;
+		SendData(pClientInfo, &respond);
+	}
 	}
 
 	return 0;

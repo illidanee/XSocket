@@ -3,7 +3,9 @@
 Client::Client()
 {
 	_Socket = INVALID_SOCKET;
-	memset(_Buffer, 0, sizeof(_Buffer));
+	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
+	memset(_DataBuffer, 0, sizeof(_DataBuffer));
+	_StartPos = 0;
 }
 
 Client::~Client()
@@ -26,8 +28,7 @@ int Client::Init()
 	{
 		printf("OK:WSAStartup!\n");
 	}
-#endif // _WIN32
-
+#endif
 	return 0;
 }
 
@@ -44,12 +45,11 @@ int Client::Done()
 	{
 		printf("OK:WSACleanup!\n");
 	}
-#endif // _WIN32
-
+#endif
 	return 0;
 }
 
-int Client::Connect(const char* ip, unsigned short port)
+int Client::Open()
 {
 	_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (SOCKET_ERROR == _Socket)
@@ -62,6 +62,11 @@ int Client::Connect(const char* ip, unsigned short port)
 		printf("OK:socket!\n");
 	}
 
+	return 0;
+}
+
+int Client::Connect(const char* ip, unsigned short port)
+{
 	sockaddr_in sinServer = {};
 	sinServer.sin_family = AF_INET;
 #ifdef _WIN32
@@ -74,7 +79,7 @@ int Client::Connect(const char* ip, unsigned short port)
 	if (SOCKET_ERROR == connect(_Socket, (sockaddr*)&sinServer, sinLen))
 	{
 		printf("Error:connect!\n");
-		return -2;
+		return -1;
 	}
 	else
 	{
@@ -156,17 +161,16 @@ int Client::OnRun()
 int Client::SendData(MsgHeader* pHeader)
 {
 	if (IsRun() && pHeader)
-		return send(_Socket, (const char*)pHeader, pHeader->msgLength, 0);
+		return send(_Socket, (const char*)pHeader, pHeader->_MsgLength, 0);
 
 	return -1;
 }
 
+unsigned long n = 0;
 int Client::RecvData()
 {
-	int size = recv(_Socket, _Buffer, 409600000, 0);
-	printf("--Recv Len = %d \n", size);
-	return 0;
-
+	//接收数据到接收缓冲区中
+	int size = recv(_Socket, _RecvBuffer, _BUFFER_SIZE_, 0);
 	if (SOCKET_ERROR == size)
 	{
 		printf("OK:Server off!\n");
@@ -178,33 +182,67 @@ int Client::RecvData()
 		return -2;
 	}
 
-	MsgHeader* request = (MsgHeader*)_Buffer;
-	printf("----Recieve Msg Type:%d - Length:%d\n", request->msgType, request->msgLength);
-	recv(_Socket, _Buffer + sizeof(MsgHeader), request->msgLength - sizeof(MsgHeader), 0);
+	//将接收缓冲区数据拷贝到数据缓冲区
+	memcpy(_DataBuffer + _StartPos, _RecvBuffer, size);
+	_StartPos += size;
 
-	switch (request->msgType)
+	//数据缓冲区长度大于消息头长度
+	while (_StartPos >= sizeof(MsgHeader))
+	{
+		MsgHeader* pHeader = (MsgHeader*)_DataBuffer;
+		//数据缓冲区长度大于消息长度
+		if (_StartPos >= pHeader->_MsgLength)
+		{
+			//数据缓冲区剩余未处理数据长度
+			int len = _StartPos - pHeader->_MsgLength;
+			//printf("----%d - Recieve Msg Type:%d - Length:%d\n", n++, pHeader->_MsgType, pHeader->_MsgLength);
+			OnNetMsg(pHeader);
+
+			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
+			memcpy(_DataBuffer, _DataBuffer + pHeader->_MsgLength, len);
+			_StartPos = len;
+		}
+		else
+		{
+			//数据缓冲区剩余未处理数据不够一条完整消息
+			break;
+		}
+	}
+
+	return 0;
+}
+
+int Client::OnNetMsg(MsgHeader* pHeader)
+{
+	switch (pHeader->_MsgType)
 	{
 	case MSG_LOGIN_RES:
 	{
-		MsgLoginRes* login = (MsgLoginRes*)request;
-		printf("----Login Ret:%d\n", login->res);
+		MsgLoginRes* login = (MsgLoginRes*)pHeader;
+		//printf("----Login Ret:%d\n", login->_Ret);
 	}
 	break;
 	case MSG_LOGOUT_RES:
 	{
-		MsgLogoutRes* logout = (MsgLogoutRes*)request;
-		printf("----Logout Ret:%d\n", logout->res);
+		MsgLogoutRes* logout = (MsgLogoutRes*)pHeader;
+		//printf("----Logout Ret:%d\n", logout->_Ret);
 	}
 	break;
 	case MSG_NEWUSER:
 	{
-		MsgNewUser* newUser = (MsgNewUser*)request;
-		printf("----New User <Socket=%d> Join Server!\n", newUser->user);
+		MsgNewUser* newUser = (MsgNewUser*)pHeader;
+		//printf("----New User <Socket=%d> Join Server!\n", newUser->_UserID);
+	}
+	break;
+	case MSG_ERROR:
+	{
+		MsgError* error = (MsgError*)pHeader;
+		//printf("----Send Error Code To Server!\n");
 	}
 	break;
 	default:
 	{
-
+		//printf("----Recv Error Msg!\n");
 	}
 	}
 

@@ -3,6 +3,7 @@
 
 enum MGS_TYPE
 {
+	MSG_HEADER,
 	MSG_ERROR,
 	MSG_LOGIN,
 	MSG_LOGIN_RES,
@@ -13,63 +14,78 @@ enum MGS_TYPE
 
 struct MsgHeader
 {
-	MGS_TYPE msgType;
-	int msgLength;
+	MsgHeader()
+	{
+		_MsgType = MSG_HEADER;
+		_MsgLength = sizeof(MsgHeader);
+	}
+	MGS_TYPE _MsgType;
+	int _MsgLength;
+};
+
+struct MsgError : public MsgHeader
+{
+	MsgError()
+	{
+		_MsgType = MSG_ERROR;
+		_MsgLength = sizeof(MsgError);
+	}
 };
 
 struct MsgLogin : public MsgHeader
 {
 	MsgLogin()
 	{
-		msgType = MSG_LOGIN;
-		msgLength = sizeof(MsgLogin);
+		_MsgType = MSG_LOGIN;
+		_MsgLength = sizeof(MsgLogin);
 	}
-	char name[32];
-	char pwd[32];
+	char _Name[32];
+	char _Pwd[32];
+	char data[952];
 };
 
 struct MsgLoginRes : public MsgHeader
 {
 	MsgLoginRes()
 	{
-		msgType = MSG_LOGIN_RES;
-		msgLength = sizeof(MsgLoginRes);
-		res = 0;
+		_MsgType = MSG_LOGIN_RES;
+		_MsgLength = sizeof(MsgLoginRes);
+		_Ret = 0;
 	}
-	int res;
-	char data[1024];
+	int _Ret;
+	char data[1012];
 };
 
 struct MsgLogout : public MsgHeader
 {
 	MsgLogout()
 	{
-		msgType = MSG_LOGOUT;
-		msgLength = sizeof(MsgLogout);
+		_MsgType = MSG_LOGOUT;
+		_MsgLength = sizeof(MsgLogout);
 	}
-	char name[32];
+	char _Name[32];
 };
 
 struct MsgLogoutRes : public MsgHeader
 {
 	MsgLogoutRes()
 	{
-		msgType = MSG_LOGOUT_RES;
-		msgLength = sizeof(MsgLogoutRes);
-		res = 0;
+		_MsgType = MSG_LOGOUT_RES;
+		_MsgLength = sizeof(MsgLogoutRes);
+		_Ret = 0;
 	}
-	int res;
+	int _Ret;
 };
 
 struct MsgNewUser : public MsgHeader
 {
 	MsgNewUser()
 	{
-		msgType = MSG_NEWUSER;
-		msgLength = sizeof(MsgNewUser);
-		user = 0;
+		_MsgType = MSG_NEWUSER;
+		_MsgLength = sizeof(MsgNewUser);
+		_UserID = 0;
 	}
-	int user;
+	int _UserID;
 };
 
 #endif
