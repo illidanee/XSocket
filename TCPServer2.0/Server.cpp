@@ -4,6 +4,7 @@ Server::Server()
 {
 	_Socket = INVALID_SOCKET;
 	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
+	_PackageNum = 0;
 }
 
 Server::~Server()
@@ -27,6 +28,9 @@ int Server::Init()
 		printf("OK:WSAStartup!\n");
 	}
 #endif
+
+	_Timer.XInit();
+
 	return 0;
 }
 
@@ -44,6 +48,9 @@ int Server::Done()
 		printf("OK:WSACleanup!\n");
 	}
 #endif
+
+	_Timer.XDone();
+
 	return 0;
 }
 
@@ -334,6 +341,16 @@ int Server::RecvData(ClientInfo* pClientInfo)
 
 int Server::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
 {
+	_PackageNum++;
+	if (_Timer.GetTime() > 1.0)
+	{
+		printf("---------接收到数据包：%d 个。\n", _PackageNum);
+
+		_PackageNum = 0;
+		_Timer.UpdateTime();
+	}
+
+
 	switch (pHeader->_MsgType)
 	{
 	case MSG_LOGIN:
@@ -342,7 +359,7 @@ int Server::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
 		//printf("----<Socket=%d> From Client<Socket=%d> = MSG_LOGIN : Name:%s - Pwd:%s\n", (int)_Socket, (int)pClientInfo->GetSocket(), login->_Name, login->_Pwd);
 
 		MsgLoginRes respond;
-		SendData(pClientInfo, &respond);
+		//SendData(pClientInfo, &respond);
 	}
 	break;
 	case MSG_LOGOUT:
@@ -351,7 +368,7 @@ int Server::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
 		//printf("----<Socket=%d> From Client<Socket=%d> = MSG_LOGOUT : Name:%s\n", (int)_Socket, (int)pClientInfo->GetSocket(), logout->_Name);
 
 		MsgLogoutRes respond;
-		SendData(pClientInfo, &respond);
+		//SendData(pClientInfo, &respond);
 	}
 	break;
 	default:
@@ -359,7 +376,7 @@ int Server::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
 		//printf("----<Socket=%d> From Client<Socket=%d> = MSG_Error\n", (int)_Socket, (int)pClientInfo->GetSocket());
 
 		MsgError respond;
-		SendData(pClientInfo, &respond);
+		//SendData(pClientInfo, &respond);
 	}
 	}
 

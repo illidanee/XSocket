@@ -1,0 +1,22 @@
+#ifndef __XTIMER_H__
+#define __XTIMER_H__
+
+#include <chrono>
+
+class XTimer
+{
+public:
+	int XInit();
+	int XDone();
+
+	void UpdateTime();
+	double GetTime();
+
+private:
+	long long GetElapseTime();
+
+private:
+	std::chrono::time_point<std::chrono::high_resolution_clock> _LastTimePoint;
+};
+
+#endif // ifndef

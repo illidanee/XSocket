@@ -152,10 +152,12 @@
   <ItemGroup>
     <ClInclude Include="MsgProtocol.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="XTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="XTimer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

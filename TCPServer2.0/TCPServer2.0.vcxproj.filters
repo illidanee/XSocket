@@ -21,12 +21,18 @@
     <ClInclude Include="MsgProtocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="XTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

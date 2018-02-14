@@ -21,6 +21,8 @@
 #define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
+#include "XTimer.h"
+
 //协议头文件
 #include "MsgProtocol.h"
 
@@ -57,6 +59,8 @@ private:
 
 	char _RecvBuffer[_BUFFER_SIZE_];		//接收缓冲区
 
+	XTimer _Timer;
+	int _PackageNum;
 public:
 	Server();							
 	~Server();
