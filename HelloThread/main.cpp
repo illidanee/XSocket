@@ -1,10 +1,10 @@
 #include <iostream>
 #include <thread>
 
-void OtherThread()
+void OtherThread(int id)
 {
 	for (int i = 0; i < 5; ++i)
-		std::cout << "Hello other thread!" << std::endl;
+		std::cout << id << "Hello other thread!" << std::endl;
 }
 
 /****************************************************************************************************************
@@ -16,9 +16,16 @@ void OtherThread()
  ****************************************************************************************************************/
 int main()
 {
-	std::thread t(OtherThread);
-	t.detach();
-	//t.join();
+	std::thread t[3];
+	for (int i = 0; i < 3; ++i)
+	{
+		t[i] = std::thread(OtherThread, i);
+	}
+	for (int i = 0; i < 3; ++i)
+	{
+		t[i].detach();
+		//t[i].join();
+	}
 
 	for (int i = 0; i < 5; ++i)
 		std::cout << "Hello main thread!" << std::endl;
