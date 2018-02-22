@@ -1,19 +1,19 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
-
+#include <atomic>
 #include <chrono>
 
 const int tCount = 5;
 
 std::mutex m;
-int sum = 0;
+std::atomic_int sum = 0;
 
 void OtherThread(int id)
 {
 	for (int i = 0; i < 2000000; ++i)
 	{
-		std::lock_guard<std::mutex> lg(m);
+		//std::lock_guard<std::mutex> lg(m);
 		//m.lock();
 		sum++;
 		//m.unlock();
@@ -33,6 +33,7 @@ void OtherThread(int id)
 		5- 测试加锁的性能消耗，在大规模计算时频繁的加锁与解锁将消耗大量的性能。debug中10次大约2.2毫秒。
 		6- 使用自解锁，性能比普通锁消耗大一点，但是更安全。
 		7- detach()和join()并不启动线程。线程一但创建就自动执行了。
+		8- 多线程中使用基础数据的时候可以使用院子操作提高性能。
  *
  ****************************************************************************************************************/
 int main()
