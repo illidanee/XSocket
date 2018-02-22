@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCPClient2.0", "TCPClient2.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCPServer2.0", "TCPServer2.0\TCPServer2.0.vcxproj", "{7AAB0BBA-2EAD-4B1B-B05C-751BEF7811EE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloThread", "HelloThread\HelloThread.vcxproj", "{F2B787E7-DDC5-4580-AA2B-9DE93102026A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{7AAB0BBA-2EAD-4B1B-B05C-751BEF7811EE}.Release|x64.Build.0 = Release|x64
 		{7AAB0BBA-2EAD-4B1B-B05C-751BEF7811EE}.Release|x86.ActiveCfg = Release|Win32
 		{7AAB0BBA-2EAD-4B1B-B05C-751BEF7811EE}.Release|x86.Build.0 = Release|Win32
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Debug|x64.ActiveCfg = Debug|x64
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Debug|x64.Build.0 = Debug|x64
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Debug|x86.ActiveCfg = Debug|Win32
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Debug|x86.Build.0 = Debug|Win32
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x64.ActiveCfg = Release|x64
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x64.Build.0 = Release|x64
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x86.ActiveCfg = Release|Win32
+		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
