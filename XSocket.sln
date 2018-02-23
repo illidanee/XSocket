@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCPServer2.0", "TCPServer2.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloThread", "HelloThread\HelloThread.vcxproj", "{F2B787E7-DDC5-4580-AA2B-9DE93102026A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TCPClient3.0", "TCPClient3.0\TCPClient3.0.vcxproj", "{297C9F14-E00E-4D1A-A386-03C3C5823B33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -71,6 +73,14 @@ Global
 		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x64.Build.0 = Release|x64
 		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x86.ActiveCfg = Release|Win32
 		{F2B787E7-DDC5-4580-AA2B-9DE93102026A}.Release|x86.Build.0 = Release|Win32
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Debug|x64.ActiveCfg = Debug|x64
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Debug|x64.Build.0 = Debug|x64
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Debug|x86.ActiveCfg = Debug|Win32
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Debug|x86.Build.0 = Debug|Win32
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Release|x64.ActiveCfg = Release|x64
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Release|x64.Build.0 = Release|x64
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Release|x86.ActiveCfg = Release|Win32
+		{297C9F14-E00E-4D1A-A386-03C3C5823B33}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

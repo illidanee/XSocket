@@ -344,7 +344,7 @@ int Server::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
 	_PackageNum++;
 	if (_Timer.GetTime() > 1.0)
 	{
-		printf("---------接收到数据包：%d 个。\n", _PackageNum);
+		printf("--当前客户端连接数:%4d  --接收到数据包:%d 个。\n", (int)_AllClients.size(), _PackageNum);
 
 		_PackageNum = 0;
 		_Timer.UpdateTime();
