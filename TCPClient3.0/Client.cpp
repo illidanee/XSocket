@@ -78,7 +78,8 @@ int Client::Connect(const char* ip, unsigned short port)
 	int sinLen = sizeof(sockaddr_in);
 	if (SOCKET_ERROR == connect(_Socket, (sockaddr*)&sinServer, sinLen))
 	{
-		printf("Error:connect!\n");
+		int errNo = WSAGetLastError();
+		printf("Error:connect -- Error No = %d !\n", errNo);
 		return -1;
 	}
 	else

@@ -3,7 +3,7 @@
 #include <chrono>
 #include "Client.h"
 
-const int cCount = 100;
+const int cCount = 4000;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
