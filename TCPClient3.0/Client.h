@@ -39,8 +39,8 @@ public:
 	Client();
 	~Client();
 
-	int Init();
-	int Done();
+	static int Init();
+	static int Done();
 
 	int Open();
 	int Connect(const char* ip, unsigned short port);
@@ -49,7 +49,7 @@ public:
 	int IsRun();
 	int OnRun();
 
-	int SendData(MsgHeader* pHeader);
+	int SendData(MsgHeader* pHeader, int len);
 	int RecvData();
 	virtual int OnNetMsg(MsgHeader* pHeader);
 };

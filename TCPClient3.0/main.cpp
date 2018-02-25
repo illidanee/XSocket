@@ -3,7 +3,7 @@
 #include <chrono>
 #include "Client.h"
 
-const int cCount = 4000;
+const int cCount = 10000;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
@@ -30,38 +30,43 @@ void ClientThread(int id)
 
 	for (int i = begin; i < end; ++i)
 	{
-		client[i]->Connect("192.168.0.99", 9090);
+		client[i] = new Client();
+		client[i]->Open();
 	}
 
-	MsgLogin login;
-	memcpy(login._Name, "illidan", sizeof("illidan"));
-	memcpy(login._Pwd, "12345", sizeof("12345"));
+	for (int i = begin; i < end; ++i)
+	{
+		client[i]->Connect("192.168.0.99", 9090);
+	}
+	
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	MsgLogin login[10];
+	for (int i = 0; i < 10; ++i)
+	{
+		memcpy(login[i]._Name, "illidan", sizeof("illidan"));
+		memcpy(login[i]._Pwd, "12345", sizeof("12345"));
+	}
+	int len = sizeof(login);
 
 	while (bRun)
 	{
 		for (int i = begin; i < end; ++i)
 		{
-			client[i]->SendData(&login);
-			client[i]->OnRun();
+			client[i]->SendData(login, len);
+			//client[i]->OnRun();
 		}
 	}
 
 	for (int i = begin; i < end; ++i)
 	{
 		client[i]->Close();
-		client[i]->Done();
 	}
 }
 
 int main()
 {
-	//创建1000个客户端
-	for (int i = 0; i < cCount; ++i)
-	{
-		client[i] = new Client;
-		client[i]->Init();
-		client[i]->Open();
-	}
+	Client::Init();
 
 	//启动命令线程
 	std::thread cmdThread(CmdThread);
@@ -84,5 +89,6 @@ int main()
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
+	Client::Done();
 	return 0;
 }

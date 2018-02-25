@@ -41,7 +41,7 @@ struct MsgLogin : public MsgHeader
 	}
 	char _Name[32];
 	char _Pwd[32];
-	char data[952];
+	char data[28];
 };
 
 struct MsgLoginRes : public MsgHeader
@@ -53,7 +53,7 @@ struct MsgLoginRes : public MsgHeader
 		_Ret = 0;
 	}
 	int _Ret;
-	char data[1012];
+	char data[88];
 };
 
 struct MsgLogout : public MsgHeader

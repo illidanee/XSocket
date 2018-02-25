@@ -12,7 +12,7 @@
 #include <chrono>
 
 #ifdef _WIN32
-#define FD_SETSIZE 1024
+#define FD_SETSIZE 2510
 #define WIN32_LEAN_AND_MEAN
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>
@@ -58,10 +58,18 @@ public:
 	void SetStartPos(int startPos) { _StartPos = startPos; }
 };
 
+//接口
+class INetEvent
+{
+public:
+	virtual void OnClientLeave(ClientInfo* pClientInfo) = 0;
+};
 
 class MicroServer
 {
 private:
+	INetEvent* _NetEventObj;					//主线程对象
+
 	std::vector<ClientInfo*> _AllClients;		//客户端信息
 	std::vector<ClientInfo*> _AllClientsCache;	//客户端信息缓冲区
 	std::mutex _Mutex;							//锁
@@ -73,6 +81,8 @@ public:
 public:
 	MicroServer();
 	~MicroServer();
+
+	void SetEventObj(INetEvent* pEventObj);
 
 	int Start();
 	int OnRun();
@@ -87,13 +97,13 @@ public:
 };
 
 //Server类
-class Server
+class Server : public INetEvent
 {
 private:
 	SOCKET _Socket;							//服务器Socket
 	std::vector<ClientInfo*> _AllClients;	//客户端信息
 	std::vector<MicroServer*> _AllServers;  //服务器信息
-
+	std::mutex _Mutex;						//锁
 	XTimer _Timer;
 public:
 	Server();							
@@ -114,6 +124,8 @@ public:
 
 	int IsRun();
 	int OnRun();
+
+	virtual void OnClientLeave(ClientInfo* pClientInfo);
 };
 
 

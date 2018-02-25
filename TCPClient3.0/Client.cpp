@@ -136,7 +136,7 @@ int Client::OnRun()
 		FD_SET(_Socket, &fdRead);
 
 		timeval tv = { 0, 0 };
-		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
+		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, NULL);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:select!\n");
@@ -159,10 +159,10 @@ int Client::OnRun()
 	return 0;
 }
 
-int Client::SendData(MsgHeader* pHeader)
+int Client::SendData(MsgHeader* pHeader, int len)
 {
 	if (IsRun() && pHeader)
-		return send(_Socket, (const char*)pHeader, pHeader->_MsgLength, 0);
+		return send(_Socket, (const char*)pHeader, len, 0);
 
 	return -1;
 }

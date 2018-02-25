@@ -2,6 +2,7 @@
 
 MicroServer::MicroServer()
 {
+	_NetEventObj = 0;
 	_PackageNum = 0;
 	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
 }
@@ -9,6 +10,11 @@ MicroServer::MicroServer()
 MicroServer::~MicroServer()
 {
 
+}
+
+void MicroServer::SetEventObj(INetEvent* pEventObj)
+{
+	_NetEventObj = pEventObj;
 }
 
 int MicroServer::Start()
@@ -35,7 +41,7 @@ int MicroServer::OnRun()
 
 		if (_AllClients.empty())
 		{
-			std::this_thread::sleep_for(std::chrono::microseconds(1000));
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 			continue;
 		}
 
@@ -45,12 +51,12 @@ int MicroServer::OnRun()
 		SOCKET MaxSocketID = _AllClients[0]->GetSocket();
 		for (auto pClient : _AllClients)
 		{
-			FD_SET(pClient->GetSocket(), &fdRead);
+			FD_SET((pClient->GetSocket()), &fdRead);
 			if (MaxSocketID < pClient->GetSocket())
 				MaxSocketID = pClient->GetSocket();
 		}
 
-		timeval tv = { 0, 1 };
+		timeval tv = { 0, 0 };
 		int ret = select((int)MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -58,13 +64,22 @@ int MicroServer::OnRun()
 			return -1;
 		}
 
-		for (auto pClient : _AllClients)
+		for (std::vector<ClientInfo*>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 		{
+			ClientInfo* pClient = *iter;
 			if (FD_ISSET(pClient->GetSocket(), &fdRead))
 			{
 				int ret = RecvData(pClient);
-				//暂不处理客户端断开连接
+				if (ret < 0)
+				{
+					if (_NetEventObj)
+						_NetEventObj->OnClientLeave(pClient);
+					iter = _AllClients.erase(iter);
+					continue;
+				}
 			}
+
+			++iter;
 		}
 	}
 	return 0;
@@ -319,6 +334,7 @@ int Server::Start()
 	for (int i = 0; i < _SERVER_SIZE_; ++i)
 	{
 		MicroServer* pServer = new MicroServer();
+		pServer->SetEventObj(this);
 		pServer->Start();
 		_AllServers.push_back(pServer);
 	}
@@ -423,7 +439,7 @@ int Server::OnRun()
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		timeval tv = { 0, 1 };
+		timeval tv = { 0, 10 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -439,3 +455,18 @@ int Server::OnRun()
 	}
 	return 0;
 }
+
+void Server::OnClientLeave(ClientInfo* pClientInfo)
+{
+	std::lock_guard<std::mutex> lock(_Mutex);
+	for (std::vector<ClientInfo*>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+	{
+		if (pClientInfo == *iter)
+		{
+			delete pClientInfo;
+			_AllClients.erase(iter);
+			break;
+		}
+	}
+}
+
