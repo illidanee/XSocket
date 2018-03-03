@@ -39,7 +39,7 @@ void ClientThread(int id)
 		client[i]->Connect("192.168.0.99", 9090);
 	}
 	
-	std::this_thread::sleep_for(std::chrono::seconds(3));
+	std::this_thread::sleep_for(std::chrono::seconds(5));
 
 	MsgLogin login[10];
 	for (int i = 0; i < 10; ++i)
@@ -54,13 +54,13 @@ void ClientThread(int id)
 		for (int i = begin; i < end; ++i)
 		{
 			client[i]->SendData(login, len);
-			//client[i]->OnRun();
 		}
 	}
 
 	for (int i = begin; i < end; ++i)
 	{
 		client[i]->Close();
+		delete client[i];
 	}
 }
 

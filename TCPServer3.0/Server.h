@@ -1,4 +1,3 @@
-#include <iostream>
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
@@ -28,6 +27,7 @@
 #define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
+//计时器
 #include "XTimer.h"
 
 //协议头文件
@@ -36,8 +36,20 @@
 #define _SERVER_SIZE_ 4
 #define _BUFFER_SIZE_ 10240
 
+//类前置声明
+class _Client;
+
+//接口
+class INetEvent
+{
+public:
+	virtual void OnClientJoin(_Client* pClient) = 0;
+	virtual void OnClientLeave(_Client* pClient) = 0;
+	virtual void OnNetMsg(_Client* pClient) = 0;
+};
+
 //客户端信息类
-class ClientInfo
+class _Client
 {
 private:
 	SOCKET _Socket;							//客户端Socket
@@ -45,7 +57,7 @@ private:
 	int _StartPos;							//数据缓冲区中可以放入数据的起始位置
 
 public:
-	ClientInfo(SOCKET client)
+	_Client(SOCKET client)
 	{
 		_Socket = client;
 		memset(_DataBuffer, 0, sizeof(_DataBuffer));
@@ -56,58 +68,51 @@ public:
 	char* GetDataBuffer() { return _DataBuffer; }
 	int GetStartPos() { return _StartPos; }
 	void SetStartPos(int startPos) { _StartPos = startPos; }
-};
 
-//接口
-class INetEvent
-{
 public:
-	virtual void OnClientLeave(ClientInfo* pClientInfo) = 0;
+	int SendData(MsgHeader* pHeader);
 };
 
-class MicroServer
+class _ReceiveServer
 {
 private:
-	INetEvent* _NetEventObj;					//主线程对象
-
-	std::vector<ClientInfo*> _AllClients;		//客户端信息
-	std::vector<ClientInfo*> _AllClientsCache;	//客户端信息缓冲区
-	std::mutex _Mutex;							//锁
+	INetEvent* _pNetEventObj;					//主线程对象
+	std::vector<_Client*> _AllClients;			//客户端
+	std::vector<_Client*> _AllClientsCache;		//客户端缓冲区
+	std::mutex _AllClientsCacheMutex;			//客户端缓冲区锁
 	char _RecvBuffer[_BUFFER_SIZE_];			//接收缓冲区
 
 public:
-	std::atomic_int _PackageNum;				//接收数据包计数器
+	_ReceiveServer();
+	~_ReceiveServer();
 
-public:
-	MicroServer();
-	~MicroServer();
-
-	void SetEventObj(INetEvent* pEventObj);
+	void SetNetEventObj(INetEvent* pEventObj);
 
 	int Start();
 	int OnRun();
 
-	int SendData(ClientInfo* pClientInfo, MsgHeader* pHeader);
-	int SendDataToAll(MsgHeader* pHeader);
-	int RecvData(ClientInfo* pClientInfo);
-	virtual int OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader);
+	int RecvData(_Client* pClient);
+	int OnNetMsg(_Client* pClient, MsgHeader* pHeader);
 
-	void AddClient(ClientInfo* pClient);
+	void AddClient(_Client* pClient);
 	int GetClientNum();
 };
 
-//Server类
-class Server : public INetEvent
+//监听Server类
+class _ListenServer : public INetEvent
 {
 private:
-	SOCKET _Socket;							//服务器Socket
-	std::vector<ClientInfo*> _AllClients;	//客户端信息
-	std::vector<MicroServer*> _AllServers;  //服务器信息
-	std::mutex _Mutex;						//锁
-	XTimer _Timer;
+	SOCKET _Socket;								//服务器监听Socket
+	std::vector<_ReceiveServer*> _AllServers;	//服务器信息
+
+private:
+	XTimer _Timer;								//计时器
+	std::atomic_int _ClientNum;					//客户端计数器
+	std::atomic_int _PackageNum;				//接收数据包计数器
+
 public:
-	Server();							
-	~Server();
+	_ListenServer();							
+	~_ListenServer();
 
 	int Init();
 	int Done();
@@ -119,14 +124,14 @@ public:
 	int Start();
 	int Close();
 
-	int CloseOne(ClientInfo* pClientInfo);
-	int CloseAll();
-
 	int IsRun();
 	int OnRun();
 
-	virtual void OnClientLeave(ClientInfo* pClientInfo);
+	virtual void OnClientJoin(_Client* pClient);
+	virtual void OnClientLeave(_Client* pClient);
+	virtual void OnNetMsg(_Client* pClient);
 };
 
+typedef _ListenServer MainServer;
 
 #endif

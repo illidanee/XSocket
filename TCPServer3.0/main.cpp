@@ -5,7 +5,8 @@
 #include <signal.h>
 #endif
 
-void CmdThread(Server* pServer)
+//命令线程
+void CmdThread(_ListenServer* pServer)
 {
 	while (true)
 	{
@@ -21,6 +22,7 @@ void CmdThread(Server* pServer)
 
 int main()
 {
+//去除中断信号关闭服务器。
 #ifndef _WIN32
 	sigset_t signal_mask;
 	sigemptyset(&signal_mask);
@@ -29,7 +31,10 @@ int main()
 		perror("SIGPIPE");
 #endif
 
-	Server* server = new Server;
+	//创建服务器
+	MainServer* server = new MainServer;
+
+	//开启服务器
 	server->Init();
 	server->Open();
 	server->Bind(NULL, 9090);
@@ -39,9 +44,10 @@ int main()
 	std::thread cmdThread(CmdThread, server);
 	cmdThread.detach();
 
+	//运行服务器
 	server->OnRun();
 
-	server->CloseAll();
+	//关闭服务器
 	server->Close();
 
 	return 0;

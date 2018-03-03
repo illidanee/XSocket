@@ -1,37 +1,44 @@
 #include "Server.h"
 
-MicroServer::MicroServer()
+int _Client::SendData(MsgHeader* pHeader)
 {
-	_NetEventObj = 0;
-	_PackageNum = 0;
+	if (pHeader)
+		return send(_Socket, (const char*)pHeader, pHeader->_MsgLength, 0);
+
+	return -1;
+}
+
+_ReceiveServer::_ReceiveServer()
+{
+	_pNetEventObj = 0;
 	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
 }
 
-MicroServer::~MicroServer()
+_ReceiveServer::~_ReceiveServer()
 {
 
 }
 
-void MicroServer::SetEventObj(INetEvent* pEventObj)
+void _ReceiveServer::SetNetEventObj(INetEvent* pEventObj)
 {
-	_NetEventObj = pEventObj;
+	_pNetEventObj = pEventObj;
 }
 
-int MicroServer::Start()
+int _ReceiveServer::Start()
 {
-	std::thread t(std::mem_fun(&MicroServer::OnRun), this);
+	std::thread t(std::mem_fn(&_ReceiveServer::OnRun), this);
 	t.detach();
 
 	return 0;
 }
 
-int MicroServer::OnRun()
+int _ReceiveServer::OnRun()
 {
 	while (true)
 	{
 		if (!_AllClientsCache.empty())
 		{
-			std::lock_guard<std::mutex> lock(_Mutex);
+			std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
 			for (auto pClient : _AllClientsCache)
 			{
 				_AllClients.push_back(pClient);
@@ -64,16 +71,17 @@ int MicroServer::OnRun()
 			return -1;
 		}
 
-		for (std::vector<ClientInfo*>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
+		for (std::vector<_Client*>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 		{
-			ClientInfo* pClient = *iter;
+			_Client* pClient = *iter;
 			if (FD_ISSET(pClient->GetSocket(), &fdRead))
 			{
 				int ret = RecvData(pClient);
 				if (ret < 0)
 				{
-					if (_NetEventObj)
-						_NetEventObj->OnClientLeave(pClient);
+					if (_pNetEventObj)
+						_pNetEventObj->OnClientLeave(pClient);
+
 					iter = _AllClients.erase(iter);
 					continue;
 				}
@@ -85,58 +93,42 @@ int MicroServer::OnRun()
 	return 0;
 }
 
-int MicroServer::SendData(ClientInfo* pClientInfo, MsgHeader* pHeader)
-{
-	if (pClientInfo && pHeader)
-		return send(pClientInfo->GetSocket(), (const char*)pHeader, pHeader->_MsgLength, 0);
-
-	return -1;
-}
-
-int MicroServer::SendDataToAll(MsgHeader* pHeader)
-{
-	for (auto pClient : _AllClients)
-	{
-		SendData(pClient, pHeader);
-	}
-
-	return 0;
-}
-
-int MicroServer::RecvData(ClientInfo* pClientInfo)
+int _ReceiveServer::RecvData(_Client* pClient)
 {
 	//接收数据到接收缓冲区中
-	int size = recv(pClientInfo->GetSocket(), _RecvBuffer, _BUFFER_SIZE_, 0);
+	int size = recv(pClient->GetSocket(), _RecvBuffer, _BUFFER_SIZE_, 0);
 	if (SOCKET_ERROR == size)
 	{
-		printf("OK:Client<Socket=%d> off!\n", (int)pClientInfo->GetSocket());
+		printf("OK:Client<Socket=%d> off!\n", (int)pClient->GetSocket());
 		return -1;
 	}
 	else if (size == 0)
 	{
-		printf("OK:Client<Socket=%d> quit!\n", (int)pClientInfo->GetSocket());
+		printf("OK:Client<Socket=%d> quit!\n", (int)pClient->GetSocket());
 		return -2;
 	}
 
 	//将接收缓冲区数据拷贝到数据缓冲区
-	memcpy(pClientInfo->GetDataBuffer() + pClientInfo->GetStartPos(), _RecvBuffer, size);
-	pClientInfo->SetStartPos(pClientInfo->GetStartPos() + size);
+	memcpy(pClient->GetDataBuffer() + pClient->GetStartPos(), _RecvBuffer, size);
+	pClient->SetStartPos(pClient->GetStartPos() + size);
 
 	//数据缓冲区长度大于消息头长度
-	while (pClientInfo->GetStartPos() >= sizeof(MsgHeader))
+	while (pClient->GetStartPos() >= sizeof(MsgHeader))
 	{
-		MsgHeader* pHeader = (MsgHeader*)pClientInfo->GetDataBuffer();
+		MsgHeader* pHeader = (MsgHeader*)pClient->GetDataBuffer();
 		//数据缓冲区长度大于消息长度
-		if (pClientInfo->GetStartPos() >= pHeader->_MsgLength)
+		if (pClient->GetStartPos() >= pHeader->_MsgLength)
 		{
 			//数据缓冲区剩余未处理数据长度
-			int len = pClientInfo->GetStartPos() - pHeader->_MsgLength;
-			//printf("----%d - <Socket=%d> From Client<Socket=%d> = Msg Type:%d - Length:%d\n", n++, (int)_Socket, (int)pClientInfo->GetSocket(), pHeader->_MsgType, pHeader->_MsgLength);
-			OnNetMsg(pClientInfo, pHeader);
+			int len = pClient->GetStartPos() - pHeader->_MsgLength;
+			//printf("----%d - <Socket=%d> From Client<Socket=%d> = Msg Type:%d - Length:%d\n", n++, (int)_Socket, (int)pClient->GetSocket(), pHeader->_MsgType, pHeader->_MsgLength);
+			
+			//处理数据
+			OnNetMsg(pClient, pHeader);
 
 			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
-			memcpy(pClientInfo->GetDataBuffer(), pClientInfo->GetDataBuffer() + pHeader->_MsgLength, len);
-			pClientInfo->SetStartPos(len);
+			memcpy(pClient->GetDataBuffer(), pClient->GetDataBuffer() + pHeader->_MsgLength, len);
+			pClient->SetStartPos(len);
 		}
 		else
 		{
@@ -148,38 +140,42 @@ int MicroServer::RecvData(ClientInfo* pClientInfo)
 	return 0;
 }
 
-int MicroServer::OnNetMsg(ClientInfo* pClientInfo, MsgHeader* pHeader)
+int _ReceiveServer::OnNetMsg(_Client* pClient, MsgHeader* pHeader)
 {
-	_PackageNum++;
+	if (_pNetEventObj)
+		_pNetEventObj->OnNetMsg(pClient);
 
 	return 0;
 }
 
-void MicroServer::AddClient(ClientInfo* pClient)
+void _ReceiveServer::AddClient(_Client* pClient)
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
+	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
 	_AllClientsCache.push_back(pClient);
 }
 
-int MicroServer::GetClientNum()
+int _ReceiveServer::GetClientNum()
 {
-	return _AllClients.size() + _AllClientsCache.size();
+	return (int)_AllClients.size() + (int)_AllClientsCache.size();
 }
 
 //--------------------------------------------------------------------------------------------------------------------
 
-Server::Server()
+_ListenServer::_ListenServer()
 {
 	_Socket = INVALID_SOCKET;
+	_ClientNum = 0;
+	_PackageNum = 0;
 }
 
-Server::~Server()
+_ListenServer::~_ListenServer()
 {
 
 }
 
-int Server::Init()
+int _ListenServer::Init()
 {
+	//初始化网络环境
 #ifdef _WIN32
 	WORD wsaVersion = MAKEWORD(2, 2);
 	WSADATA wsaData = {};
@@ -195,13 +191,18 @@ int Server::Init()
 	}
 #endif
 
+	//初始化其他
 	_Timer.XInit();
 
 	return 0;
 }
 
-int Server::Done()
+int _ListenServer::Done()
 {
+	//销毁其他
+	_Timer.XDone();
+
+	//销毁网络环境
 #ifdef _WIN32
 	int iError = WSACleanup();
 	if (SOCKET_ERROR == iError)
@@ -215,12 +216,10 @@ int Server::Done()
 	}
 #endif
 
-	_Timer.XDone();
-
 	return 0;
 }
 
-int Server::Open()
+int _ListenServer::Open()
 {
 	_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (SOCKET_ERROR == _Socket)
@@ -236,7 +235,7 @@ int Server::Open()
 	return 0;
 }
 
-int Server::Bind(const char* ip, unsigned short port)
+int _ListenServer::Bind(const char* ip, unsigned short port)
 {
 	sockaddr_in sin = {};
 	sin.sin_family = AF_INET;
@@ -273,7 +272,7 @@ int Server::Bind(const char* ip, unsigned short port)
 	return 0;
 }
 
-int Server::Listen(int n)
+int _ListenServer::Listen(int n)
 {
 	if (SOCKET_ERROR == listen(_Socket, n))
 	{
@@ -288,7 +287,7 @@ int Server::Listen(int n)
 	return 0;
 }
 
-int Server::Accept()
+int _ListenServer::Accept()
 {
 	sockaddr_in sinClient = {};
 	int sinLen = sizeof(sockaddr_in);
@@ -305,17 +304,9 @@ int Server::Accept()
 	}
 	else
 	{
-		//printf("OK<Socket=%d>:accept Client<Socket=%d>!\n", (int)_Socket, (int)client);
+		_Client* pClient = new _Client(client);
 
-		//MsgNewUser msgNewUser;
-		//msgNewUser._UserID = (int)client;
-		//SendDataToAll(&msgNewUser);
-
-		ClientInfo* pNewClientInfo = new ClientInfo(client);
-
-		_AllClients.push_back(pNewClientInfo);
-
-		MicroServer* pLessServer = _AllServers[0];
+		_ReceiveServer* pLessServer = _AllServers[0];
 		for (auto pServer : _AllServers)
 		{
 			if (pLessServer->GetClientNum() > pServer->GetClientNum())
@@ -323,18 +314,20 @@ int Server::Accept()
 				pLessServer = pServer;
 			}
 		}
-		pLessServer->AddClient(pNewClientInfo);
+		pLessServer->AddClient(pClient);
+
+		OnClientJoin(pClient);
 	}
 	
 	return 0;
 }
 
-int Server::Start()
+int _ListenServer::Start()
 {
 	for (int i = 0; i < _SERVER_SIZE_; ++i)
 	{
-		MicroServer* pServer = new MicroServer();
-		pServer->SetEventObj(this);
+		_ReceiveServer* pServer = new _ReceiveServer();
+		pServer->SetNetEventObj(this);
 		pServer->Start();
 		_AllServers.push_back(pServer);
 	}
@@ -342,7 +335,7 @@ int Server::Start()
 	return 0;
 }
 
-int Server::Close()
+int _ListenServer::Close()
 {
 	if (INVALID_SOCKET != _Socket)
 	{
@@ -371,67 +364,19 @@ int Server::Close()
 	return 0;
 }
 
-int Server::CloseOne(ClientInfo* pClientInfo)
-{
-	if (pClientInfo)
-	{
-#ifdef _WIN32
-		if (SOCKET_ERROR == closesocket(pClientInfo->GetSocket()))
-		{
-			printf("Error<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
-		}
-		else
-		{
-			printf("OK<Socket=%d>:closesocket Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
-		}
-#else
-		if (SOCKET_ERROR == close(pClientInfo->GetSocket()))
-		{
-			printf("Error:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
-		}
-		else
-		{
-			printf("OK:<Socket=%d>close Client<Socket=%d>!\n", (int)_Socket, (int)pClientInfo->GetSocket());
-		}
-#endif
-		delete pClientInfo;
-		pClientInfo = NULL;
-	}
-
-	return 0;
-}
-
-int Server::CloseAll()
-{
-	for (std::vector<ClientInfo*>::iterator it = _AllClients.begin(); it != _AllClients.end(); ++it)
-	{
-		CloseOne(*it);
-	}
-	_AllClients.clear();
-
-	return 0;
-}
-
-int Server::IsRun()
+int _ListenServer::IsRun()
 {
 	return _Socket == INVALID_SOCKET ? 0 : 1;
 }
 
-int Server::OnRun()
+int _ListenServer::OnRun()
 {
 	while (IsRun())
 	{
 		if (_Timer.GetTime() > 1.0)
 		{
-			int num = 0;
-			for (auto pServer : _AllServers)
-				num += pServer->_PackageNum;
-
-			printf("--当前客户端连接数:%4d  --接收到数据包:%d 个。\n", (int)_AllClients.size(), num);
-
-			for (auto pServer : _AllServers)
-				pServer->_PackageNum = 0;
-
+			printf("| Client Num = %6d  | Package Num = %6d \n", _ClientNum, _PackageNum);
+			_PackageNum = 0;
 			_Timer.UpdateTime();
 		}
 
@@ -439,7 +384,7 @@ int Server::OnRun()
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		timeval tv = { 0, 10 };
+		timeval tv = { 0, 0 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -456,17 +401,18 @@ int Server::OnRun()
 	return 0;
 }
 
-void Server::OnClientLeave(ClientInfo* pClientInfo)
+void _ListenServer::OnClientJoin(_Client* pClient)
 {
-	std::lock_guard<std::mutex> lock(_Mutex);
-	for (std::vector<ClientInfo*>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
-	{
-		if (pClientInfo == *iter)
-		{
-			delete pClientInfo;
-			_AllClients.erase(iter);
-			break;
-		}
-	}
+	++_ClientNum;
+}
+
+void _ListenServer::OnClientLeave(_Client* pClient)
+{
+	--_ClientNum;
+}
+
+void _ListenServer::OnNetMsg(_Client * pClient)
+{
+	++_PackageNum;
 }
 

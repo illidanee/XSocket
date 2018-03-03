@@ -24,10 +24,6 @@ int Client::Init()
 		printf("Error:WSAStartup!\n");
 		return -1;
 	}
-	else
-	{
-		printf("OK:WSAStartup!\n");
-	}
 #endif
 	return 0;
 }
@@ -41,10 +37,6 @@ int Client::Done()
 		printf("Error:WSACleanup!\n");
 		return -1;
 	}
-	else
-	{
-		printf("OK:WSACleanup!\n");
-	}
 #endif
 	return 0;
 }
@@ -56,10 +48,6 @@ int Client::Open()
 	{
 		printf("Error:socket!\n");
 		return -1;
-	}
-	else
-	{
-		printf("OK:socket!\n");
 	}
 
 	return 0;
@@ -78,13 +66,8 @@ int Client::Connect(const char* ip, unsigned short port)
 	int sinLen = sizeof(sockaddr_in);
 	if (SOCKET_ERROR == connect(_Socket, (sockaddr*)&sinServer, sinLen))
 	{
-		int errNo = WSAGetLastError();
-		printf("Error:connect -- Error No = %d !\n", errNo);
+		printf("Error:connect!\n");
 		return -1;
-	}
-	else
-	{
-		printf("OK:connect!\n");
 	}
 
 	return 0;
@@ -100,19 +83,11 @@ int Client::Close()
 			printf("Error:closesocket!\n");
 			return -1;
 		}
-		else
-		{
-			printf("OK:closesocket!\n");
-		}
 #else
 		if (SOCKET_ERROR == close(_Socket))
 		{
 			printf("Error:close!\n");
 			return -1;
-		}
-		else
-		{
-			printf("OK:close!\n");
 		}
 #endif // _WIN32
 
@@ -167,7 +142,6 @@ int Client::SendData(MsgHeader* pHeader, int len)
 	return -1;
 }
 
-unsigned long n = 0;
 int Client::RecvData()
 {
 	//接收数据到接收缓冲区中
@@ -196,7 +170,8 @@ int Client::RecvData()
 		{
 			//数据缓冲区剩余未处理数据长度
 			int len = _StartPos - pHeader->_MsgLength;
-			//printf("----%d - Recieve Msg Type:%d - Length:%d\n", n++, pHeader->_MsgType, pHeader->_MsgLength);
+			
+			//处理消息
 			OnNetMsg(pHeader);
 
 			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
