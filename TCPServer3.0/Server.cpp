@@ -19,7 +19,7 @@ _ReceiveServer::~_ReceiveServer()
 
 }
 
-void _ReceiveServer::SetNetEventObj(INetEvent* pEventObj)
+void _ReceiveServer::SetNetEventObj(IEvent* pEventObj)
 {
 	_pNetEventObj = pEventObj;
 }
@@ -164,8 +164,6 @@ int _ReceiveServer::GetClientNum()
 _ListenServer::_ListenServer()
 {
 	_Socket = INVALID_SOCKET;
-	_ClientNum = 0;
-	_PackageNum = 0;
 }
 
 _ListenServer::~_ListenServer()
@@ -191,17 +189,11 @@ int _ListenServer::Init()
 	}
 #endif
 
-	//初始化其他
-	_Timer.XInit();
-
 	return 0;
 }
 
 int _ListenServer::Done()
 {
-	//销毁其他
-	_Timer.XDone();
-
 	//销毁网络环境
 #ifdef _WIN32
 	int iError = WSACleanup();
@@ -373,12 +365,7 @@ int _ListenServer::OnRun()
 {
 	while (IsRun())
 	{
-		if (_Timer.GetTime() > 1.0)
-		{
-			printf("| Client Num = %6d  | Package Num = %6d \n", _ClientNum, _PackageNum);
-			_PackageNum = 0;
-			_Timer.UpdateTime();
-		}
+		OnRunBegin();
 
 		fd_set fdRead;
 		FD_ZERO(&fdRead);
@@ -401,18 +388,20 @@ int _ListenServer::OnRun()
 	return 0;
 }
 
+void _ListenServer::OnRunBegin()
+{
+
+}
+
 void _ListenServer::OnClientJoin(_Client* pClient)
 {
-	++_ClientNum;
 }
 
 void _ListenServer::OnClientLeave(_Client* pClient)
 {
-	--_ClientNum;
 }
 
 void _ListenServer::OnNetMsg(_Client * pClient)
 {
-	++_PackageNum;
 }
 

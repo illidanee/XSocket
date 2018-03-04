@@ -40,9 +40,10 @@
 class _Client;
 
 //接口
-class INetEvent
+class IEvent
 {
 public:
+	virtual void OnRunBegin() = 0;
 	virtual void OnClientJoin(_Client* pClient) = 0;
 	virtual void OnClientLeave(_Client* pClient) = 0;
 	virtual void OnNetMsg(_Client* pClient) = 0;
@@ -76,7 +77,7 @@ public:
 class _ReceiveServer
 {
 private:
-	INetEvent* _pNetEventObj;					//主线程对象
+	IEvent* _pNetEventObj;					//主线程对象
 	std::vector<_Client*> _AllClients;			//客户端
 	std::vector<_Client*> _AllClientsCache;		//客户端缓冲区
 	std::mutex _AllClientsCacheMutex;			//客户端缓冲区锁
@@ -86,7 +87,7 @@ public:
 	_ReceiveServer();
 	~_ReceiveServer();
 
-	void SetNetEventObj(INetEvent* pEventObj);
+	void SetNetEventObj(IEvent* pEventObj);
 
 	int Start();
 	int OnRun();
@@ -99,16 +100,11 @@ public:
 };
 
 //监听Server类
-class _ListenServer : public INetEvent
+class _ListenServer : public IEvent
 {
 private:
 	SOCKET _Socket;								//服务器监听Socket
 	std::vector<_ReceiveServer*> _AllServers;	//服务器信息
-
-private:
-	XTimer _Timer;								//计时器
-	std::atomic_int _ClientNum;					//客户端计数器
-	std::atomic_int _PackageNum;				//接收数据包计数器
 
 public:
 	_ListenServer();							
@@ -127,6 +123,7 @@ public:
 	int IsRun();
 	int OnRun();
 
+	virtual void OnRunBegin();
 	virtual void OnClientJoin(_Client* pClient);
 	virtual void OnClientLeave(_Client* pClient);
 	virtual void OnNetMsg(_Client* pClient);
