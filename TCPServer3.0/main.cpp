@@ -44,7 +44,7 @@ public:
 	{
 		if (_Timer.GetTime() > 1.0)
 		{
-			printf("| Client Num = %6d  | Package Num = %6d  |\n", (int)_ClientNum, (int)_PackageNum);
+			printf("| Client Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_PackageNum);
 			_PackageNum = 0;
 			_Timer.UpdateTime();
 		}

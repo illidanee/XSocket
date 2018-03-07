@@ -78,7 +78,8 @@ int _ReceiveServer::OnRun()
 			memcpy(&fdRead, &_fdSetCache, sizeof(fd_set));
 		}
 
-		timeval tv = { 0, 0 };
+		//设置10毫秒间隔，可以提高客户端连接select效率。
+		timeval tv = { 0, 1000 };
 		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -407,7 +408,8 @@ int _ListenServer::OnRun()
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		timeval tv = { 0, 0 };
+		//设置10毫秒间隔，可以提高数据接受和发送select效率。
+		timeval tv = { 0, 1000 };			
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
