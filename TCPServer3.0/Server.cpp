@@ -12,6 +12,8 @@ _ReceiveServer::_ReceiveServer()
 {
 	_pNetEventObj = 0;
 	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
+
+	_ClientChange = true;
 }
 
 _ReceiveServer::~_ReceiveServer()
@@ -39,11 +41,13 @@ int _ReceiveServer::OnRun()
 		if (!_AllClientsCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
-			for (auto pClient : _AllClientsCache)
+			for (std::map<SOCKET, _Client*>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
 			{
-				_AllClients.push_back(pClient);
+				_AllClients.insert(std::pair<SOCKET, _Client*>(iter->first, iter->second));
 			}
 			_AllClientsCache.clear();
+
+			_ClientChange = true;
 		}
 
 		if (_AllClients.empty())
@@ -55,40 +59,72 @@ int _ReceiveServer::OnRun()
 		fd_set fdRead;
 		FD_ZERO(&fdRead);
 
-		SOCKET MaxSocketID = _AllClients[0]->GetSocket();
-		for (auto pClient : _AllClients)
+		if (_ClientChange)
 		{
-			FD_SET((pClient->GetSocket()), &fdRead);
-			if (MaxSocketID < pClient->GetSocket())
-				MaxSocketID = pClient->GetSocket();
+			_ClientChange = false;
+
+			_MaxSocketID = 0;
+			for (std::map<SOCKET, _Client*>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+			{
+				FD_SET(iter->first, &fdRead);
+				if (_MaxSocketID < iter->first)
+					_MaxSocketID = iter->first;
+			}
+
+			memcpy(&_fdSetCache, &fdRead, sizeof(fd_set));
+		}
+		else
+		{
+			memcpy(&fdRead, &_fdSetCache, sizeof(fd_set));
 		}
 
 		timeval tv = { 0, 0 };
-		int ret = select((int)MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
+		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:Select!\n");
 			return -1;
 		}
 
-		for (std::vector<_Client*>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
+#ifdef _WIN32
+		for (int i = 0; i < fdRead.fd_count; ++i)
 		{
-			_Client* pClient = *iter;
-			if (FD_ISSET(pClient->GetSocket(), &fdRead))
+			std::map<SOCKET, _Client*>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
+			if (iter != _AllClients.end())
 			{
-				int ret = RecvData(pClient);
+				int ret = RecvData(iter->second);
 				if (ret < 0)
 				{
 					if (_pNetEventObj)
-						_pNetEventObj->OnClientLeave(pClient);
+						_pNetEventObj->OnClientLeave(iter->second);
 
 					iter = _AllClients.erase(iter);
+					_ClientChange = true;
+					continue;
+				}
+			}
+		}
+#else
+		for (std::map<SOCKET, _Client*>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
+		{
+			if (FD_ISSET(iter->first, &fdRead))
+			{
+				int ret = RecvData(iter->second);
+				if (ret < 0)
+				{
+					if (_pNetEventObj)
+						_pNetEventObj->OnClientLeave(iter->second);
+
+					iter = _AllClients.erase(iter);
+					_ClientChange = true;
 					continue;
 				}
 			}
 
 			++iter;
 		}
+#endif
+
 	}
 	return 0;
 }
@@ -151,7 +187,7 @@ int _ReceiveServer::OnNetMsg(_Client* pClient, MsgHeader* pHeader)
 void _ReceiveServer::AddClient(_Client* pClient)
 {
 	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
-	_AllClientsCache.push_back(pClient);
+	_AllClientsCache.insert(std::pair<SOCKET, _Client*>(pClient->GetSocket(), pClient));
 }
 
 int _ReceiveServer::GetClientNum()

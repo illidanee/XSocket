@@ -4,6 +4,7 @@
 //标准头文件
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include <thread>
 #include <mutex>
@@ -77,11 +78,17 @@ public:
 class _ReceiveServer
 {
 private:
-	IEvent* _pNetEventObj;					//主线程对象
-	std::vector<_Client*> _AllClients;			//客户端
-	std::vector<_Client*> _AllClientsCache;		//客户端缓冲区
-	std::mutex _AllClientsCacheMutex;			//客户端缓冲区锁
-	char _RecvBuffer[_BUFFER_SIZE_];			//接收缓冲区
+	IEvent* _pNetEventObj;							//主线程对象
+	std::map<SOCKET, _Client*> _AllClients;			//客户端
+	std::map<SOCKET, _Client*> _AllClientsCache;	//客户端缓冲区
+	std::mutex _AllClientsCacheMutex;				//客户端缓冲区锁
+	char _RecvBuffer[_BUFFER_SIZE_];				//接收缓冲区
+
+//优化
+private:
+	fd_set _fdSetCache;
+	bool _ClientChange;
+	SOCKET _MaxSocketID;
 
 public:
 	_ReceiveServer();
@@ -97,6 +104,11 @@ public:
 
 	void AddClient(_Client* pClient);
 	int GetClientNum();
+};
+
+class _SendServer
+{
+
 };
 
 //监听Server类

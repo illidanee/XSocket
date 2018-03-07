@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>f:\xsocket\tcpclient1.0\</FILEPATH>
+      <FILENAME>client.cpp</FILENAME>
+      <LINE>154</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6031</DEFECTCODE>
+    <DESCRIPTION>Return value ignored: 'scanf'.</DESCRIPTION>
+    <FUNCTION>CmdThread</FUNCTION>
+    <DECORATED>?CmdThread@@YAX_K@Z</DECORATED>
+    <FUNCLINE>149</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>f:\xsocket\tcpclient1.0\</FILEPATH>
+      <FILENAME>client.cpp</FILENAME>
+      <LINE>238</LINE>
+      <COLUMN>7</COLUMN>
+    </SFA>
+    <DEFECTCODE>6246</DEFECTCODE>
+    <DESCRIPTION>Local declaration of 'ret' hides declaration of the same name in outer scope. For additional information, see previous declaration at line '227' of 'f:\xsocket\tcpclient1.0\client.cpp'.</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>176</FUNCLINE>
+    <PATH>
+      <SFA>
+        <FILEPATH>f:\xsocket\tcpclient1.0\</FILEPATH>
+        <FILENAME>client.cpp</FILENAME>
+        <LINE>227</LINE>
+        <COLUMN>10</COLUMN>
+      </SFA>
+    </PATH>
+  </DEFECT>
+</DEFECTS>

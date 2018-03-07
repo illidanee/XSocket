@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?><DEFECTS><DEFECT>
+    <SFA>
+      <FILEPATH>f:\xsocket\tcpserver2.0\</FILEPATH>
+      <FILENAME>server.cpp</FILENAME>
+      <LINE>263</LINE>
+      <COLUMN>8</COLUMN>
+    </SFA>
+    <DEFECTCODE>6246</DEFECTCODE>
+    <DESCRIPTION>Local declaration of 'ret' hides declaration of the same name in outer scope. For additional information, see previous declaration at line '246' of 'f:\xsocket\tcpserver2.0\server.cpp'.</DESCRIPTION>
+    <FUNCTION>Server::OnRun</FUNCTION>
+    <DECORATED>?OnRun@Server@@QEAAHXZ</DECORATED>
+    <FUNCLINE>229</FUNCLINE>
+    <PATH>
+      <SFA>
+        <FILEPATH>f:\xsocket\tcpserver2.0\</FILEPATH>
+        <FILENAME>server.cpp</FILENAME>
+        <LINE>246</LINE>
+        <COLUMN>10</COLUMN>
+      </SFA>
+    </PATH>
+  </DEFECT></DEFECTS>
