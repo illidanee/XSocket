@@ -1,13 +1,20 @@
 #include <iostream>
 #include <thread>
+#include <atomic>
 #include <chrono>
 #include "Client.h"
+
+#include "XTimer.h"
+
+XTimer timer;
 
 const int cCount = 10000;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
 
+std::atomic_int readyCount = 0;
+std::atomic_int sendCount = 0;
 
 void CmdThread()
 {
@@ -39,7 +46,12 @@ void ClientThread(int id)
 		client[i]->Connect("192.168.0.99", 9090);
 	}
 	
-	std::this_thread::sleep_for(std::chrono::seconds(5));
+	//使用原子计数器优化线程等待。
+	readyCount++;
+	while (readyCount < tCount)
+	{
+		std::this_thread::sleep_for(std::chrono::microseconds(1000));
+	}
 
 	MsgLogin login[10];
 	for (int i = 0; i < 10; ++i)
@@ -54,6 +66,7 @@ void ClientThread(int id)
 		for (int i = begin; i < end; ++i)
 		{
 			client[i]->SendData(login, len);
+			sendCount++;
 		}
 	}
 
@@ -66,6 +79,7 @@ void ClientThread(int id)
 
 int main()
 {
+	timer.XInit();
 	Client::Init();
 
 	//启动命令线程
@@ -77,18 +91,22 @@ int main()
 	for (int i = 0; i < tCount; ++i)
 	{
 		clientThread[i] = std::thread(ClientThread, i);
-	}
-
-	for (int i = 0; i < tCount; ++i)
-	{
-		clientThread[i].join();
+		clientThread[i].detach();
 	}
 
 	while (bRun)
 	{
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		if (timer.GetTime() > 1.0)
+		{
+			printf("| send Num = %7d  |\n", (int)sendCount);
+			sendCount = 0;
+			timer.UpdateTime();
+		}
+
+		std::this_thread::sleep_for(std::chrono::microseconds(1000));
 	}
 
 	Client::Done();
+	timer.XDone();
 	return 0;
 }

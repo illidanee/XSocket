@@ -47,6 +47,7 @@ public:
 	virtual void OnRunBegin() = 0;
 	virtual void OnClientJoin(_Client* pClient) = 0;
 	virtual void OnClientLeave(_Client* pClient) = 0;
+	virtual void OnNetRecv(_Client* pClient) = 0;
 	virtual void OnNetMsg(_Client* pClient) = 0;
 };
 
@@ -100,7 +101,6 @@ public:
 	int OnRun();
 
 	int RecvData(_Client* pClient);
-	int OnNetMsg(_Client* pClient, MsgHeader* pHeader);
 
 	void AddClient(_Client* pClient);
 	int GetClientNum();
@@ -134,11 +134,6 @@ public:
 
 	int IsRun();
 	int OnRun();
-
-	virtual void OnRunBegin();
-	virtual void OnClientJoin(_Client* pClient);
-	virtual void OnClientLeave(_Client* pClient);
-	virtual void OnNetMsg(_Client* pClient);
 };
 
 typedef _ListenServer MainServer;

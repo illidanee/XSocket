@@ -26,6 +26,7 @@ class MyServer : public MainServer
 private:
 	XTimer _Timer;								//计时器
 	std::atomic_int _ClientNum;					//客户端计数器
+	std::atomic_int _RecvNum;					//recv()函数调用计数
 	std::atomic_int _PackageNum;				//接收数据包计数器
 
 public:
@@ -34,6 +35,7 @@ public:
 		//初始化其他
 		_Timer.XInit();
 		_ClientNum = 0;
+		_RecvNum = 0;
 		_PackageNum = 0;
 	}
 	~MyServer()
@@ -44,7 +46,8 @@ public:
 	{
 		if (_Timer.GetTime() > 1.0)
 		{
-			printf("| Client Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_PackageNum);
+			printf("| Client Num = %7d  | Recv Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_PackageNum);
+			_RecvNum = 0;
 			_PackageNum = 0;
 			_Timer.UpdateTime();
 		}
@@ -56,6 +59,10 @@ public:
 	virtual void OnClientLeave(_Client* pClient)
 	{
 		--_ClientNum;
+	}
+	virtual void OnNetRecv(_Client* pClient)
+	{
+		++_RecvNum;
 	}
 	virtual void OnNetMsg(_Client* pClient)
 	{

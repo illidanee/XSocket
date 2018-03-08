@@ -93,7 +93,7 @@ int _ReceiveServer::OnRun()
 		}
 
 #ifdef _WIN32
-		for (int i = 0; i < fdRead.fd_count; ++i)
+		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
 		{
 			std::map<SOCKET, _Client*>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
 			if (iter != _AllClients.end())
@@ -139,6 +139,8 @@ int _ReceiveServer::RecvData(_Client* pClient)
 {
 	//接收数据到接收缓冲区中
 	int size = recv(pClient->GetSocket(), _RecvBuffer, _BUFFER_SIZE_, 0);
+	if (_pNetEventObj)
+		_pNetEventObj->OnNetRecv(pClient);
 	if (SOCKET_ERROR == size)
 	{
 		printf("OK:Client<Socket=%d> off!\n", (int)pClient->GetSocket());
@@ -166,7 +168,8 @@ int _ReceiveServer::RecvData(_Client* pClient)
 			//printf("----%d - <Socket=%d> From Client<Socket=%d> = Msg Type:%d - Length:%d\n", n++, (int)_Socket, (int)pClient->GetSocket(), pHeader->_MsgType, pHeader->_MsgLength);
 			
 			//处理数据
-			OnNetMsg(pClient, pHeader);
+			if (_pNetEventObj)
+				_pNetEventObj->OnNetMsg(pClient);
 
 			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
 			memcpy(pClient->GetDataBuffer(), pClient->GetDataBuffer() + pHeader->_MsgLength, len);
@@ -178,14 +181,6 @@ int _ReceiveServer::RecvData(_Client* pClient)
 			break;
 		}
 	}
-
-	return 0;
-}
-
-int _ReceiveServer::OnNetMsg(_Client* pClient, MsgHeader* pHeader)
-{
-	if (_pNetEventObj)
-		_pNetEventObj->OnNetMsg(pClient);
 
 	return 0;
 }
@@ -414,7 +409,7 @@ int _ListenServer::OnRun()
 		FD_SET(_Socket, &fdRead);
 
 		//设置10毫秒间隔，可以提高数据接受和发送select效率。
-		timeval tv = { 0, 1000 };			
+		timeval tv = { 0, 100 };			
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -433,22 +428,5 @@ int _ListenServer::OnRun()
 		}
 	}
 	return 0;
-}
-
-void _ListenServer::OnRunBegin()
-{
-
-}
-
-void _ListenServer::OnClientJoin(_Client* pClient)
-{
-}
-
-void _ListenServer::OnClientLeave(_Client* pClient)
-{
-}
-
-void _ListenServer::OnNetMsg(_Client * pClient)
-{
 }
 
