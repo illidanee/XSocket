@@ -8,7 +8,7 @@
 
 XTimer timer;
 
-const int mCount = 10;
+const int mCount = 1000;
 const int cCount = 40;
 const int tCount = 4;
 bool bRun = true;
