@@ -83,7 +83,7 @@ private:
 	std::map<SOCKET, _Client*> _AllClients;			//客户端
 	std::map<SOCKET, _Client*> _AllClientsCache;	//客户端缓冲区
 	std::mutex _AllClientsCacheMutex;				//客户端缓冲区锁
-	char _RecvBuffer[_BUFFER_SIZE_];				//接收缓冲区
+	//char _RecvBuffer[_BUFFER_SIZE_];				//接收缓冲区
 
 //优化
 private:

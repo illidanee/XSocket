@@ -11,7 +11,7 @@ int _Client::SendData(MsgHeader* pHeader)
 _ReceiveServer::_ReceiveServer()
 {
 	_pNetEventObj = 0;
-	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
+	//memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
 
 	_ClientChange = true;
 }
@@ -138,7 +138,8 @@ int _ReceiveServer::OnRun()
 int _ReceiveServer::RecvData(_Client* pClient)
 {
 	//接收数据到接收缓冲区中
-	int size = recv(pClient->GetSocket(), _RecvBuffer, _BUFFER_SIZE_, 0);
+	char* pBuffer = pClient->GetDataBuffer() + pClient->GetStartPos();
+	int size = recv(pClient->GetSocket(), pBuffer, _BUFFER_SIZE_ * 10 - pClient->GetStartPos(), 0);
 	if (_pNetEventObj)
 		_pNetEventObj->OnNetRecv(pClient);
 	if (SOCKET_ERROR == size)
@@ -153,7 +154,7 @@ int _ReceiveServer::RecvData(_Client* pClient)
 	}
 
 	//将接收缓冲区数据拷贝到数据缓冲区
-	memcpy(pClient->GetDataBuffer() + pClient->GetStartPos(), _RecvBuffer, size);
+	//memcpy(pClient->GetDataBuffer() + pClient->GetStartPos(), _RecvBuffer, size);
 	pClient->SetStartPos(pClient->GetStartPos() + size);
 
 	//数据缓冲区长度大于消息头长度
