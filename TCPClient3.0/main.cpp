@@ -8,7 +8,8 @@
 
 XTimer timer;
 
-const int cCount = 10000;
+const int mCount = 10;
+const int cCount = 40;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
@@ -53,8 +54,8 @@ void ClientThread(int id)
 		std::this_thread::sleep_for(std::chrono::microseconds(1000));
 	}
 
-	MsgLogin login[10];
-	for (int i = 0; i < 10; ++i)
+	MsgLogin login[mCount];
+	for (int i = 0; i < mCount; ++i)
 	{
 		memcpy(login[i]._Name, "illidan", sizeof("illidan"));
 		memcpy(login[i]._Pwd, "12345", sizeof("12345"));

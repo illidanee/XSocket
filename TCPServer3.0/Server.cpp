@@ -1,18 +1,111 @@
 #include "Server.h"
 
+
+_Client::_Client(SOCKET client)
+{
+	_Socket = client;
+	memset(_RecvBuffer, 0, _RECV_BUFFER_SIZE_);
+	_RecvStartPos = 0;
+	memset(_SendBuffer, 0, _SEND_BUFFER_SIZE_);
+	_SendStartPos = 0;
+}
+
+_Client::~_Client()
+{
+
+}
+
+void _Client::SetNetEventObj(IEvent* pEventObj)
+{
+	_pNetEventObj = pEventObj;
+}
+
+int _Client::RecvData()
+{
+	//接收数据到接收缓冲区中
+	char* pBuffer = _RecvBuffer + _RecvStartPos;
+	int size = recv(_Socket, pBuffer, _RECV_BUFFER_SIZE_ - _RecvStartPos, 0);
+	if (_pNetEventObj)
+		_pNetEventObj->OnNetRecv(this);
+	if (SOCKET_ERROR == size)
+	{
+		printf("OK:Client<Socket=%d> off!\n", (int)_Socket);
+		return -1;
+	}
+	else if (size == 0)
+	{
+		printf("OK:Client<Socket=%d> quit!\n", (int)_Socket);
+		return -2;
+	}
+
+	_RecvStartPos += size;
+
+	//数据缓冲区长度大于消息头长度
+	while (_RecvStartPos >= sizeof(MsgHeader))
+	{
+		MsgHeader* pHeader = (MsgHeader*)_RecvBuffer;
+		//数据缓冲区长度大于消息长度
+		if (_RecvStartPos >= pHeader->_MsgLength)
+		{
+			//数据缓冲区剩余未处理数据长度
+			int len = _RecvStartPos - pHeader->_MsgLength;
+
+			if (_pNetEventObj)
+				_pNetEventObj->OnNetMsg(this, pHeader);
+
+			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
+			memcpy(_RecvBuffer, _RecvBuffer + pHeader->_MsgLength, len);
+			_RecvStartPos = len;
+		}
+		else
+		{
+			//数据缓冲区剩余未处理数据不够一条完整消息
+			break;
+		}
+	}
+
+	return 0;
+}
+
 int _Client::SendData(MsgHeader* pHeader)
 {
-	if (pHeader)
-		return send(_Socket, (const char*)pHeader, pHeader->_MsgLength, 0);
+	const char* pBuffer = (const char*)pHeader;
+	int nSendBufferSize = pHeader->_MsgLength;
 
-	return -1;
+	while (true)
+	{
+		if (_SendStartPos + nSendBufferSize >= _SEND_BUFFER_SIZE_)
+		{
+			int len = _SEND_BUFFER_SIZE_ - _SendStartPos;
+			memcpy(_SendBuffer + _SendStartPos, pBuffer, len);
+			pBuffer += len;
+			nSendBufferSize -= len;
+
+			int ret = send(_Socket, _SendBuffer, _SEND_BUFFER_SIZE_, 0);
+			if (_pNetEventObj)
+				_pNetEventObj->OnNetSend(this);
+
+			_SendStartPos = 0;
+
+			if (SOCKET_ERROR == ret)
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			memcpy(_SendBuffer + _SendStartPos, pBuffer, nSendBufferSize);
+			_SendStartPos += nSendBufferSize;
+			break;
+		}
+	}
+
+	return 0;
 }
 
 _ReceiveServer::_ReceiveServer()
 {
 	_pNetEventObj = 0;
-	//memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
-
 	_ClientChange = true;
 }
 
@@ -98,7 +191,8 @@ int _ReceiveServer::OnRun()
 			std::map<SOCKET, _Client*>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
 			if (iter != _AllClients.end())
 			{
-				int ret = RecvData(iter->second);
+				//int ret = RecvData(iter->second);
+				int ret = iter->second->RecvData();
 				if (ret < 0)
 				{
 					if (_pNetEventObj)
@@ -132,57 +226,6 @@ int _ReceiveServer::OnRun()
 #endif
 
 	}
-	return 0;
-}
-
-int _ReceiveServer::RecvData(_Client* pClient)
-{
-	//接收数据到接收缓冲区中
-	char* pBuffer = pClient->GetDataBuffer() + pClient->GetStartPos();
-	int size = recv(pClient->GetSocket(), pBuffer, _BUFFER_SIZE_ - pClient->GetStartPos(), 0);
-	if (_pNetEventObj)
-		_pNetEventObj->OnNetRecv(pClient);
-	if (SOCKET_ERROR == size)
-	{
-		printf("OK:Client<Socket=%d> off!\n", (int)pClient->GetSocket());
-		return -1;
-	}
-	else if (size == 0)
-	{
-		printf("OK:Client<Socket=%d> quit!\n", (int)pClient->GetSocket());
-		return -2;
-	}
-
-	//将接收缓冲区数据拷贝到数据缓冲区
-	//memcpy(pClient->GetDataBuffer() + pClient->GetStartPos(), _RecvBuffer, size);
-	pClient->SetStartPos(pClient->GetStartPos() + size);
-
-	//数据缓冲区长度大于消息头长度
-	while (pClient->GetStartPos() >= sizeof(MsgHeader))
-	{
-		MsgHeader* pHeader = (MsgHeader*)pClient->GetDataBuffer();
-		//数据缓冲区长度大于消息长度
-		if (pClient->GetStartPos() >= pHeader->_MsgLength)
-		{
-			//数据缓冲区剩余未处理数据长度
-			int len = pClient->GetStartPos() - pHeader->_MsgLength;
-			//printf("----%d - <Socket=%d> From Client<Socket=%d> = Msg Type:%d - Length:%d\n", n++, (int)_Socket, (int)pClient->GetSocket(), pHeader->_MsgType, pHeader->_MsgLength);
-			
-			//处理数据
-			if (_pNetEventObj)
-				_pNetEventObj->OnNetMsg(pClient, pHeader);
-
-			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
-			memcpy(pClient->GetDataBuffer(), pClient->GetDataBuffer() + pHeader->_MsgLength, len);
-			pClient->SetStartPos(len);
-		}
-		else
-		{
-			//数据缓冲区剩余未处理数据不够一条完整消息
-			break;
-		}
-	}
-
 	return 0;
 }
 
@@ -335,6 +378,7 @@ int _ListenServer::Accept()
 	else
 	{
 		_Client* pClient = new _Client(client);
+		pClient->SetNetEventObj(this);
 
 		_ReceiveServer* pLessServer = _AllServers[0];
 		for (auto pServer : _AllServers)

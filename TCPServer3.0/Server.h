@@ -35,7 +35,8 @@
 #include "MsgProtocol.h"
 
 #define _SERVER_SIZE_ 4
-#define _BUFFER_SIZE_ 102400
+#define _RECV_BUFFER_SIZE_ 10240
+#define _SEND_BUFFER_SIZE_ 10240
 
 //类前置声明
 class _Client;
@@ -48,6 +49,7 @@ public:
 	virtual void OnClientJoin(_Client* pClient) = 0;
 	virtual void OnClientLeave(_Client* pClient) = 0;
 	virtual void OnNetRecv(_Client* pClient) = 0;
+	virtual void OnNetSend(_Client* pClient) = 0;
 	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader) = 0;
 };
 
@@ -55,24 +57,25 @@ public:
 class _Client
 {
 private:
-	SOCKET _Socket;							//客户端Socket
-	char _DataBuffer[_BUFFER_SIZE_];		//数据缓冲区
-	int _StartPos;							//数据缓冲区中可以放入数据的起始位置
-
+	IEvent* _pNetEventObj;						//主线程对象
+	SOCKET _Socket;								//客户端Socket
+	char _RecvBuffer[_RECV_BUFFER_SIZE_];		//接收缓冲区
+	int _RecvStartPos;							//接收缓冲区中可以放入数据的起始位置
+	char _SendBuffer[_SEND_BUFFER_SIZE_];		//发送缓冲区
+	int _SendStartPos;							//发送缓冲区中可以放入数据的起始位置
 public:
-	_Client(SOCKET client)
-	{
-		_Socket = client;
-		memset(_DataBuffer, 0, sizeof(_DataBuffer));
-		_StartPos = 0;
-	}
+	_Client(SOCKET client);
+	~_Client();
+
+	void SetNetEventObj(IEvent* pEventObj);
 
 	SOCKET GetSocket() { return _Socket; }
-	char* GetDataBuffer() { return _DataBuffer; }
-	int GetStartPos() { return _StartPos; }
-	void SetStartPos(int startPos) { _StartPos = startPos; }
+	char* GetRecvBuffer() { return _RecvBuffer; }
+	int GetRecvStartPos() { return _RecvStartPos; }
+	void SetRecvStartPos(int startPos) { _RecvStartPos = startPos; }
 
 public:
+	int RecvData();
 	int SendData(MsgHeader* pHeader);
 };
 
@@ -83,7 +86,6 @@ private:
 	std::map<SOCKET, _Client*> _AllClients;			//客户端
 	std::map<SOCKET, _Client*> _AllClientsCache;	//客户端缓冲区
 	std::mutex _AllClientsCacheMutex;				//客户端缓冲区锁
-	//char _RecvBuffer[_BUFFER_SIZE_];				//接收缓冲区
 
 //优化
 private:
@@ -99,8 +101,6 @@ public:
 
 	int Start();
 	int OnRun();
-
-	int RecvData(_Client* pClient);
 
 	void AddClient(_Client* pClient);
 	int GetClientNum();

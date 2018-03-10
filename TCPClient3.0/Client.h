@@ -23,7 +23,7 @@
 //协议头文件
 #include "MsgProtocol.h"
 
-#define _BUFFER_SIZE_ 102400
+#define _BUFFER_SIZE_ 10240
 
 //Client类
 class Client

@@ -110,7 +110,7 @@ int Client::OnRun()
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		timeval tv = { 0, 0 };
+		timeval tv = { 0, 10 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
