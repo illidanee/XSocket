@@ -35,7 +35,7 @@
 #include "MsgProtocol.h"
 
 #define _SERVER_SIZE_ 4
-#define _BUFFER_SIZE_ 10240
+#define _BUFFER_SIZE_ 102400
 
 //类前置声明
 class _Client;
@@ -48,7 +48,7 @@ public:
 	virtual void OnClientJoin(_Client* pClient) = 0;
 	virtual void OnClientLeave(_Client* pClient) = 0;
 	virtual void OnNetRecv(_Client* pClient) = 0;
-	virtual void OnNetMsg(_Client* pClient) = 0;
+	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader) = 0;
 };
 
 //客户端信息类
@@ -56,7 +56,7 @@ class _Client
 {
 private:
 	SOCKET _Socket;							//客户端Socket
-	char _DataBuffer[_BUFFER_SIZE_ * 10];	//数据缓冲区
+	char _DataBuffer[_BUFFER_SIZE_];		//数据缓冲区
 	int _StartPos;							//数据缓冲区中可以放入数据的起始位置
 
 public:

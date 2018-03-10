@@ -66,6 +66,7 @@ void ClientThread(int id)
 		for (int i = begin; i < end; ++i)
 		{
 			client[i]->SendData(login, len);
+			client[i]->OnRun();
 			sendCount++;
 		}
 	}

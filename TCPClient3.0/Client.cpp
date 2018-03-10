@@ -3,7 +3,7 @@
 Client::Client()
 {
 	_Socket = INVALID_SOCKET;
-	memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
+	//memset(_RecvBuffer, 0, sizeof(_RecvBuffer));
 	memset(_DataBuffer, 0, sizeof(_DataBuffer));
 	_StartPos = 0;
 }
@@ -111,7 +111,7 @@ int Client::OnRun()
 		FD_SET(_Socket, &fdRead);
 
 		timeval tv = { 0, 0 };
-		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, NULL);
+		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:select!\n");
@@ -145,7 +145,8 @@ int Client::SendData(MsgHeader* pHeader, int len)
 int Client::RecvData()
 {
 	//接收数据到接收缓冲区中
-	int size = recv(_Socket, _RecvBuffer, _BUFFER_SIZE_, 0);
+	char* pBuffer = _DataBuffer + _StartPos;
+	int size = recv(_Socket, pBuffer, _BUFFER_SIZE_ - _StartPos, 0);
 	if (SOCKET_ERROR == size)
 	{
 		printf("OK:Server off!\n");
@@ -158,7 +159,7 @@ int Client::RecvData()
 	}
 
 	//将接收缓冲区数据拷贝到数据缓冲区
-	memcpy(_DataBuffer + _StartPos, _RecvBuffer, size);
+	//memcpy(_DataBuffer + _StartPos, _RecvBuffer, size);
 	_StartPos += size;
 
 	//数据缓冲区长度大于消息头长度
@@ -194,26 +195,8 @@ int Client::OnNetMsg(MsgHeader* pHeader)
 	{
 	case MSG_LOGIN_RES:
 	{
-		MsgLoginRes* login = (MsgLoginRes*)pHeader;
+		//MsgLoginRes* login = (MsgLoginRes*)pHeader;
 		//printf("----Login Ret:%d\n", login->_Ret);
-	}
-	break;
-	case MSG_LOGOUT_RES:
-	{
-		MsgLogoutRes* logout = (MsgLogoutRes*)pHeader;
-		//printf("----Logout Ret:%d\n", logout->_Ret);
-	}
-	break;
-	case MSG_NEWUSER:
-	{
-		MsgNewUser* newUser = (MsgNewUser*)pHeader;
-		//printf("----New User <Socket=%d> Join Server!\n", newUser->_UserID);
-	}
-	break;
-	case MSG_ERROR:
-	{
-		MsgError* error = (MsgError*)pHeader;
-		//printf("----Send Error Code To Server!\n");
 	}
 	break;
 	default:

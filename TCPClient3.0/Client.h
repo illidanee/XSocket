@@ -23,15 +23,15 @@
 //协议头文件
 #include "MsgProtocol.h"
 
-#define _BUFFER_SIZE_ 10240
+#define _BUFFER_SIZE_ 102400
 
 //Client类
 class Client
 {
 private:
 	SOCKET _Socket;							//客户端Socket
-	char _RecvBuffer[_BUFFER_SIZE_];		//接收缓冲区
-	char _DataBuffer[_BUFFER_SIZE_ * 10];	//数据缓冲区
+	//char _RecvBuffer[_BUFFER_SIZE_];		//接收缓冲区
+	char _DataBuffer[_BUFFER_SIZE_];		//数据缓冲区
 	int _StartPos;							//数据缓冲区中可以放入数据的起始位置
 
 public:

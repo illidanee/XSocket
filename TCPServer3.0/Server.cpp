@@ -79,9 +79,9 @@ int _ReceiveServer::OnRun()
 		}
 
 		//设置10毫秒间隔，可以提高客户端连接select效率。
-		timeval tv = { 0, 16000 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。
+		timeval tv = { 0, 10 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。
 		//timeval tv = { 0, 0 };			//客户端连接速度变慢。
-		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
+		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, NULL);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:Select!\n");
@@ -139,7 +139,7 @@ int _ReceiveServer::RecvData(_Client* pClient)
 {
 	//接收数据到接收缓冲区中
 	char* pBuffer = pClient->GetDataBuffer() + pClient->GetStartPos();
-	int size = recv(pClient->GetSocket(), pBuffer, _BUFFER_SIZE_ * 10 - pClient->GetStartPos(), 0);
+	int size = recv(pClient->GetSocket(), pBuffer, _BUFFER_SIZE_ - pClient->GetStartPos(), 0);
 	if (_pNetEventObj)
 		_pNetEventObj->OnNetRecv(pClient);
 	if (SOCKET_ERROR == size)
@@ -170,7 +170,7 @@ int _ReceiveServer::RecvData(_Client* pClient)
 			
 			//处理数据
 			if (_pNetEventObj)
-				_pNetEventObj->OnNetMsg(pClient);
+				_pNetEventObj->OnNetMsg(pClient, pHeader);
 
 			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
 			memcpy(pClient->GetDataBuffer(), pClient->GetDataBuffer() + pHeader->_MsgLength, len);
@@ -410,7 +410,7 @@ int _ListenServer::OnRun()
 		FD_SET(_Socket, &fdRead);
 
 		//设置10毫秒间隔，可以提高数据接受和发送select效率。
-		timeval tv = { 0, 100 };			
+		timeval tv = { 0, 10 };			
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{

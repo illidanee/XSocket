@@ -64,9 +64,24 @@ public:
 	{
 		++_RecvNum;
 	}
-	virtual void OnNetMsg(_Client* pClient)
+	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader)
 	{
 		++_PackageNum;
+
+		//处理客户端请求
+		switch (pHeader->_MsgType)
+		{
+		case MSG_LOGIN:
+		{
+			MsgLoginRes respond;
+			send(pClient->GetSocket(), (char*)&respond, sizeof(MsgLoginRes), 0);
+		}
+		break;
+		default:
+		{
+
+		}
+		}
 	}
 };
 
