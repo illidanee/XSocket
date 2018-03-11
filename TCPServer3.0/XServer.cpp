@@ -1,4 +1,4 @@
-#include "Server.h"
+#include "XServer.h"
 
 
 _Client::_Client(SOCKET client)
@@ -15,9 +15,10 @@ _Client::~_Client()
 
 }
 
-void _Client::SetNetEventObj(IEvent* pEventObj)
+void _Client::Init(IEvent* pEventObj, _ReceiveServer* pReceiveServerObj)
 {
 	_pNetEventObj = pEventObj;
+	_pReceiveServerObj = pReceiveServerObj;
 }
 
 int _Client::RecvData()
@@ -51,7 +52,7 @@ int _Client::RecvData()
 			int len = _RecvStartPos - pHeader->_MsgLength;
 
 			if (_pNetEventObj)
-				_pNetEventObj->OnNetMsg(this, pHeader);
+				_pNetEventObj->OnNetMsg(this, pHeader, _pReceiveServerObj);
 
 			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
 			memcpy(_RecvBuffer, _RecvBuffer + pHeader->_MsgLength, len);
@@ -103,6 +104,22 @@ int _Client::SendData(MsgHeader* pHeader)
 	return 0;
 }
 
+XSendTask::XSendTask(_Client* pClient, MsgHeader* pHeader)
+{
+	_pClient = pClient;
+	_pHeader = pHeader;
+}
+
+XSendTask::~XSendTask()
+{
+	delete _pHeader;
+}
+
+void XSendTask::DoTask()
+{
+	_pClient->SendData(_pHeader);
+}
+
 _ReceiveServer::_ReceiveServer()
 {
 	_pNetEventObj = 0;
@@ -123,6 +140,8 @@ int _ReceiveServer::Start()
 {
 	std::thread t(std::mem_fn(&_ReceiveServer::OnRun), this);
 	t.detach();
+
+	_TaskServer.Start();
 
 	return 0;
 }
@@ -238,6 +257,11 @@ void _ReceiveServer::AddClient(_Client* pClient)
 int _ReceiveServer::GetClientNum()
 {
 	return (int)_AllClients.size() + (int)_AllClientsCache.size();
+}
+
+void _ReceiveServer::AddTask(XTask* pTask)
+{
+	_TaskServer.AddTask(pTask);
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -377,9 +401,6 @@ int _ListenServer::Accept()
 	}
 	else
 	{
-		_Client* pClient = new _Client(client);
-		pClient->SetNetEventObj(this);
-
 		_ReceiveServer* pLessServer = _AllServers[0];
 		for (auto pServer : _AllServers)
 		{
@@ -388,6 +409,9 @@ int _ListenServer::Accept()
 				pLessServer = pServer;
 			}
 		}
+
+		_Client* pClient = new _Client(client);
+		pClient->Init(this, pLessServer);
 		pLessServer->AddClient(pClient);
 
 		OnClientJoin(pClient);

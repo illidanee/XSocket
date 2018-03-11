@@ -1,5 +1,5 @@
 #include <thread>
-#include "Server.h"
+#include "XServer.h"
 
 #ifndef _WIN32
 #include <signal.h>
@@ -21,7 +21,7 @@ void CmdThread(_ListenServer* pServer)
 }
 
 //自定义Server
-class MyServer : public MainServer
+class MyServer : public XServer
 {
 private:
 	XTimer _Timer;								//计时器
@@ -71,7 +71,7 @@ public:
 	{
 		++_SendNum;
 	}
-	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader)
+	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer)
 	{
 		++_PackageNum;
 
@@ -80,13 +80,14 @@ public:
 		{
 		case MSG_LOGIN:
 		{
-			MsgLoginRes respond;
-			pClient->SendData(&respond);
+			MsgLoginRes* respond = new MsgLoginRes;
+			XSendTask* pTask = new XSendTask(pClient, respond);
+			pReceiveServer->AddTask(pTask);
 		}
 		break;
 		default:
 		{
-
+			printf("Warn： default Msg。");
 		}
 		}
 	}

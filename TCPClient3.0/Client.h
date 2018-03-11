@@ -24,7 +24,7 @@
 #include "MsgProtocol.h"
 
 //客户端单次发送消息大于_BUFFER_SIZE_会出问题
-#define _BUFFER_SIZE_ 102400
+#define _BUFFER_SIZE_ 10240
 
 //Client类
 class Client

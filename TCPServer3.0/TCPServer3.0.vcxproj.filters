@@ -21,7 +21,10 @@
     <ClCompile Include="XTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Server.cpp">
+    <ClCompile Include="XTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,7 +35,10 @@
     <ClInclude Include="XTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Server.h">
+    <ClInclude Include="XTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

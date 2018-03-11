@@ -1,5 +1,5 @@
-#ifndef __SERVER_H__
-#define __SERVER_H__
+#ifndef __XSERVER_H__
+#define __XSERVER_H__
 
 //标准头文件
 #include <iostream>
@@ -30,17 +30,20 @@
 
 //计时器
 #include "XTimer.h"
+//任务
+#include "XTask.h"
 
 //协议头文件
 #include "MsgProtocol.h"
 
 //客户端单次发送消息大于_SEND_BUFFER_SIZE_会出问题
 #define _SERVER_SIZE_ 4
-#define _RECV_BUFFER_SIZE_ 102400
-#define _SEND_BUFFER_SIZE_ 102400
+#define _RECV_BUFFER_SIZE_ 10240
+#define _SEND_BUFFER_SIZE_ 10240
 
 //类前置声明
 class _Client;
+class _ReceiveServer;
 
 //接口
 class IEvent
@@ -51,42 +54,59 @@ public:
 	virtual void OnClientLeave(_Client* pClient) = 0;
 	virtual void OnNetRecv(_Client* pClient) = 0;
 	virtual void OnNetSend(_Client* pClient) = 0;
-	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader) = 0;
+	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer) = 0;
 };
 
 //客户端信息类
 class _Client
 {
 private:
+	//关联对象
 	IEvent* _pNetEventObj;						//主线程对象
+	_ReceiveServer* _pReceiveServerObj;			//ReceiveServer对象
+
+	//私有信息
 	SOCKET _Socket;								//客户端Socket
 	char _RecvBuffer[_RECV_BUFFER_SIZE_];		//接收缓冲区
 	int _RecvStartPos;							//接收缓冲区中可以放入数据的起始位置
 	char _SendBuffer[_SEND_BUFFER_SIZE_];		//发送缓冲区
 	int _SendStartPos;							//发送缓冲区中可以放入数据的起始位置
+
 public:
 	_Client(SOCKET client);
 	~_Client();
 
-	void SetNetEventObj(IEvent* pEventObj);
+	void Init(IEvent* pEventObj, _ReceiveServer* pReceiveServerObj);
 
 	SOCKET GetSocket() { return _Socket; }
-	char* GetRecvBuffer() { return _RecvBuffer; }
-	int GetRecvStartPos() { return _RecvStartPos; }
-	void SetRecvStartPos(int startPos) { _RecvStartPos = startPos; }
 
-public:
 	int RecvData();
 	int SendData(MsgHeader* pHeader);
+};
+
+class XSendTask : public XTask
+{
+private:
+	_Client* _pClient;
+	MsgHeader* _pHeader;
+
+public:
+	XSendTask(_Client* pClient, MsgHeader* pHeader);
+	~XSendTask();
+	void DoTask();
 };
 
 class _ReceiveServer
 {
 private:
 	IEvent* _pNetEventObj;							//主线程对象
+
 	std::map<SOCKET, _Client*> _AllClients;			//客户端
 	std::map<SOCKET, _Client*> _AllClientsCache;	//客户端缓冲区
 	std::mutex _AllClientsCacheMutex;				//客户端缓冲区锁
+
+private:
+	XTaskServer _TaskServer;						//服务器对应的任务线程。
 
 //优化
 private:
@@ -105,6 +125,7 @@ public:
 
 	void AddClient(_Client* pClient);
 	int GetClientNum();
+	void AddTask(XTask* pTask);
 };
 
 class _SendServer
@@ -137,6 +158,6 @@ public:
 	int OnRun();
 };
 
-typedef _ListenServer MainServer;
+typedef _ListenServer XServer;
 
 #endif

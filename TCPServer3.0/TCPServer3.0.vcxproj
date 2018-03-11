@@ -155,12 +155,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="XServer.cpp" />
+    <ClCompile Include="XTask.cpp" />
     <ClCompile Include="XTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MsgProtocol.h" />
-    <ClInclude Include="Server.h" />
+    <ClInclude Include="XServer.h" />
+    <ClInclude Include="XTask.h" />
     <ClInclude Include="XTimer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
