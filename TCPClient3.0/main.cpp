@@ -9,7 +9,7 @@
 XTimer timer;
 
 const int mCount = 10;
-const int cCount = 10000;
+const int cCount = 4;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
@@ -44,7 +44,7 @@ void ClientThread(int id)
 
 	for (int i = begin; i < end; ++i)
 	{
-		client[i]->Connect("192.168.0.99", 9090);
+		client[i]->Connect("127.0.0.1", 9090);
 	}
 	
 	//使用原子计数器优化线程等待。

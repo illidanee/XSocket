@@ -38,8 +38,8 @@
 
 //客户端单次发送消息大于_SEND_BUFFER_SIZE_会出问题
 #define _SERVER_SIZE_ 4
-#define _RECV_BUFFER_SIZE_ 10240
-#define _SEND_BUFFER_SIZE_ 10240
+#define _RECV_BUFFER_SIZE_ 10000
+#define _SEND_BUFFER_SIZE_ 10000
 
 //类前置声明
 class _Client;
