@@ -154,12 +154,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Memory\XMemory.cpp" />
+    <ClCompile Include="..\Memory\XMemoryBlock.cpp" />
+    <ClCompile Include="..\Memory\XMemoryManager.cpp" />
+    <ClCompile Include="..\Memory\XMemoryPool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="XServer.cpp" />
     <ClCompile Include="XTask.cpp" />
     <ClCompile Include="XTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Memory\XMemory.h" />
+    <ClInclude Include="..\Memory\XMemoryBlock.h" />
+    <ClInclude Include="..\Memory\XMemoryManager.h" />
+    <ClInclude Include="..\Memory\XMemoryPool.h" />
     <ClInclude Include="MsgProtocol.h" />
     <ClInclude Include="XServer.h" />
     <ClInclude Include="XTask.h" />

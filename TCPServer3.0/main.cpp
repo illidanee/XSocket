@@ -80,6 +80,8 @@ public:
 		{
 		case MSG_LOGIN:
 		{
+			//int nSize1 = sizeof(MsgLoginRes);
+			//int nSize2 = sizeof(XSendTask);
 			MsgLoginRes* respond = new MsgLoginRes;
 			XSendTask* pTask = new XSendTask(pClient, respond);
 			pReceiveServer->AddTask(pTask);
@@ -105,6 +107,7 @@ int main()
 #endif
 
 	//创建服务器
+	//int nSize = sizeof(MyServer);
 	MyServer* server = new MyServer;
 
 	//开启服务器

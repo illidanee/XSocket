@@ -28,6 +28,8 @@
 #define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
+//内存池
+#include "../Memory/XMemory.h"
 //计时器
 #include "XTimer.h"
 //任务
@@ -38,8 +40,8 @@
 
 //客户端单次发送消息大于_SEND_BUFFER_SIZE_会出问题
 #define _SERVER_SIZE_ 4
-#define _RECV_BUFFER_SIZE_ 10000
-#define _SEND_BUFFER_SIZE_ 10000
+#define _RECV_BUFFER_SIZE_ 10240
+#define _SEND_BUFFER_SIZE_ 10240
 
 //类前置声明
 class _Client;

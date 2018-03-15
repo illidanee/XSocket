@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="MemoryPool">
+      <UniqueIdentifier>{b84b306b-5030-4a9d-9b3f-dadb5c3c0654}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,6 +30,18 @@
     <ClCompile Include="XServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Memory\XMemory.cpp">
+      <Filter>MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Memory\XMemoryBlock.cpp">
+      <Filter>MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Memory\XMemoryManager.cpp">
+      <Filter>MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Memory\XMemoryPool.cpp">
+      <Filter>MemoryPool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MsgProtocol.h">
@@ -40,6 +55,18 @@
     </ClInclude>
     <ClInclude Include="XServer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Memory\XMemory.h">
+      <Filter>MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Memory\XMemoryBlock.h">
+      <Filter>MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Memory\XMemoryManager.h">
+      <Filter>MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Memory\XMemoryPool.h">
+      <Filter>MemoryPool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -217,6 +217,7 @@ int _ReceiveServer::OnRun()
 					if (_pNetEventObj)
 						_pNetEventObj->OnClientLeave(iter->second);
 
+					delete iter->second;
 					iter = _AllClients.erase(iter);
 					_ClientChange = true;
 					continue;
@@ -424,6 +425,7 @@ int _ListenServer::Start()
 {
 	for (int i = 0; i < _SERVER_SIZE_; ++i)
 	{
+		int nSize = sizeof(_ReceiveServer);
 		_ReceiveServer* pServer = new _ReceiveServer();
 		pServer->SetNetEventObj(this);
 		pServer->Start();
