@@ -110,7 +110,7 @@ int Client::OnRun()
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		timeval tv = { 0, 10 };
+		timeval tv = { 0, 0 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -144,47 +144,48 @@ int Client::SendData(MsgHeader* pHeader, int len)
 
 int Client::RecvData()
 {
-	//接收数据到接收缓冲区中
-	char* pBuffer = _DataBuffer + _StartPos;
-	int size = recv(_Socket, pBuffer, _BUFFER_SIZE_ - _StartPos, 0);
-	if (SOCKET_ERROR == size)
-	{
-		printf("OK:Server off!\n");
-		return -1;
-	}
-	else if (size == 0)
-	{
-		printf("OK:Server quit!\n");
-		return -2;
-	}
+	recv(_Socket, _DataBuffer, _BUFFER_SIZE_, 0);
+	////接收数据到接收缓冲区中
+	//char* pBuffer = _DataBuffer + _StartPos;
+	//int size = recv(_Socket, pBuffer, _BUFFER_SIZE_ - _StartPos, 0);
+	//if (SOCKET_ERROR == size)
+	//{
+	//	printf("OK:Server off!\n");
+	//	return -1;
+	//}
+	//else if (size == 0)
+	//{
+	//	printf("OK:Server quit!\n");
+	//	return -2;
+	//}
 
-	//将接收缓冲区数据拷贝到数据缓冲区
-	//memcpy(_DataBuffer + _StartPos, _RecvBuffer, size);
-	_StartPos += size;
+	////将接收缓冲区数据拷贝到数据缓冲区
+	////memcpy(_DataBuffer + _StartPos, _RecvBuffer, size);
+	//_StartPos += size;
 
-	//数据缓冲区长度大于消息头长度
-	while (_StartPos >= sizeof(MsgHeader))
-	{
-		MsgHeader* pHeader = (MsgHeader*)_DataBuffer;
-		//数据缓冲区长度大于消息长度
-		if (_StartPos >= pHeader->_MsgLength)
-		{
-			//数据缓冲区剩余未处理数据长度
-			int len = _StartPos - pHeader->_MsgLength;
-			
-			//处理消息
-			OnNetMsg(pHeader);
+	////数据缓冲区长度大于消息头长度
+	//while (_StartPos >= sizeof(MsgHeader))
+	//{
+	//	MsgHeader* pHeader = (MsgHeader*)_DataBuffer;
+	//	//数据缓冲区长度大于消息长度
+	//	if (_StartPos >= pHeader->_MsgLength)
+	//	{
+	//		//数据缓冲区剩余未处理数据长度
+	//		int len = _StartPos - pHeader->_MsgLength;
+	//		
+	//		//处理消息
+	//		OnNetMsg(pHeader);
 
-			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
-			memcpy(_DataBuffer, _DataBuffer + pHeader->_MsgLength, len);
-			_StartPos = len;
-		}
-		else
-		{
-			//数据缓冲区剩余未处理数据不够一条完整消息
-			break;
-		}
-	}
+	//		//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
+	//		memcpy(_DataBuffer, _DataBuffer + pHeader->_MsgLength, len);
+	//		_StartPos = len;
+	//	}
+	//	else
+	//	{
+	//		//数据缓冲区剩余未处理数据不够一条完整消息
+	//		break;
+	//	}
+	//}
 
 	return 0;
 }

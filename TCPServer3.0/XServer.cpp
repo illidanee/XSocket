@@ -112,7 +112,7 @@ XSendTask::XSendTask(_Client* pClient, MsgHeader* pHeader)
 
 XSendTask::~XSendTask()
 {
-	delete _pHeader;
+	//delete _pHeader;
 }
 
 void XSendTask::DoTask()
@@ -153,9 +153,9 @@ int _ReceiveServer::OnRun()
 		if (!_AllClientsCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
-			for (std::map<SOCKET, _Client*>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
+			for (std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
 			{
-				_AllClients.insert(std::pair<SOCKET, _Client*>(iter->first, iter->second));
+				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<_Client>>(iter->first, iter->second));
 			}
 			_AllClientsCache.clear();
 
@@ -176,7 +176,7 @@ int _ReceiveServer::OnRun()
 			_ClientChange = false;
 
 			_MaxSocketID = 0;
-			for (std::map<SOCKET, _Client*>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+			for (std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 			{
 				FD_SET(iter->first, &fdRead);
 				if (_MaxSocketID < iter->first)
@@ -191,9 +191,9 @@ int _ReceiveServer::OnRun()
 		}
 
 		//设置10毫秒间隔，可以提高客户端连接select效率。
-		timeval tv = { 0, 10 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。
+		timeval tv = { 0, 1000 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。
 		//timeval tv = { 0, 0 };			//客户端连接速度变慢。
-		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, NULL);
+		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:Select!\n");
@@ -207,7 +207,7 @@ int _ReceiveServer::OnRun()
 #ifdef _WIN32
 		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
 		{
-			std::map<SOCKET, _Client*>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
+			std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
 			if (iter != _AllClients.end())
 			{
 				//int ret = RecvData(iter->second);
@@ -215,9 +215,9 @@ int _ReceiveServer::OnRun()
 				if (ret < 0)
 				{
 					if (_pNetEventObj)
-						_pNetEventObj->OnClientLeave(iter->second);
+						_pNetEventObj->OnClientLeave(iter->second.get());
 
-					delete iter->second;
+					//delete iter->second;
 					iter = _AllClients.erase(iter);
 					_ClientChange = true;
 					continue;
@@ -249,10 +249,10 @@ int _ReceiveServer::OnRun()
 	return 0;
 }
 
-void _ReceiveServer::AddClient(_Client* pClient)
+void _ReceiveServer::AddClient(std::shared_ptr<_Client>& pClient)
 {
 	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
-	_AllClientsCache.insert(std::pair<SOCKET, _Client*>(pClient->GetSocket(), pClient));
+	_AllClientsCache.insert(std::pair<SOCKET, std::shared_ptr<_Client>>(pClient->GetSocket(), pClient));
 }
 
 int _ReceiveServer::GetClientNum()
@@ -260,7 +260,7 @@ int _ReceiveServer::GetClientNum()
 	return (int)_AllClients.size() + (int)_AllClientsCache.size();
 }
 
-void _ReceiveServer::AddTask(XTask* pTask)
+void _ReceiveServer::AddTask(std::shared_ptr<XTask>& pTask)
 {
 	_TaskServer.AddTask(pTask);
 }
@@ -402,7 +402,7 @@ int _ListenServer::Accept()
 	}
 	else
 	{
-		_ReceiveServer* pLessServer = _AllServers[0];
+		std::shared_ptr<_ReceiveServer> pLessServer = _AllServers[0];
 		for (auto pServer : _AllServers)
 		{
 			if (pLessServer->GetClientNum() > pServer->GetClientNum())
@@ -411,11 +411,12 @@ int _ListenServer::Accept()
 			}
 		}
 
-		_Client* pClient = new _Client(client);
-		pClient->Init(this, pLessServer);
+		//_Client* pClient = new _Client(client);
+		std::shared_ptr<_Client> pClient = std::make_shared<_Client>(client);
+		pClient->Init(this, pLessServer.get());
 		pLessServer->AddClient(pClient);
 
-		OnClientJoin(pClient);
+		OnClientJoin(pClient.get());
 	}
 	
 	return 0;
@@ -425,8 +426,9 @@ int _ListenServer::Start()
 {
 	for (int i = 0; i < _SERVER_SIZE_; ++i)
 	{
-		int nSize = sizeof(_ReceiveServer);
-		_ReceiveServer* pServer = new _ReceiveServer();
+		//int nSize = sizeof(_ReceiveServer);
+		//_ReceiveServer* pServer = new _ReceiveServer();
+		std::shared_ptr<_ReceiveServer> pServer = std::make_shared<_ReceiveServer>();
 		pServer->SetNetEventObj(this);
 		pServer->Start();
 		_AllServers.push_back(pServer);
@@ -480,7 +482,7 @@ int _ListenServer::OnRun()
 		FD_SET(_Socket, &fdRead);
 
 		//设置10毫秒间隔，可以提高数据接受和发送select效率。
-		timeval tv = { 0, 10 };			
+		timeval tv = { 0, 1000 };			
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{

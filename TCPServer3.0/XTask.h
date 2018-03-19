@@ -18,15 +18,15 @@ public:
 class XTaskServer
 {
 private:
-	std::list<XTask*> _Tasks;					//任务列表
-	std::list<XTask*> _TasksCache;				//任务缓冲区
-	std::mutex _TaskSCacheMutex;				//任务缓冲区锁
+	std::list<std::shared_ptr<XTask>> _Tasks;					//任务列表
+	std::list<std::shared_ptr<XTask>> _TasksCache;				//任务缓冲区
+	std::mutex _TaskSCacheMutex;								//任务缓冲区锁
 
 	void OnRun();
 
 public:
 	void Start();
-	void AddTask(XTask* pTask);
+	void AddTask(std::shared_ptr<XTask> pTask);
 };
 
 #endif // 

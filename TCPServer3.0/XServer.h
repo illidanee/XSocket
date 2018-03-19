@@ -10,6 +10,7 @@
 #include <mutex>
 #include <atomic>
 #include <chrono>
+#include <memory>
 
 #ifdef _WIN32
 #define FD_SETSIZE 2510
@@ -101,14 +102,14 @@ public:
 class _ReceiveServer
 {
 private:
-	IEvent* _pNetEventObj;							//主线程对象
+	IEvent* _pNetEventObj;											//主线程对象
 
-	std::map<SOCKET, _Client*> _AllClients;			//客户端
-	std::map<SOCKET, _Client*> _AllClientsCache;	//客户端缓冲区
-	std::mutex _AllClientsCacheMutex;				//客户端缓冲区锁
+	std::map<SOCKET, std::shared_ptr<_Client>> _AllClients;			//客户端
+	std::map<SOCKET, std::shared_ptr<_Client>> _AllClientsCache;	//客户端缓冲区
+	std::mutex _AllClientsCacheMutex;								//客户端缓冲区锁
 
 private:
-	XTaskServer _TaskServer;						//服务器对应的任务线程。
+	XTaskServer _TaskServer;										//服务器对应的任务线程。
 
 //优化
 private:
@@ -125,9 +126,9 @@ public:
 	int Start();
 	int OnRun();
 
-	void AddClient(_Client* pClient);
+	void AddClient(std::shared_ptr<_Client>& pClient);
 	int GetClientNum();
-	void AddTask(XTask* pTask);
+	void AddTask(std::shared_ptr<XTask>& pTask);
 };
 
 class _SendServer
@@ -139,8 +140,8 @@ class _SendServer
 class _ListenServer : public IEvent
 {
 private:
-	SOCKET _Socket;								//服务器监听Socket
-	std::vector<_ReceiveServer*> _AllServers;	//服务器信息
+	SOCKET _Socket;												//服务器监听Socket
+	std::vector<std::shared_ptr<_ReceiveServer>> _AllServers;	//服务器信息
 
 public:
 	_ListenServer();							

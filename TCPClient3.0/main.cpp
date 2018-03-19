@@ -62,13 +62,24 @@ void ClientThread(int id)
 	}
 	int len = sizeof(login);
 
+	//bool bSend = false;
 	while (bRun)
 	{
+		//if (bSend == false)
+		//{
+		//	//bSend = true;
+		//	for (int i = begin; i < end; ++i)
+		//	{
+		//		client[i]->SendData(login, len);
+		//		sendCount++;
+		//	}
+		//}
+
 		for (int i = begin; i < end; ++i)
 		{
 			client[i]->SendData(login, len);
-			client[i]->OnRun();
 			sendCount++;
+			client[i]->OnRun();
 		}
 	}
 
