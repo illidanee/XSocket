@@ -196,7 +196,7 @@ int _ReceiveServer::OnRun()
 		//设置10毫秒间隔，可以提高客户端连接select效率。
 		timeval tv = { 0, 1000 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。
 		//timeval tv = { 0, 0 };			//客户端连接速度变慢。
-		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
+		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, NULL);
 		if (SOCKET_ERROR == ret)
 		{
 			printf("Error:Select!\n");
