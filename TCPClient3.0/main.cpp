@@ -80,6 +80,8 @@ void ClientThread(int id)
 			client[i]->SendData(login, len);
 			sendCount++;
 			client[i]->OnRun();
+			//如果不添加此句代码，在公司电脑无法处理过多客户端数据，造成消息积压。
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 	}
 

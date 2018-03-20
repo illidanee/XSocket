@@ -52,7 +52,7 @@ int _Client::RecvData()
 			int len = _RecvStartPos - pHeader->_MsgLength;
 
 			if (_pNetEventObj)
-				_pNetEventObj->OnNetMsg(this, pHeader, _pReceiveServerObj);
+				_pNetEventObj->OnNetMsgRecv(this, pHeader, _pReceiveServerObj);
 
 			//数据缓冲区剩余未处理数据前移 -- 此处为模拟处理
 			memcpy(_RecvBuffer, _RecvBuffer + pHeader->_MsgLength, len);
@@ -70,6 +70,9 @@ int _Client::RecvData()
 
 int _Client::SendData(MsgHeader* pHeader)
 {
+	if (_pNetEventObj)
+		_pNetEventObj->OnNetMsgDone(this, pHeader, _pReceiveServerObj);
+
 	const char* pBuffer = (const char*)pHeader;
 	int nSendBufferSize = pHeader->_MsgLength;
 

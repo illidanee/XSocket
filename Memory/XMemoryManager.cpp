@@ -13,13 +13,15 @@ XMemoryManager::XMemoryManager()
 {
 	XError("XMemoryManager() \n");
 
-	InitMemoryPools(1, 32, &_MemoryPool32);
+	InitMemoryPools(0 + 1, 16, &_MemoryPool16);
+	InitMemoryPools(16 + 1, 32, &_MemoryPool32);
 	InitMemoryPools(32 + 1, 64, &_MemoryPool64);
 	InitMemoryPools(64 + 1, 128, &_MemoryPool128);
 	InitMemoryPools(128 + 1, 256, &_MemoryPool256);
 	InitMemoryPools(256 + 1, 512, &_MemoryPool512);
 	InitMemoryPools(512 + 1, 1024, &_MemoryPool1024);
-	InitMemoryPools(1024 + 1, 32768, &_MemoryPool32768);
+	InitMemoryPools(1024 + 1, 16384, &_MemoryPool16384);
+	InitMemoryPools(16384 + 1, 32768, &_MemoryPool32768);
 	
 }
 

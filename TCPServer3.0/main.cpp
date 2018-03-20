@@ -28,7 +28,9 @@ private:
 	std::atomic_int _ClientNum;					//客户端计数器
 	std::atomic_int _RecvNum;					//recv()函数调用计数
 	std::atomic_int _SendNum;					//send()函数调用计数
-	std::atomic_int _PackageNum;				//接收数据包计数器
+	std::atomic_int _RecvPackageNum;			//接收数据包计数器
+	std::atomic_int _DonePackageNum;			//处理数据包计数器
+	std::atomic_int _PackageNum;				//剩余任务包计数
 
 public:
 	MyServer()
@@ -38,6 +40,8 @@ public:
 		_ClientNum = 0;
 		_RecvNum = 0;
 		_SendNum = 0;
+		_RecvPackageNum = 0;
+		_DonePackageNum = 0;
 		_PackageNum = 0;
 	}
 	~MyServer()
@@ -48,10 +52,11 @@ public:
 	{
 		if (_Timer.GetTime() > 1.0)
 		{
-			printf("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_PackageNum);
+			printf("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
 			_RecvNum = 0;
 			_SendNum = 0;
-			_PackageNum = 0;
+			_RecvPackageNum = 0;
+			_DonePackageNum = 0;
 			_Timer.UpdateTime();
 		}
 	}
@@ -71,8 +76,9 @@ public:
 	{
 		++_SendNum;
 	}
-	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer)
+	virtual void OnNetMsgRecv(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer)
 	{
+		++_RecvPackageNum;
 		++_PackageNum;
 
 		//处理客户端请求
@@ -94,6 +100,11 @@ public:
 			printf("Warn： default Msg。");
 		}
 		}
+	}
+	virtual void OnNetMsgDone(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer)
+	{
+		++_DonePackageNum;
+		--_PackageNum;
 	}
 };
 

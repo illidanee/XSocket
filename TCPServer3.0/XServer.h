@@ -57,7 +57,8 @@ public:
 	virtual void OnClientLeave(_Client* pClient) = 0;
 	virtual void OnNetRecv(_Client* pClient) = 0;
 	virtual void OnNetSend(_Client* pClient) = 0;
-	virtual void OnNetMsg(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer) = 0;
+	virtual void OnNetMsgRecv(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer) = 0;
+	virtual void OnNetMsgDone(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer) = 0;
 };
 
 //客户端信息类

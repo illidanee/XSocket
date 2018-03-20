@@ -57,7 +57,7 @@ void XTaskServer::OnRun()
 
 }
 
-void XTaskServer::AddTask(std::shared_ptr<XTask> pTask)
+void XTaskServer::AddTask(std::shared_ptr<XTask>& pTask)
 {
 	std::lock_guard<std::mutex> lock(_TaskSCacheMutex);
 	_TasksCache.push_back(pTask);
