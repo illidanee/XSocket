@@ -8,7 +8,7 @@
 class XMemoryManager
 {
 private:
-	XTMemoryPool<8, 16>			_MemoryPool16;
+	XTMemoryPool<1024, 16>			_MemoryPool16;
 	XTMemoryPool<1024000, 32>	_MemoryPool32;
 	XTMemoryPool<1024000, 64>	_MemoryPool64;
 	XTMemoryPool<8, 128>		_MemoryPool128;
