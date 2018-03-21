@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-class AAA : public XObjectManager<AAA, 10>
+class AAA : public XObjectManager<10, AAA>
 {
 public:
 	AAA()
@@ -15,7 +15,7 @@ public:
 	}
 };
 
-class BBB : public XObjectManager<BBB, 10>
+class BBB : public XObjectManager<20, BBB>
 {
 public:
 	BBB(int n)
@@ -28,7 +28,7 @@ public:
 	}
 };
 
-class CCC : public XObjectManager<CCC, 20>
+class CCC : public XObjectManager<30, CCC>
 {
 public:
 	CCC(int n, int m)

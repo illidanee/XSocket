@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <mutex>
 
-template <typename Type, size_t nCount>
+template <size_t nCount, typename Type>
 class XObjectPool
 {
 public:
@@ -33,9 +33,10 @@ public:
 		_nSize = sizeof(Type);
 		Init();
 	}
+
 	~XObjectPool()
 	{
-
+		Done();
 	}
 
 	int Init()

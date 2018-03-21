@@ -3,7 +3,7 @@
 
 #include "XObjectPool.h"
 
-template <typename T, size_t nCount>
+template <size_t nCount, typename Type>
 class XObjectManager
 {
 public:
@@ -28,21 +28,21 @@ public:
 	}
 
 	template <typename... Args>
-	static T* CreateObject(Args... args)
+	static Type* CreateObject(Args... args)
 	{
-		T* pObj = new T(args...);
+		Type* pObj = new Type(args...);
 		return pObj;
 	}
 
-	static void DeleteObject(T* pObj)
+	static void DeleteObject(Type* pObj)
 	{
 		delete pObj;
 	}
 
 private:
-	static XObjectPool<T, nCount>& GetObjectPool()
+	static XObjectPool<nCount, Type>& GetObjectPool()
 	{
-		static XObjectPool<T, nCount> objPool;
+		static XObjectPool<nCount, Type> objPool;
 		return objPool;
 	}
 };
