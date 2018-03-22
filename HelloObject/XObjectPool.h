@@ -4,6 +4,11 @@
 #include <assert.h>
 #include <mutex>
 
+#ifndef XError
+#include <stdio.h>
+#define XError(...) printf(__VA_ARGS__)
+#endif
+
 template <size_t nCount, typename Type>
 class XObjectPool
 {
@@ -47,7 +52,7 @@ public:
 
 		size_t nBlockSize = sizeof(XObjectBlock) + _nSize;
 
-		_pBuffer = malloc(_nCount * nBlockSize);
+		_pBuffer = new char[_nCount * nBlockSize];
 
 		//初始化内存块。
 		_pCur = (XObjectBlock*)_pBuffer;
@@ -82,13 +87,13 @@ public:
 
 		_nCount = 0;
 		_nSize = 0;
-		free(_pBuffer);
+		delete[] _pBuffer;
 		_pBuffer = nullptr;
 
 		return 0;
 	}
 
-	void* AllocMemory(size_t nSize)
+	void* AllocObjectMemory(size_t nSize)
 	{
 		assert(nullptr != _pBuffer);
 
@@ -98,12 +103,14 @@ public:
 		if (nullptr == _pCur)
 		{
 			//当前内存池没有可用内存块，在内存中申请。
-			pObjectBlock = (XObjectBlock*)malloc(sizeof(XObjectBlock) + nSize);
+			pObjectBlock = (XObjectBlock*)new char[sizeof(XObjectBlock) + nSize];
 			pObjectBlock->_nID = -1;
 			pObjectBlock->_nSize = nSize;
 			pObjectBlock->_pObjectPool = nullptr;
 			pObjectBlock->_pNext = nullptr;
 			pObjectBlock->_nRef = 1;
+
+			XError("AllocObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
 		}
 		else
 		{
@@ -113,11 +120,10 @@ public:
 			_pCur = _pCur->_pNext;
 		}
 
-		//XPrint("AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, pMemoryBlock->_nID, pMemoryBlock->_nSize);
 		return (char*)pObjectBlock + sizeof(XObjectBlock);
 	}
 
-	void FreeMemory(void* pMem)
+	void FreeObjectMemory(void* pMem)
 	{
 		assert(nullptr != _pBuffer);
 		assert(nullptr != pMem);
@@ -128,7 +134,7 @@ public:
 		if (-1 == pObjectBlock->_nID)
 		{
 			//使用系统申请的内存块。
-			free(pObjectBlock);
+			delete[] pObjectBlock;
 		}
 		else
 		{

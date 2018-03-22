@@ -1,56 +1,45 @@
 #include "XObjectManager.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <thread>
 
-class AAA : public XObjectManager<10, AAA>
-{
-public:
-	AAA()
-	{
-		printf("AAA \n");
-	}
-	~AAA()
-	{
-		printf("~AAA \n");
-	}
-};
+const int tCount = 4;
+const int mCount = 100008;
+const int nCount = mCount / tCount;
 
-class BBB : public XObjectManager<20, BBB>
+void OtherThread()
 {
-public:
-	BBB(int n)
+	AAA* pData[nCount];
+	for (int i = 0; i < nCount; ++i)
 	{
-		printf("BBB \n");
+		pData[i] = AAA::CreateObject();
 	}
-	~BBB()
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	for (int i = 0; i < nCount; ++i)
 	{
-		printf("~BBB \n");
+		AAA::DeleteObject(pData[i]);
 	}
-};
-
-class CCC : public XObjectManager<30, CCC>
-{
-public:
-	CCC(int n, int m)
-	{
-		printf("CCC \n");
-	}
-	~CCC()
-	{
-		printf("~CCC \n");
-	}
-};
+}
 
 int main()
 {
-	AAA* pA = AAA::CreateObject();
-	AAA::DeleteObject(pA);
+	std::chrono::time_point<std::chrono::high_resolution_clock> begin = std::chrono::high_resolution_clock::now();
 
-	BBB* pB = BBB::CreateObject(123);
-	BBB::DeleteObject(pB);
+	std::thread threads[tCount];
+	for (int i = 0; i < tCount; ++i)
+	{
+		threads[i] = std::thread(OtherThread);
 
-	CCC* pC = CCC::CreateObject(123, 456);
-	CCC::DeleteObject(pC);
+	}
+	for (int i = 0; i < tCount; ++i)
+	{
+		threads[i].join();
+	}
+
+	std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
+	std::chrono::microseconds time = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+	printf("time = %d ms \n", (int)time.count());
+
 
 	return 0;
 }

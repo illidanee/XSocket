@@ -9,22 +9,22 @@ class XObjectManager
 public:
 	void* operator new(size_t nSize)
 	{
-		return XObjectManager::GetObjectPool().AllocMemory(nSize);
+		return XObjectManager::GetObjectPool().AllocObjectMemory(nSize);
 	}
 
 	void operator delete(void* pMem)
 	{
-		XObjectManager::GetObjectPool().FreeMemory(pMem);
+		XObjectManager::GetObjectPool().FreeObjectMemory(pMem);
 	}
 
 	void* operator new[](size_t nSize)
 	{
-		return XObjectManager::GetObjectPool().AllocMemory(nSize);
+		return XObjectManager::GetObjectPool().AllocObjectMemory(nSize);
 	}
 
 	void operator delete[](void* pMem)
 	{
-		ObjectManager::GetObjectPool().FreeMemory(pMem);
+		XObjectManager::GetObjectPool().FreeObjectMemory(pMem);
 	}
 
 	template <typename... Args>
@@ -44,6 +44,19 @@ private:
 	{
 		static XObjectPool<nCount, Type> objPool;
 		return objPool;
+	}
+};
+
+class AAA : public XObjectManager<100003, AAA>
+{
+public:
+	AAA()
+	{
+		//printf("AAA \n");
+	}
+	~AAA()
+	{
+		//printf("~AAA \n");
 	}
 };
 

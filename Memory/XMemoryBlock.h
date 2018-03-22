@@ -1,12 +1,8 @@
 #ifndef __XMEMORYBLOCK_H__
 #define __XMEMORYBLOCK_H__
 
-#ifdef _DEBUG
+#ifndef XError
 	#include <stdio.h>
-	#define XPrint(...) printf(__VA_ARGS__)
-	#define XError(...) printf(__VA_ARGS__)
-#else
-	#define XPrint(...)
 	#define XError(...) printf(__VA_ARGS__)
 #endif
 
