@@ -20,8 +20,8 @@ XMemoryManager::XMemoryManager()
 	InitMemoryPools(128 + 1, 256, &_MemoryPool256);
 	InitMemoryPools(256 + 1, 512, &_MemoryPool512);
 	InitMemoryPools(512 + 1, 1024, &_MemoryPool1024);
-	InitMemoryPools(1024 + 1, 16384, &_MemoryPool16384);
-	InitMemoryPools(16384 + 1, 32768, &_MemoryPool32768);
+	//InitMemoryPools(1024 + 1, 16384, &_MemoryPool16384);
+	//InitMemoryPools(16384 + 1, 32768, &_MemoryPool32768);
 	
 }
 

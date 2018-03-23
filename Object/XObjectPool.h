@@ -36,6 +36,8 @@ public:
 	{
 		_nCount = nCount;
 		_nSize = sizeof(Type);
+		_pBuffer = nullptr;
+		_pCur = nullptr;
 		Init();
 	}
 

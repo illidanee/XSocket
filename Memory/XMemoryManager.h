@@ -3,7 +3,7 @@
 
 #include "XMemoryPool.h"
 
-#define _MAX_MEMORY_POOL_SIZE_ 32768
+#define _MAX_MEMORY_POOL_SIZE_ 1024
 
 class XMemoryManager
 {
@@ -15,8 +15,8 @@ private:
 	XTMemoryPool<8, 256>		_MemoryPool256;
 	XTMemoryPool<8, 512>		_MemoryPool512;
 	XTMemoryPool<8, 1024>		_MemoryPool1024;
-	XTMemoryPool<8, 16384>		_MemoryPool16384;
-	XTMemoryPool<10240, 32768>	_MemoryPool32768;
+	//XTMemoryPool<8, 16384>		_MemoryPool16384;
+	//XTMemoryPool<10240, 32768>	_MemoryPool32768;
 	XMemoryPool* _AllMemoryPools[_MAX_MEMORY_POOL_SIZE_ + 1];
 
 	void InitMemoryPools(size_t nBegin, size_t nEnd, XMemoryPool* pPool);

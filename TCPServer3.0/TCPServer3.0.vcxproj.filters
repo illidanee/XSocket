@@ -16,6 +16,9 @@
     <Filter Include="MemoryPool">
       <UniqueIdentifier>{b84b306b-5030-4a9d-9b3f-dadb5c3c0654}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ObjectPool">
+      <UniqueIdentifier>{d6432464-dc84-4a0e-92dd-317a00366b20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,11 +71,11 @@
     <ClInclude Include="..\Memory\XMemoryPool.h">
       <Filter>MemoryPool</Filter>
     </ClInclude>
-    <ClInclude Include="XObjectManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Object\XObjectManager.h">
+      <Filter>ObjectPool</Filter>
     </ClInclude>
-    <ClInclude Include="XObjectPool.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Object\XObjectPool.h">
+      <Filter>ObjectPool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

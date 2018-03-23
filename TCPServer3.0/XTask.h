@@ -6,9 +6,7 @@
 #include <chrono>
 #include <thread>
 
-#include "XObjectManager.h"
-
-class XTask : public XObjectManager<100, XTask>
+class XTask
 {
 public:
 	XTask();

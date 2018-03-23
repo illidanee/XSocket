@@ -415,9 +415,10 @@ int _ListenServer::Accept()
 		}
 
 		//_Client* pClient = new _Client(client);
-		std::shared_ptr<_Client> pClient = std::make_shared<_Client>(client);
+		//std::shared_ptr<_Client> pClient = std::make_shared<_Client>(client);
+		std::shared_ptr<_Client> pClient(new _Client(client));
 		pClient->Init(this, pLessServer.get());
-		pLessServer->AddClient(pClient);
+		pLessServer->AddClient(std::shared_ptr<_Client>(pClient));
 
 		OnClientJoin(pClient.get());
 	}

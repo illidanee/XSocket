@@ -168,9 +168,9 @@
     <ClInclude Include="..\Memory\XMemoryBlock.h" />
     <ClInclude Include="..\Memory\XMemoryManager.h" />
     <ClInclude Include="..\Memory\XMemoryPool.h" />
+    <ClInclude Include="..\Object\XObjectManager.h" />
+    <ClInclude Include="..\Object\XObjectPool.h" />
     <ClInclude Include="MsgProtocol.h" />
-    <ClInclude Include="XObjectManager.h" />
-    <ClInclude Include="XObjectPool.h" />
     <ClInclude Include="XServer.h" />
     <ClInclude Include="XTask.h" />
     <ClInclude Include="XTimer.h" />

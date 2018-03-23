@@ -31,6 +31,7 @@
 
 //内存池
 #include "../Memory/XMemory.h"
+#include "../Object/XObjectManager.h"
 //计时器
 #include "XTimer.h"
 //任务
@@ -62,7 +63,7 @@ public:
 };
 
 //客户端信息类
-class _Client
+class _Client : public XObjectManager<10000, _Client>
 {
 private:
 	//关联对象
