@@ -26,7 +26,7 @@ private:
 
 public:
 	void Start();
-	void AddTask(std::shared_ptr<XTask>& pTask);
+	void AddTask(const std::shared_ptr<XTask>& pTask);
 };
 
 #endif // 

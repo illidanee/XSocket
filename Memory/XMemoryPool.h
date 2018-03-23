@@ -10,7 +10,7 @@ class XMemoryPool
 protected:
 	size_t _nCount;					//内存块个数。
 	size_t _nSize;					//内存块大小。
-	void* _pBuffer;					//内存块首地址。
+	void* _pBuffer;					//内存块首地址。-- 使用malloc和free的时候可以使用void*，如果使用new char方式，最好使用char*类型，否则在linux下delete void*是有警告的。
 	XMemoryBlock* _pCur;			//当前空闲内存块地址。
 
 	std::mutex _mutex;				//锁。

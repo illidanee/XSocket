@@ -26,7 +26,7 @@ public:
 private:
 	size_t _nCount;					//对象块个数。
 	size_t _nSize;					//对象块大小。
-	void* _pBuffer;					//对象块首地址。
+	char* _pBuffer;					//对象块首地址。
 	XObjectBlock* _pCur;			//当前空闲对象块地址。
 
 	std::mutex _mutex;				//锁。

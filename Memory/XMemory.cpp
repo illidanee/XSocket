@@ -6,7 +6,7 @@ void* operator new(size_t nSize)
 	return XMemoryManager::GetInstance().AllocMemory(nSize);
 }
 
-void operator delete(void* pMem)
+void operator delete(void* pMem) noexcept
 {
 	XMemoryManager::GetInstance().FreeMemory(pMem);
 }
@@ -16,7 +16,7 @@ void* operator new[](size_t nSize)
 	return XMemoryManager::GetInstance().AllocMemory(nSize);
 }
 
-void operator delete[](void* pMem)
+void operator delete[](void* pMem) noexcept
 {
 	XMemoryManager::GetInstance().FreeMemory(pMem);
 }

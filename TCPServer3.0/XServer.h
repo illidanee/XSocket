@@ -13,7 +13,7 @@
 #include <memory>
 
 #ifdef _WIN32
-#define FD_SETSIZE 2510
+#define FD_SETSIZE 1024
 #define WIN32_LEAN_AND_MEAN
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>
@@ -128,9 +128,9 @@ public:
 	int Start();
 	int OnRun();
 
-	void AddClient(std::shared_ptr<_Client>& pClient);
+	void AddClient(const std::shared_ptr<_Client>& pClient);
 	int GetClientNum();
-	void AddTask(std::shared_ptr<XTask>& pTask);
+	void AddTask(const std::shared_ptr<XTask>& pTask);
 };
 
 class _SendServer

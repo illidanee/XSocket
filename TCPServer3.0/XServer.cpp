@@ -207,36 +207,34 @@ int _ReceiveServer::OnRun()
 			continue;
 		}
 
-#ifdef _WIN32
-		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
+//#ifdef _WIN32
+//		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
+//		{
+//			std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
+//			if (iter != _AllClients.end())
+//			{
+//				int ret = iter->second->RecvData();
+//				if (ret < 0)
+//				{
+//					if (_pNetEventObj)
+//						_pNetEventObj->OnClientLeave(iter->second.get());
+//
+//					iter = _AllClients.erase(iter);
+//					_ClientChange = true;
+//					continue;
+//				}
+//			}
+//		}
+//#else
+		for (std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 		{
-			std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
-			if (iter != _AllClients.end())
+			if (FD_ISSET(iter->first, &fdRead))
 			{
-				//int ret = RecvData(iter->second);
 				int ret = iter->second->RecvData();
 				if (ret < 0)
 				{
 					if (_pNetEventObj)
 						_pNetEventObj->OnClientLeave(iter->second.get());
-
-					//delete iter->second;
-					iter = _AllClients.erase(iter);
-					_ClientChange = true;
-					continue;
-				}
-			}
-		}
-#else
-		for (std::map<SOCKET, _Client*>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
-		{
-			if (FD_ISSET(iter->first, &fdRead))
-			{
-				int ret = RecvData(iter->second);
-				if (ret < 0)
-				{
-					if (_pNetEventObj)
-						_pNetEventObj->OnClientLeave(iter->second);
 
 					iter = _AllClients.erase(iter);
 					_ClientChange = true;
@@ -246,13 +244,13 @@ int _ReceiveServer::OnRun()
 
 			++iter;
 		}
-#endif
+//#endif
 
 	}
 	return 0;
 }
 
-void _ReceiveServer::AddClient(std::shared_ptr<_Client>& pClient)
+void _ReceiveServer::AddClient(const std::shared_ptr<_Client>& pClient)
 {
 	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
 	_AllClientsCache.insert(std::pair<SOCKET, std::shared_ptr<_Client>>(pClient->GetSocket(), pClient));
@@ -263,7 +261,7 @@ int _ReceiveServer::GetClientNum()
 	return (int)_AllClients.size() + (int)_AllClientsCache.size();
 }
 
-void _ReceiveServer::AddTask(std::shared_ptr<XTask>& pTask)
+void _ReceiveServer::AddTask(const std::shared_ptr<XTask>& pTask)
 {
 	_TaskServer.AddTask(pTask);
 }
