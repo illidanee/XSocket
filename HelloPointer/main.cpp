@@ -29,9 +29,12 @@ void Test2(std::shared_ptr<AAA>& sObj)
 
 int main()
 {
-	std::shared_ptr<AAA> sObj = std::make_shared<AAA>();
-	printf("use count = %d \n", sObj.use_count());
-	Test1(sObj);
-	//Test2(sObj);
-	printf("use count = %d \n", sObj.use_count());
+	//std::shared_ptr<AAA> sObj = std::make_shared<AAA>();
+	//printf("use count = %d \n", sObj.use_count());
+	//Test1(sObj);
+	////Test2(sObj);
+	//printf("use count = %d \n", sObj.use_count());
+
+	AAA* pA = new AAA;
+	std::shared_ptr<AAA> sObj(pA);
 }

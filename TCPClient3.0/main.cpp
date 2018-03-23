@@ -9,7 +9,7 @@
 XTimer timer;
 
 const int mCount = 10;
-const int cCount = 10000;
+const int cCount = 4000;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];

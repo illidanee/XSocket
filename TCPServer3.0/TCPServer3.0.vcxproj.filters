@@ -68,5 +68,11 @@
     <ClInclude Include="..\Memory\XMemoryPool.h">
       <Filter>MemoryPool</Filter>
     </ClInclude>
+    <ClInclude Include="XObjectManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XObjectPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

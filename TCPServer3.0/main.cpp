@@ -90,9 +90,10 @@ public:
 			//int nSize2 = sizeof(XSendTask);
 			//MsgLoginRes* respond = new MsgLoginRes;
 			std::shared_ptr<MsgLoginRes> respond = std::make_shared<MsgLoginRes>();
-			//XSendTask* pTask = new XSendTask(pClient, respond);
-			std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
-			pReceiveServer->AddTask(std::dynamic_pointer_cast<XTask>(pTask));
+			XSendTask* pTask = new XSendTask(pClient, respond.get());
+			pReceiveServer->AddTask(std::shared_ptr<XTask>(pTask));
+			//std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
+			//pReceiveServer->AddTask(std::dynamic_pointer_cast<XTask>(pTask));
 		}
 		break;
 		default:
