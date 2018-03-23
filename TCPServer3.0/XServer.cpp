@@ -30,12 +30,12 @@ int _Client::RecvData()
 		_pNetEventObj->OnNetRecv(this);
 	if (SOCKET_ERROR == size)
 	{
-		printf("OK:Client<Socket=%d> off!\n", (int)_Socket);
+		//printf("OK:Client<Socket=%d> off!\n", (int)_Socket);
 		return -1;
 	}
 	else if (size == 0)
 	{
-		printf("OK:Client<Socket=%d> quit!\n", (int)_Socket);
+		//printf("OK:Client<Socket=%d> quit!\n", (int)_Socket);
 		return -2;
 	}
 

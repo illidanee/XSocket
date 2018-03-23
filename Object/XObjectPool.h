@@ -137,6 +137,7 @@ public:
 		std::lock_guard<std::mutex> lock(_mutex);
 		if (-1 == pObjectBlock->_nID)
 		{
+			XError("FreeObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
 			//使用系统申请的内存块。
 			delete[] pObjectBlock;
 		}

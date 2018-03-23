@@ -81,7 +81,7 @@ void XMemoryManager::FreeMemory(void* pMem)
 	}
 	else
 	{
-		XError("AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XError("FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		//没有内存池可以使用。
 		free(pMemoryBlock);

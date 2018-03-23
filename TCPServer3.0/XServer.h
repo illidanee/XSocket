@@ -63,7 +63,7 @@ public:
 };
 
 //客户端信息类
-class _Client : public XObjectManager<10000, _Client>
+class _Client : public XObjectManager<3998, _Client>
 {
 private:
 	//关联对象
