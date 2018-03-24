@@ -2,8 +2,8 @@
 #define __XCLIENT_H__
 
 #include "XCommon.h"
-#include "MsgProtocol.h"
 #include "XIEvent.h"
+#include "XReceiveServer.h"
 
 //客户端信息类
 class XClient : public XObject<1024, XClient>

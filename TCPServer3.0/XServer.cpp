@@ -158,7 +158,8 @@ int XServer::Start()
 {
 	for (int i = 0; i < _SERVER_SIZE_; ++i)
 	{
-		std::shared_ptr<XReceiveServer> pServer = std::make_shared<XReceiveServer>();
+		//std::shared_ptr<XReceiveServer> pServer = std::make_shared<XReceiveServer>();
+		std::shared_ptr<XReceiveServer> pServer(new XReceiveServer());
 		pServer->SetNetEventObj(this);
 		pServer->Start();
 		_AllServers.push_back(pServer);

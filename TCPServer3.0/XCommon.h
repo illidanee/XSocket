@@ -13,7 +13,7 @@
 #include "../Object/XObject.h"
 
 //计时器
-#include "XTimer.h"
+#include "../Timer/XTimer.h"
 
 //协议头
 #include "MsgProtocol.h"
@@ -40,5 +40,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory>
+
+//调试宏
+#ifndef XError
+#define XError(...) printf(__VA_ARGS__)
+#endif
 
 #endif

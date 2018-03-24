@@ -1,7 +1,7 @@
 #ifndef __XSENDTASK_H__
 #define __XSENDTASK_H__
 
-#include "MsgProtocol.h"
+#include "XCommon.h"
 #include "XTask.h"
 #include "XClient.h"
 

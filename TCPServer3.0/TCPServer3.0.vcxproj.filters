@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="MemoryPool">
       <UniqueIdentifier>{b84b306b-5030-4a9d-9b3f-dadb5c3c0654}</UniqueIdentifier>
     </Filter>
@@ -47,9 +43,6 @@
     <ClCompile Include="XTaskServer.cpp">
       <Filter>Task</Filter>
     </ClCompile>
-    <ClCompile Include="XTimer.cpp">
-      <Filter>Timer</Filter>
-    </ClCompile>
     <ClCompile Include="XSendTask.cpp">
       <Filter>Task</Filter>
     </ClCompile>
@@ -67,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="MyServer.cpp">
       <Filter>Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Timer\XTimer.cpp">
+      <Filter>Timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="XTaskServer.h">
       <Filter>Task</Filter>
-    </ClInclude>
-    <ClInclude Include="XTimer.h">
-      <Filter>Timer</Filter>
     </ClInclude>
     <ClInclude Include="XSendTask.h">
       <Filter>Task</Filter>
@@ -120,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="..\Object\XObject.h">
       <Filter>ObjectPool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Timer\XTimer.h">
+      <Filter>Timer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

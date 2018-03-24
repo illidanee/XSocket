@@ -2,8 +2,8 @@
 #define __XMEMORYBLOCK_H__
 
 #ifndef XError
-	#include <stdio.h>
-	#define XError(...) printf(__VA_ARGS__)
+#include <stdio.h>
+#define XError(...) printf(__VA_ARGS__)
 #endif
 
 class XMemoryPool;

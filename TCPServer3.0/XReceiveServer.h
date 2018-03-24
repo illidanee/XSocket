@@ -8,7 +8,7 @@
 #include "XTaskServer.h"
 #include <map>
 
-class XReceiveServer
+class XReceiveServer : public XObject<_SERVER_SIZE_, XReceiveServer>
 {
 private:
 	XIEvent* _pNetEventObj;											//主线程对象
