@@ -1,12 +1,11 @@
-#include <thread>
-#include "XServer.h"
+#include "MyServer.h"
 
 #ifndef _WIN32
 #include <signal.h>
 #endif
 
 //命令线程
-void CmdThread(_ListenServer* pServer)
+void CmdThread(XServer* pServer)
 {
 	while (true)
 	{
@@ -19,95 +18,6 @@ void CmdThread(_ListenServer* pServer)
 		}
 	}
 }
-
-//自定义Server
-class MyServer : public XServer
-{
-private:
-	XTimer _Timer;								//计时器
-	std::atomic_int _ClientNum;					//客户端计数器
-	std::atomic_int _RecvNum;					//recv()函数调用计数
-	std::atomic_int _SendNum;					//send()函数调用计数
-	std::atomic_int _RecvPackageNum;			//接收数据包计数器
-	std::atomic_int _DonePackageNum;			//处理数据包计数器
-	std::atomic_int _PackageNum;				//剩余任务包计数
-
-public:
-	MyServer()
-	{
-		//初始化其他
-		_Timer.XInit();
-		_ClientNum = 0;
-		_RecvNum = 0;
-		_SendNum = 0;
-		_RecvPackageNum = 0;
-		_DonePackageNum = 0;
-		_PackageNum = 0;
-	}
-	~MyServer()
-	{
-		_Timer.XDone();
-	}
-	virtual void OnRunBegin()
-	{
-		if (_Timer.GetTime() > 1.0)
-		{
-			printf("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
-			_RecvNum = 0;
-			_SendNum = 0;
-			_RecvPackageNum = 0;
-			_DonePackageNum = 0;
-			_Timer.UpdateTime();
-		}
-	}
-	virtual void OnClientJoin(_Client* pClient)
-	{
-		++_ClientNum;
-	}
-	virtual void OnClientLeave(_Client* pClient)
-	{
-		--_ClientNum;
-	}
-	virtual void OnNetRecv(_Client* pClient)
-	{
-		++_RecvNum;
-	}
-	virtual void OnNetSend(_Client* pClient)
-	{
-		++_SendNum;
-	}
-	virtual void OnNetMsgRecv(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer)
-	{
-		++_RecvPackageNum;
-		++_PackageNum;
-
-		//处理客户端请求
-		switch (pHeader->_MsgType)
-		{
-		case MSG_LOGIN:
-		{
-			//int nSize1 = sizeof(MsgLoginRes);
-			//int nSize2 = sizeof(XSendTask);
-			//MsgLoginRes* respond = new MsgLoginRes;
-			std::shared_ptr<MsgLoginRes> respond = std::make_shared<MsgLoginRes>();
-			//XSendTask* pTask = new XSendTask(pClient, respond.get());
-			//pReceiveServer->AddTask(std::shared_ptr<XTask>(pTask));
-			std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
-			pReceiveServer->AddTask(std::dynamic_pointer_cast<XTask>(pTask));
-		}
-		break;
-		default:
-		{
-			printf("Warn： default Msg。");
-		}
-		}
-	}
-	virtual void OnNetMsgDone(_Client* pClient, MsgHeader* pHeader, _ReceiveServer* pReceiveServer)
-	{
-		++_DonePackageNum;
-		--_PackageNum;
-	}
-};
 
 int main()
 {
@@ -131,6 +41,7 @@ int main()
 	server->Listen(1000);
 	server->Start();
 
+	//开启命令线程
 	std::thread cmdThread(CmdThread, server);
 	cmdThread.detach();
 

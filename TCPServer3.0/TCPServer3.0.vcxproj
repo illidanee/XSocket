@@ -159,8 +159,13 @@
     <ClCompile Include="..\Memory\XMemoryManager.cpp" />
     <ClCompile Include="..\Memory\XMemoryPool.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyServer.cpp" />
+    <ClCompile Include="XClient.cpp" />
+    <ClCompile Include="XReceiveServer.cpp" />
+    <ClCompile Include="XSendTask.cpp" />
     <ClCompile Include="XServer.cpp" />
     <ClCompile Include="XTask.cpp" />
+    <ClCompile Include="XTaskServer.cpp" />
     <ClCompile Include="XTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,11 +173,18 @@
     <ClInclude Include="..\Memory\XMemoryBlock.h" />
     <ClInclude Include="..\Memory\XMemoryManager.h" />
     <ClInclude Include="..\Memory\XMemoryPool.h" />
-    <ClInclude Include="..\Object\XObjectManager.h" />
+    <ClInclude Include="..\Object\XObject.h" />
     <ClInclude Include="..\Object\XObjectPool.h" />
     <ClInclude Include="MsgProtocol.h" />
+    <ClInclude Include="MyServer.h" />
+    <ClInclude Include="XClient.h" />
+    <ClInclude Include="XCommon.h" />
+    <ClInclude Include="XIEvent.h" />
+    <ClInclude Include="XReceiveServer.h" />
+    <ClInclude Include="XSendTask.h" />
     <ClInclude Include="XServer.h" />
     <ClInclude Include="XTask.h" />
+    <ClInclude Include="XTaskServer.h" />
     <ClInclude Include="XTimer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

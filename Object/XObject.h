@@ -4,27 +4,27 @@
 #include "XObjectPool.h"
 
 template <size_t nCount, typename Type>
-class XObjectManager
+class XObject
 {
 public:
 	void* operator new(size_t nSize)
 	{
-		return XObjectManager::GetObjectPool().AllocObjectMemory(nSize);
+		return XObject::GetObjectPool().AllocObjectMemory(nSize);
 	}
 
 	void operator delete(void* pMem)
 	{
-		XObjectManager::GetObjectPool().FreeObjectMemory(pMem);
+		XObject::GetObjectPool().FreeObjectMemory(pMem);
 	}
 
 	void* operator new[](size_t nSize)
 	{
-		return XObjectManager::GetObjectPool().AllocObjectMemory(nSize);
+		return XObject::GetObjectPool().AllocObjectMemory(nSize);
 	}
 
 	void operator delete[](void* pMem)
 	{
-		XObjectManager::GetObjectPool().FreeObjectMemory(pMem);
+		XObject::GetObjectPool().FreeObjectMemory(pMem);
 	}
 
 	template <typename... Args>
@@ -44,19 +44,6 @@ private:
 	{
 		static XObjectPool<nCount, Type> objPool;
 		return objPool;
-	}
-};
-
-class AAA : public XObjectManager<100003, AAA>
-{
-public:
-	AAA()
-	{
-		//printf("AAA \n");
-	}
-	~AAA()
-	{
-		//printf("~AAA \n");
 	}
 };
 

@@ -44,7 +44,7 @@ void ClientThread(int id)
 
 	for (int i = begin; i < end; ++i)
 	{
-		client[i]->Connect("192.168.0.90", 9090);
+		client[i]->Connect("192.168.0.99", 9090);
 	}
 	
 	//使用原子计数器优化线程等待。
