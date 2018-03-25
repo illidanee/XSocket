@@ -5,7 +5,8 @@
 #define _SERVER_SIZE_ 4
 #define _RECV_BUFFER_SIZE_ 10240
 #define _SEND_BUFFER_SIZE_ 10240
-#define _HEART_TIME_ 6000000
+#define _XCLIENT_HEART_TIME_ 60000000
+#define _XCLIENT_SEND_TIME_ 200000
 
 //ÄÚ´æ³Ø
 #include "../Memory/XMemory.h"
@@ -21,7 +22,7 @@
 
 //SocketÏà¹Ø
 #ifdef _WIN32
-#define FD_SETSIZE 1024
+#define FD_SETSIZE 10240
 #define WIN32_LEAN_AND_MEAN
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>

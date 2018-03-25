@@ -6,7 +6,7 @@
 #include "XReceiveServer.h"
 
 //客户端信息类
-class XClient : public XObject<1024, XClient>
+class XClient : public XObject<10240, XClient>
 {
 private:
 	//关联对象
@@ -21,6 +21,7 @@ private:
 	int _SendStartPos;							//发送缓冲区中可以放入数据的起始位置
 
 	time_t	_HeartTime;							//心跳计时器
+	time_t	_SendTime;							//定时发送数据计时器
 
 public:
 	XClient(SOCKET client);
@@ -32,9 +33,15 @@ public:
 
 	int RecvData();
 	int SendData(MsgHeader* pHeader);
+	int SendData();
 
+	//心跳
 	void ResetHeartTime();
 	bool CheckHeartTime(time_t t);
+
+	//定时发送数据
+	void ResetSendTime();
+	void CheckSendTime(time_t t);
 };
 
 

@@ -89,6 +89,8 @@ int XClient::SendData(MsgHeader* pHeader)
 			pBuffer += len;
 			nSendBufferSize -= len;
 
+			ResetSendTime();
+
 			int ret = send(_Socket, _SendBuffer, _SEND_BUFFER_SIZE_, 0);
 			if (_pNetEventObj)
 				_pNetEventObj->OnNetSend(this);
@@ -111,6 +113,27 @@ int XClient::SendData(MsgHeader* pHeader)
 	return 0;
 }
 
+int XClient::SendData()
+{
+	ResetSendTime();
+
+	if (_SendStartPos > 0)
+	{
+		int ret = send(_Socket, _SendBuffer, _SendStartPos, 0);
+		if (_pNetEventObj)
+			_pNetEventObj->OnNetSend(this);
+
+		_SendStartPos = 0;
+
+		if (SOCKET_ERROR == ret)
+		{
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
 void XClient::ResetHeartTime()
 {
 	_HeartTime = 0;
@@ -119,11 +142,26 @@ void XClient::ResetHeartTime()
 bool XClient::CheckHeartTime(time_t t)
 {
 	_HeartTime += t;
-	if (_HeartTime >= _HEART_TIME_)
+	if (_HeartTime >= _XCLIENT_HEART_TIME_)
 	{
 		XError("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
 		return true;
 	}
 
 	return false;
+}
+
+void XClient::ResetSendTime()
+{
+	_SendTime = 0;
+}
+
+void XClient::CheckSendTime(time_t t)
+{
+	_SendTime += t;
+	if (_SendTime >= _XCLIENT_SEND_TIME_)
+	{
+		//XError("CheckSendTime! \n");
+		SendData();
+	}
 }
