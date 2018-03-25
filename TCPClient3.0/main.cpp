@@ -31,29 +31,20 @@ void CmdThread()
 	}
 }
 
-void ClientThread(int id)
+void RecvThread(int begin, int end)
 {
-	int begin = id * cCount / tCount;
-	int end = begin + cCount / tCount;
-
-	for (int i = begin; i < end; ++i)
+	while (bRun)
 	{
-		client[i] = new Client();
-		client[i]->Open();
+		for (int i = begin; i < end; ++i)
+		{
+			client[i]->OnRun();
+			//std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
 	}
+}
 
-	for (int i = begin; i < end; ++i)
-	{
-		client[i]->Connect("192.168.0.99", 9090);
-	}
-	
-	//使用原子计数器优化线程等待。
-	readyCount++;
-	while (readyCount < tCount)
-	{
-		std::this_thread::sleep_for(std::chrono::microseconds(1000));
-	}
-
+void SendThread(int begin, int end)
+{
 	MsgLogin login[mCount];
 	for (int i = 0; i < mCount; ++i)
 	{
@@ -62,28 +53,50 @@ void ClientThread(int id)
 	}
 	int len = sizeof(login);
 
-	//bool bSend = false;
 	while (bRun)
 	{
-		//if (bSend == false)
-		//{
-		//	//bSend = true;
-		//	for (int i = begin; i < end; ++i)
-		//	{
-		//		client[i]->SendData(login, len);
-		//		sendCount++;
-		//	}
-		//}
-
 		for (int i = begin; i < end; ++i)
 		{
 			client[i]->SendData(login, len);
 			sendCount++;
-			client[i]->OnRun();
-			//如果不添加此句代码，在公司电脑无法处理过多客户端数据，造成消息积压。
+
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 	}
+}
+
+void ClientThread(int id)
+{
+	//分段
+	int begin = id * cCount / tCount;
+	int end = begin + cCount / tCount;
+
+	//创建客户端
+	for (int i = begin; i < end; ++i)
+	{
+		client[i] = new Client();
+	}
+
+	//连接服务器
+	for (int i = begin; i < end; ++i)
+	{
+		client[i]->Open();
+		client[i]->Connect("192.168.0.99", 9090);
+	}
+
+	//使用原子计数器优化线程等待。
+	readyCount++;
+	while (readyCount < tCount)
+	{
+		std::this_thread::sleep_for(std::chrono::microseconds(1000));
+	}
+
+	//开启数据接收线程
+	std::thread rRecv = std::thread(RecvThread, begin, end);
+	rRecv.detach();
+
+	//开始发送数据
+	SendThread(begin, end);
 
 	for (int i = begin; i < end; ++i)
 	{
@@ -109,6 +122,7 @@ int main()
 		clientThread[i].detach();
 	}
 
+	//打印信息
 	while (bRun)
 	{
 		if (timer.GetTime() > 1.0)
@@ -118,7 +132,7 @@ int main()
 			timer.UpdateTime();
 		}
 
-		std::this_thread::sleep_for(std::chrono::microseconds(1000));
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 
 	Client::Done();
