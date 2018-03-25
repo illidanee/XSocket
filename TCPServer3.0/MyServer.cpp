@@ -61,8 +61,13 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	case MSG_LOGIN:
 	{
 		std::shared_ptr<MsgLoginRes> respond = std::make_shared<MsgLoginRes>();
-		std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
-		pReceiveServer->AddTask(std::dynamic_pointer_cast<XTask>(pTask));
+		//std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
+		std::function<void()> pTask = [pClient, respond]()
+		{
+			pClient->SendData(respond.get());
+		};
+		
+		pReceiveServer->AddTask(pTask);
 	}
 	break;
 	default:

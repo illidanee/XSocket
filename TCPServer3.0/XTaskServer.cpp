@@ -14,7 +14,7 @@ void XTaskServer::OnRun()
 		if (!_TasksCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_TaskSCacheMutex);
-			for (std::list<std::shared_ptr<XTask>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
+			for (std::list<std::function<void()>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
 			{
 				_Tasks.push_back(*iter);
 			}
@@ -29,9 +29,9 @@ void XTaskServer::OnRun()
 		}
 
 		//处理任务
-		for (std::list<std::shared_ptr<XTask>>::iterator iter = _Tasks.begin(); iter != _Tasks.end(); ++iter)
+		for (std::list<std::function<void()>>::iterator iter = _Tasks.begin(); iter != _Tasks.end(); ++iter)
 		{
-			(*iter)->DoTask();
+			(*iter)();
 			//delete *iter;
 		}
 
@@ -42,7 +42,7 @@ void XTaskServer::OnRun()
 
 }
 
-void XTaskServer::AddTask(const std::shared_ptr<XTask>& pTask)
+void XTaskServer::AddTask(std::function<void()> pTask)
 {
 	std::lock_guard<std::mutex> lock(_TaskSCacheMutex);
 	_TasksCache.push_back(pTask);

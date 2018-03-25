@@ -163,9 +163,7 @@
     <ClCompile Include="MyServer.cpp" />
     <ClCompile Include="XClient.cpp" />
     <ClCompile Include="XReceiveServer.cpp" />
-    <ClCompile Include="XSendTask.cpp" />
     <ClCompile Include="XServer.cpp" />
-    <ClCompile Include="XTask.cpp" />
     <ClCompile Include="XTaskServer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +180,7 @@
     <ClInclude Include="XCommon.h" />
     <ClInclude Include="XIEvent.h" />
     <ClInclude Include="XReceiveServer.h" />
-    <ClInclude Include="XSendTask.h" />
     <ClInclude Include="XServer.h" />
-    <ClInclude Include="XTask.h" />
     <ClInclude Include="XTaskServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

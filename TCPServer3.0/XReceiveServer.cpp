@@ -138,7 +138,7 @@ int XReceiveServer::GetClientNum()
 	return (int)_AllClients.size() + (int)_AllClientsCache.size();
 }
 
-void XReceiveServer::AddTask(const std::shared_ptr<XTask>& pTask)
+void XReceiveServer::AddTask(std::function<void()> pTask)
 {
 	_TaskServer.AddTask(pTask);
 }

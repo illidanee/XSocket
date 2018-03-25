@@ -37,13 +37,7 @@
     <ClCompile Include="..\Memory\XMemoryPool.cpp">
       <Filter>MemoryPool</Filter>
     </ClCompile>
-    <ClCompile Include="XTask.cpp">
-      <Filter>Task</Filter>
-    </ClCompile>
     <ClCompile Include="XTaskServer.cpp">
-      <Filter>Task</Filter>
-    </ClCompile>
-    <ClCompile Include="XSendTask.cpp">
       <Filter>Task</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -81,13 +75,7 @@
     <ClInclude Include="..\Object\XObjectPool.h">
       <Filter>ObjectPool</Filter>
     </ClInclude>
-    <ClInclude Include="XTask.h">
-      <Filter>Task</Filter>
-    </ClInclude>
     <ClInclude Include="XTaskServer.h">
-      <Filter>Task</Filter>
-    </ClInclude>
-    <ClInclude Include="XSendTask.h">
       <Filter>Task</Filter>
     </ClInclude>
     <ClInclude Include="XCommon.h">

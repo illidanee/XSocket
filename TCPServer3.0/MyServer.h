@@ -3,8 +3,8 @@
 
 #include "XCommon.h"
 #include "XServer.h"
-#include "XSendTask.h"
 #include <atomic>
+#include <functional>
 
 //×Ô¶¨ÒåServer
 class MyServer : public XServer

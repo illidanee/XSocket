@@ -4,7 +4,6 @@
 #include "XCommon.h"
 #include "XIEvent.h"
 #include "XClient.h"
-#include "XTask.h"
 #include "XTaskServer.h"
 #include <map>
 
@@ -36,7 +35,7 @@ public:
 
 	void AddClient(const std::shared_ptr<XClient>& pClient);
 	int GetClientNum();
-	void AddTask(const std::shared_ptr<XTask>& pTask);
+	void AddTask(std::function<void()> pTask);
 };
 
 #endif
