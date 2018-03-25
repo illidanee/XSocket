@@ -69,6 +69,19 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 		
 		pReceiveServer->AddTask(pTask);
 	}
+	case MSG_HEART:
+	{
+		pClient->ResetHeartTime();
+
+		std::shared_ptr<MsgHeart> respond = std::make_shared<MsgHeart>();
+		//std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
+		std::function<void()> pTask = [pClient, respond]()
+		{
+			pClient->SendData(respond.get());
+		};
+
+		pReceiveServer->AddTask(pTask);
+	}
 	break;
 	default:
 	{

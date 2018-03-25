@@ -2,7 +2,8 @@
 
 XReceiveServer::XReceiveServer()
 {
-	_pNetEventObj = 0;
+	_pNetEventObj = nullptr;
+	_LastTime = 0;
 	_ClientChange = true;
 }
 
@@ -28,8 +29,37 @@ int XReceiveServer::Start()
 
 int XReceiveServer::OnRun()
 {
+	//初始化计时。
+	_LastTime = XTimer::GetTimeByMicroseconds();
+
 	while (true)
 	{
+		//心跳检测！
+		time_t curTime = XTimer::GetTimeByMicroseconds();
+		time_t delta = curTime - _LastTime;
+		_LastTime = curTime;
+
+		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
+		{
+			if (iter->second->CheckHeartTime(delta))
+			{
+				if (_pNetEventObj)
+					_pNetEventObj->OnClientLeave(iter->second.get());
+
+#ifdef _WIN32
+				closesocket(iter->first);
+#else
+				close(iter->first);
+#endif
+				iter = _AllClients.erase(iter);
+				_ClientChange = true;
+				continue;
+			}
+
+			++iter;
+		}
+
+		//是否有新客户端加入？
 		if (!_AllClientsCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
@@ -42,12 +72,14 @@ int XReceiveServer::OnRun()
 			_ClientChange = true;
 		}
 
+		//是否有客户端连接？
 		if (_AllClients.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 			continue;
 		}
 
+		//检查是否有客户端向服务器发送数据。
 		fd_set fdRead;
 		FD_ZERO(&fdRead);
 
@@ -84,6 +116,8 @@ int XReceiveServer::OnRun()
 			continue;
 		}
 
+		//接收客户端数据
+
 		//#ifdef _WIN32
 		//		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
 		//		{
@@ -113,6 +147,7 @@ int XReceiveServer::OnRun()
 					if (_pNetEventObj)
 						_pNetEventObj->OnClientLeave(iter->second.get());
 
+					closesocket(iter->first);
 					iter = _AllClients.erase(iter);
 					_ClientChange = true;
 					continue;

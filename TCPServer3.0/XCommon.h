@@ -5,6 +5,7 @@
 #define _SERVER_SIZE_ 4
 #define _RECV_BUFFER_SIZE_ 10240
 #define _SEND_BUFFER_SIZE_ 10240
+#define _HEART_TIME_ 6000000
 
 //ÄÚ´æ³Ø
 #include "../Memory/XMemory.h"

@@ -20,6 +20,8 @@ private:
 	char _SendBuffer[_SEND_BUFFER_SIZE_];		//发送缓冲区
 	int _SendStartPos;							//发送缓冲区中可以放入数据的起始位置
 
+	time_t	_HeartTime;							//心跳计时器
+
 public:
 	XClient(SOCKET client);
 	~XClient();
@@ -30,6 +32,9 @@ public:
 
 	int RecvData();
 	int SendData(MsgHeader* pHeader);
+
+	void ResetHeartTime();
+	bool CheckHeartTime(time_t t);
 };
 
 

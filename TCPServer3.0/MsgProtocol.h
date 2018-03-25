@@ -5,6 +5,7 @@ enum MGS_TYPE
 {
 	MSG_HEADER,
 	MSG_ERROR,
+	MSG_HEART,
 	MSG_LOGIN,
 	MSG_LOGIN_RES,
 	MSG_LOGOUT,
@@ -30,6 +31,16 @@ struct MsgError : public MsgHeader
 		_MsgType = MSG_ERROR;
 		_MsgLength = sizeof(MsgError);
 	}
+};
+
+struct MsgHeart : public MsgHeader
+{
+	MsgHeart()
+	{
+		_MsgType = MSG_HEART;
+		_MsgLength = sizeof(MsgHeart);
+	}
+	char _data[92];
 };
 
 struct MsgLogin : public MsgHeader

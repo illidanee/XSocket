@@ -2,11 +2,16 @@
 
 XClient::XClient(SOCKET client)
 {
+	_pNetEventObj = nullptr;
+	_pReceiveServerObj = nullptr;
+
 	_Socket = client;
 	memset(_RecvBuffer, 0, _RECV_BUFFER_SIZE_);
 	_RecvStartPos = 0;
 	memset(_SendBuffer, 0, _SEND_BUFFER_SIZE_);
 	_SendStartPos = 0;
+
+	_HeartTime = 0;
 }
 
 XClient::~XClient()
@@ -104,4 +109,21 @@ int XClient::SendData(MsgHeader* pHeader)
 	}
 
 	return 0;
+}
+
+void XClient::ResetHeartTime()
+{
+	_HeartTime = 0;
+}
+
+bool XClient::CheckHeartTime(time_t t)
+{
+	_HeartTime += t;
+	if (_HeartTime >= _HEART_TIME_)
+	{
+		XError("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
+		return true;
+	}
+
+	return false;
 }

@@ -19,6 +19,8 @@ private:
 private:
 	XTaskServer _TaskServer;										//服务器对应的任务线程。
 
+	time_t _LastTime;												//上次循环服务器时间
+
 private:
 	fd_set _fdSetCache;
 	bool _ClientChange;
