@@ -9,7 +9,7 @@
 XTimer timer;
 
 const int mCount = 10;
-const int cCount = 1000;
+const int cCount = 8;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
@@ -45,20 +45,20 @@ void RecvThread(int begin, int end)
 
 void SendThread(int begin, int end)
 {
-	MsgLogin login[mCount];
-	for (int i = 0; i < mCount; ++i)
-	{
-		memcpy(login[i]._Name, "illidan", sizeof("illidan"));
-		memcpy(login[i]._Pwd, "12345", sizeof("12345"));
-	}
+	MsgHeart login[mCount];
+	//for (int i = 0; i < mCount; ++i)
+	//{
+	//	memcpy(login[i]._Name, "illidan", sizeof("illidan"));
+	//	memcpy(login[i]._Pwd, "12345", sizeof("12345"));
+	//}
 	int len = sizeof(login);
 
 	while (bRun)
 	{
 		for (int i = begin; i < end; ++i)
 		{
-			client[i]->SendData(login, len);
-			sendCount++;
+			if (client[i]->SendData(login, len) >= 0)
+				sendCount++;
 
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}

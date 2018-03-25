@@ -6,6 +6,9 @@
 class XTimer
 {
 public:
+	static time_t GetTimeByMicroseconds();
+
+public:
 	int XInit();
 	int XDone();
 
