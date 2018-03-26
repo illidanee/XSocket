@@ -104,6 +104,8 @@ void XMemoryPool::FreeMemory(void* pMem)
 	std::lock_guard<std::mutex> lock(_mutex);
 	if (-1 == pMemoryBlock->_nID)
 	{
+		XError("FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+
 		//使用系统申请的内存块。
 		free(pMemoryBlock);
 	}

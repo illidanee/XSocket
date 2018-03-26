@@ -39,28 +39,28 @@ void RecvThread(int begin, int end)
 		{
 			client[i]->OnRun();
 		}
-		std::this_thread::sleep_for(std::chrono::microseconds(1));
+		//std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 }
 
 void SendThread(int begin, int end)
 {
-	MsgHeart login[mCount];
+	MsgHeart msg[mCount];
 	//for (int i = 0; i < mCount; ++i)
 	//{
 	//	memcpy(login[i]._Name, "illidan", sizeof("illidan"));
 	//	memcpy(login[i]._Pwd, "12345", sizeof("12345"));
 	//}
-	int len = sizeof(login);
+	int len = sizeof(msg);
 
 	while (bRun)
 	{
 		for (int i = begin; i < end; ++i)
 		{
-			if (client[i]->SendData(login, len) >= 0)
+			if (client[i]->SendData(msg, len) >= 0)
 				sendCount++;
 		}
-		std::this_thread::sleep_for(std::chrono::microseconds(100000));
+		//std::this_thread::sleep_for(std::chrono::microseconds(100000));
 	}
 }
 
