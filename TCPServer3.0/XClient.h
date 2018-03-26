@@ -6,7 +6,7 @@
 #include "XReceiveServer.h"
 
 //客户端信息类
-class XClient : public XObject<10240, XClient>
+class XClient : public XObject<1024, XClient>
 {
 private:
 	//关联对象

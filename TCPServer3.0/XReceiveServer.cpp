@@ -59,6 +59,11 @@ int XReceiveServer::OnRun()
 			++iter;
 		}
 
+		//for (auto iter : _AllClients)
+		//{
+		//	iter.second->CheckSendTime(delta);
+		//}
+
 		//是否有新客户端加入？
 		if (!_AllClientsCache.empty())
 		{

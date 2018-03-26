@@ -8,8 +8,8 @@
 
 XTimer timer;
 
-const int mCount = 10;
-const int cCount = 10000;
+const int mCount = 1;
+const int cCount = 1000;
 const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
@@ -39,7 +39,7 @@ void RecvThread(int begin, int end)
 		{
 			client[i]->OnRun();
 		}
-		//std::this_thread::sleep_for(std::chrono::microseconds(1));
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 }
 
@@ -60,7 +60,7 @@ void SendThread(int begin, int end)
 			if (client[i]->SendData(msg, len) >= 0)
 				sendCount++;
 		}
-		//std::this_thread::sleep_for(std::chrono::microseconds(100000));
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 }
 
