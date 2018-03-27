@@ -28,7 +28,6 @@ int XTaskServer::Stop(int id)
 	XLog("XTaskServer<ID=%d>:Stop() Begin\n", id);
 
 	//关闭服务线程
-	_Signal.Sleep();
 	_Run = false;
 	_Signal.Wait();
 

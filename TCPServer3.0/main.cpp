@@ -53,9 +53,6 @@ int main()
 	std::thread cmdThread(CmdThread, server);
 	cmdThread.detach();
 
-	//设置同步信号-等在子线程任务执行完成再退出。否则子线程对象被释放会出现内存错误。
-	_gSignal.Sleep();
-
 	//运行服务器
 	server->OnRun();
 

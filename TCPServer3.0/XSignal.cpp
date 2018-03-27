@@ -1,23 +1,32 @@
 #include "XSignal.h"
 
-#include <chrono>
-#include <thread>
-
-void XSignal::Sleep()
+XSignal::XSignal()
+	:
+	_WaitNum(0),
+	_WakeNum(0)
 {
-	_Wait = true;
 }
 
 void XSignal::Wait()
 {
-	while (_Wait)
+	std::unique_lock<std::mutex> lock(_Mutex);
+	if (--_WaitNum < 0)
 	{
-		std::chrono::microseconds t(1000);
-		std::this_thread::sleep_for(t);
+		_CV.wait(lock, [this]()->bool { 
+			return _WakeNum > 0;
+		});
+		--_WakeNum;
 	}
 }
 
 void XSignal::Wake()
 {
-	_Wait = false;
+	std::lock_guard<std::mutex> lock(_Mutex);
+
+	if (++_WaitNum <= 0)
+	{
+		++_WakeNum;
+		_CV.notify_one();
+	}
+
 }

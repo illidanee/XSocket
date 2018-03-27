@@ -52,7 +52,6 @@ int XReceiveServer::Stop()
 	XLog("XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
 
 	//关闭服务线程
-	_Signal.Sleep();
 	_Run = false;
 	_Signal.Wait();
 

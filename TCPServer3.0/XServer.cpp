@@ -46,7 +46,6 @@ int XServer::Stop()
 	XLog("XServer:Stop() Begin\n");
 
 	//关闭服务器 - 注意顺序。
-	_Signal.Sleep();
 	_Run = false;
 	_Signal.Wait();
 
