@@ -1,8 +1,11 @@
 #include "MyServer.h"
+#include "XSignal.h"
 
 #ifndef _WIN32
 #include <signal.h>
 #endif
+
+XSignal _gSignal;
 
 //命令线程
 void CmdThread(XServer* pServer)
@@ -11,9 +14,18 @@ void CmdThread(XServer* pServer)
 	{
 		char buffer[32] = {};
 		scanf("%s", buffer);
-		if (0 == strcmp(buffer, "Exit"))
+		if (0 == strcmp(buffer, "exit"))
 		{
-			pServer->Close();
+			pServer->Stop();
+			//唤醒同步信号
+			_gSignal.Wake();
+			break;
+		}
+		else if (0 == strcmp(buffer, "Exit"))
+		{
+			pServer->Stop();
+			//唤醒同步信号
+			_gSignal.Wake();
 			break;
 		}
 	}
@@ -35,21 +47,19 @@ int main()
 	MyServer* server = new MyServer;
 
 	//开启服务器
-	server->Init();
-	server->Open();
-	server->Bind(NULL, 9090);
-	server->Listen(1000);
 	server->Start();
 
 	//开启命令线程
 	std::thread cmdThread(CmdThread, server);
 	cmdThread.detach();
 
+	//设置同步信号-等在子线程任务执行完成再退出。否则子线程对象被释放会出现内存错误。
+	_gSignal.Sleep();
+
 	//运行服务器
 	server->OnRun();
 
-	//关闭服务器
-	server->Close();
-
+	//等待同步信号
+	_gSignal.Wait();
 	return 0;
 }

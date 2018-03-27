@@ -11,7 +11,7 @@ void XMemoryManager::InitMemoryPools(size_t nBegin, size_t nEnd, XMemoryPool* pP
 
 XMemoryManager::XMemoryManager()
 {
-	XError("XMemoryManager() \n");
+	XLog("XMemoryManager() \n");
 
 	InitMemoryPools(0 + 1, 16, &_MemoryPool16);
 	InitMemoryPools(16 + 1, 32, &_MemoryPool32);
@@ -64,7 +64,7 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 		pMemoryBlock->_pNext = nullptr;
 		pMemoryBlock->_nRef = 1;
 
-		XError("AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XLog("AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		return (char*)pMemoryBlock + sizeof(XMemoryBlock);
 	}
@@ -81,7 +81,7 @@ void XMemoryManager::FreeMemory(void* pMem)
 	}
 	else
 	{
-		XError("FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XLog("FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		//没有内存池可以使用。
 		free(pMemoryBlock);

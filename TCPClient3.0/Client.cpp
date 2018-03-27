@@ -110,7 +110,7 @@ int Client::OnRun()
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		timeval tv = { 0, 0 };
+		timeval tv = { 0, 1000 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -144,20 +144,19 @@ int Client::SendData(MsgHeader* pHeader, int len)
 
 int Client::RecvData()
 {
-	recv(_Socket, _DataBuffer, _BUFFER_SIZE_, 0);
-	////接收数据到接收缓冲区中
+	//接收数据到接收缓冲区中
 	//char* pBuffer = _DataBuffer + _StartPos;
-	//int size = recv(_Socket, pBuffer, _BUFFER_SIZE_ - _StartPos, 0);
-	//if (SOCKET_ERROR == size)
-	//{
-	//	printf("OK:Server off!\n");
-	//	return -1;
-	//}
-	//else if (size == 0)
-	//{
-	//	printf("OK:Server quit!\n");
-	//	return -2;
-	//}
+	int size = recv(_Socket, _DataBuffer, _BUFFER_SIZE_, 0);
+	if (SOCKET_ERROR == size)
+	{
+		printf("OK:Server off!\n");
+		return -1;
+	}
+	else if (size == 0)
+	{
+		printf("OK:Server quit!\n");
+		return -2;
+	}
 
 	////将接收缓冲区数据拷贝到数据缓冲区
 	////memcpy(_DataBuffer + _StartPos, _RecvBuffer, size);

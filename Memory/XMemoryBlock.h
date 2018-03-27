@@ -1,9 +1,13 @@
 #ifndef __XMEMORYBLOCK_H__
 #define __XMEMORYBLOCK_H__
 
-#ifndef XError
+#ifndef XLog
 #include <stdio.h>
-#define XError(...) printf(__VA_ARGS__)
+#ifdef _DEBUG
+#define XLog(...) printf(__VA_ARGS__)
+#else
+#define XLog(...) printf(__VA_ARGS__)
+#endif
 #endif
 
 class XMemoryPool;

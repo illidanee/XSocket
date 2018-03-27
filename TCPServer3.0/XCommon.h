@@ -2,7 +2,7 @@
 #define __XCOMMON_H__
 
 //自定义宏
-#define _SERVER_SIZE_ 4
+#define _SERVER_SIZE_ 1
 #define _RECV_BUFFER_SIZE_ 10240
 #define _SEND_BUFFER_SIZE_ 10240
 #define _XCLIENT_HEART_TIME_ 60000000
@@ -39,13 +39,19 @@
 #endif // _WIN32
 
 //系统头文件
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory>
 
 //调试宏
-#ifndef XError
-#define XError(...) printf(__VA_ARGS__)
+#ifndef XLog
+#include <stdio.h>
+#ifdef _DEBUG
+#define XLog(...) printf(__VA_ARGS__)
+#else
+#define XLog(...) printf(__VA_ARGS__)
+#endif
 #endif
 
 #endif

@@ -9,9 +9,9 @@ class XReceiveServer;
 class XIEvent
 {
 public:
-	virtual void OnRunBegin() = 0;
-	virtual void OnClientJoin(XClient* pClient) = 0;
-	virtual void OnClientLeave(XClient* pClient) = 0;
+	virtual void OnRunLoopBegin() = 0;
+	virtual void OnClientJoin(std::shared_ptr<XClient> pClient) = 0;
+	virtual void OnClientLeave(std::shared_ptr<XClient> pClient) = 0;
 	virtual void OnNetRecv(XClient* pClient) = 0;
 	virtual void OnNetSend(XClient* pClient) = 0;
 	virtual void OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveServer* pReceiveServer) = 0;

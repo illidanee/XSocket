@@ -12,11 +12,19 @@ XClient::XClient(SOCKET client)
 	_SendStartPos = 0;
 
 	_HeartTime = 0;
+	_SendTime = 0;
 }
 
 XClient::~XClient()
 {
+	XLog("XClient:~XClient()\n");
 
+	shutdown(_Socket, SD_BOTH);
+#ifdef _WIN32
+	closesocket(_Socket);
+#else
+	close(_Socket);
+#endif
 }
 
 void XClient::Init(XIEvent* pEventObj, XReceiveServer* pReceiveServerObj)
@@ -144,7 +152,7 @@ bool XClient::CheckHeartTime(time_t t)
 	_HeartTime += t;
 	if (_HeartTime >= _XCLIENT_HEART_TIME_)
 	{
-		XError("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
+		XLog("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
 		return true;
 	}
 

@@ -35,14 +35,14 @@ public:
 		_nCount = nCount;
 		_nSize = nSize / n * n + (nSize % n ? n : 0);	//使用内存对齐大小。
 
-		XError("XTMemoryPool() ： count = %d, size = %d \n", (int)_nCount, (int)_nSize);
+		XLog("XTMemoryPool() ： count = %d, size = %d \n", (int)_nCount, (int)_nSize);
 
 		XMemoryPool::Init();
 	}
 
 	~XTMemoryPool()
 	{
-		XError("~XTMemoryPool() ： count = %d, size = %d \n", (int)_nCount, (int)_nSize);
+		XLog("~XTMemoryPool() ： count = %d, size = %d \n", (int)_nCount, (int)_nSize);
 
 		XMemoryPool::Done();
 	}

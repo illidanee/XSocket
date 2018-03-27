@@ -17,11 +17,11 @@ MyServer::~MyServer()
 	_Timer.XDone();
 }
 
-void MyServer::OnRunBegin()
+void MyServer::OnRunLoopBegin()
 {
 	if (_Timer.GetTime() > 1.0)
 	{
-		printf("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
+		XLog("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
 		_RecvNum = 0;
 		_SendNum = 0;
 		_RecvPackageNum = 0;
@@ -30,12 +30,12 @@ void MyServer::OnRunBegin()
 	}
 }
 
-void MyServer::OnClientJoin(XClient* pClient)
+void MyServer::OnClientJoin(std::shared_ptr<XClient> pClient)
 {
 	++_ClientNum;
 }
 
-void MyServer::OnClientLeave(XClient* pClient)
+void MyServer::OnClientLeave(std::shared_ptr<XClient> pClient)
 {
 	--_ClientNum;
 }
@@ -85,7 +85,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	break;
 	default:
 	{
-		printf("Warn£º default Msg¡£");
+		XLog("Warn£º default Msg¡£");
 	}
 	}
 }

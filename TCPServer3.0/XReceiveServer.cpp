@@ -1,68 +1,117 @@
 #include "XReceiveServer.h"
 
-XReceiveServer::XReceiveServer()
+XReceiveServer::XReceiveServer(int id)
+	:
+	_ID(id),
+	_pEventObj(nullptr),
+	_LastTime(0),
+	_ClientChange(true),
+	_MaxSocketID(0),
+	_Run(false)
 {
-	_pNetEventObj = nullptr;
-	_LastTime = 0;
-	_ClientChange = true;
 }
 
 XReceiveServer::~XReceiveServer()
 {
-
 }
 
-void XReceiveServer::SetNetEventObj(XIEvent* pEventObj)
+int XReceiveServer::Init(XIEvent* pEventObj)
 {
-	_pNetEventObj = pEventObj;
-}
-
-int XReceiveServer::Start()
-{
-	std::thread t(std::mem_fn(&XReceiveServer::OnRun), this);
-	t.detach();
-
-	_TaskServer.Start();
+	//设置对象
+	_pEventObj = pEventObj;
+	//设置时间
+	_LastTime = XTimer::GetTimeByMicroseconds();
 
 	return 0;
 }
 
+int XReceiveServer::Done()
+{
+	_pEventObj = nullptr;
+	_LastTime = 0;
+
+	return 0;
+}
+
+int XReceiveServer::Start()
+{
+	XLog("XReceiveServer<ID=%d>:Start() Begin\n", _ID);
+
+	_TaskServer.Start(_ID);
+
+	_Run = true;
+	std::thread t(std::mem_fn(&XReceiveServer::OnRun), this);
+	t.detach();
+
+	XLog("XReceiveServer<ID=%d>:Start() End\n", _ID);
+	return 0;
+}
+
+int XReceiveServer::Stop()
+{
+	XLog("XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
+
+	//关闭服务线程
+	_Signal.Sleep();
+	_Run = false;
+	_Signal.Wait();
+
+	//关闭任务服务线程
+	_TaskServer.Stop(_ID);
+
+	//关闭所有客户端连接
+	_AllClients.clear();
+	_AllClientsCache.clear();
+
+	XLog("XReceiveServer<ID=%d>:Stop() End\n", _ID);
+	return 0;
+}
+
+void XReceiveServer::AddClient(const std::shared_ptr<XClient> pClient)
+{
+	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
+	_AllClientsCache.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(pClient->GetSocket(), pClient));
+}
+
+int XReceiveServer::GetClientNum()
+{
+	return (int)_AllClients.size() + (int)_AllClientsCache.size();
+}
+
+void XReceiveServer::AddTask(std::function<void()> pTask)
+{
+	_TaskServer.AddTask(pTask);
+}
+
 int XReceiveServer::OnRun()
 {
-	//初始化计时。
-	_LastTime = XTimer::GetTimeByMicroseconds();
-
-	while (true)
+	XLog("XReceiveServer<ID=%d>:OnRun() Begin\n", _ID);
+	while (_Run)
 	{
-		//心跳检测！
+		//循环计时。
 		time_t curTime = XTimer::GetTimeByMicroseconds();
 		time_t delta = curTime - _LastTime;
 		_LastTime = curTime;
 
+		//计时检测。
 		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
 		{
+			//心跳检测！
 			if (iter->second->CheckHeartTime(delta))
 			{
-				if (_pNetEventObj)
-					_pNetEventObj->OnClientLeave(iter->second.get());
+				if (_pEventObj)
+					_pEventObj->OnClientLeave(iter->second);
 
-#ifdef _WIN32
-				closesocket(iter->first);
-#else
-				close(iter->first);
-#endif
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
 				continue;
 			}
+
+			//计时发送检测！
 			iter->second->CheckSendTime(delta);
+
 			++iter;
 		}
-
-		//for (auto iter : _AllClients)
-		//{
-		//	iter.second->CheckSendTime(delta);
-		//}
 
 		//是否有新客户端加入？
 		if (!_AllClientsCache.empty())
@@ -71,6 +120,8 @@ int XReceiveServer::OnRun()
 			for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
 			{
 				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
+				if (_pEventObj)
+					_pEventObj->OnClientJoin(iter->second);
 			}
 			_AllClientsCache.clear();
 
@@ -80,7 +131,9 @@ int XReceiveServer::OnRun()
 		//是否有客户端连接？
 		if (_AllClients.empty())
 		{
+			//减少CPU消耗。
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
+
 			continue;
 		}
 
@@ -108,12 +161,11 @@ int XReceiveServer::OnRun()
 		}
 
 		//设置10毫秒间隔，可以提高客户端连接select效率。
-		timeval tv = { 0, 1000 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。
-											//timeval tv = { 0, 0 };			//客户端连接速度变慢。
+		timeval tv = { 0, 1000 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
 		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
-			printf("Error:Select!\n");
+			XLog("Error:Select!\n");
 			return -1;
 		}
 		else if (0 == ret)
@@ -122,26 +174,6 @@ int XReceiveServer::OnRun()
 		}
 
 		//接收客户端数据
-
-		//#ifdef _WIN32
-		//		for (unsigned int i = 0; i < fdRead.fd_count; ++i)
-		//		{
-		//			std::map<SOCKET, std::shared_ptr<_Client>>::iterator iter = _AllClients.find(fdRead.fd_array[i]);
-		//			if (iter != _AllClients.end())
-		//			{
-		//				int ret = iter->second->RecvData();
-		//				if (ret < 0)
-		//				{
-		//					if (_pNetEventObj)
-		//						_pNetEventObj->OnClientLeave(iter->second.get());
-		//
-		//					iter = _AllClients.erase(iter);
-		//					_ClientChange = true;
-		//					continue;
-		//				}
-		//			}
-		//		}
-		//#else
 		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 		{
 			if (FD_ISSET(iter->first, &fdRead))
@@ -149,10 +181,9 @@ int XReceiveServer::OnRun()
 				int ret = iter->second->RecvData();
 				if (ret < 0)
 				{
-					if (_pNetEventObj)
-						_pNetEventObj->OnClientLeave(iter->second.get());
+					if (_pEventObj)
+						_pEventObj->OnClientLeave(iter->second);
 
-					closesocket(iter->first);
 					iter = _AllClients.erase(iter);
 					_ClientChange = true;
 					continue;
@@ -161,24 +192,10 @@ int XReceiveServer::OnRun()
 
 			++iter;
 		}
-		//#endif
 
 	}
+
+	XLog("XReceiveServer<ID=%d>:OnRun() End\n", _ID);
+	_Signal.Wake();
 	return 0;
-}
-
-void XReceiveServer::AddClient(const std::shared_ptr<XClient>& pClient)
-{
-	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
-	_AllClientsCache.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(pClient->GetSocket(), pClient));
-}
-
-int XReceiveServer::GetClientNum()
-{
-	return (int)_AllClients.size() + (int)_AllClientsCache.size();
-}
-
-void XReceiveServer::AddTask(std::function<void()> pTask)
-{
-	_TaskServer.AddTask(pTask);
 }

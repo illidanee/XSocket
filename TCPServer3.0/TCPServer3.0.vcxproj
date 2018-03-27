@@ -164,6 +164,7 @@
     <ClCompile Include="XClient.cpp" />
     <ClCompile Include="XReceiveServer.cpp" />
     <ClCompile Include="XServer.cpp" />
+    <ClCompile Include="XSignal.cpp" />
     <ClCompile Include="XTaskServer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +182,7 @@
     <ClInclude Include="XIEvent.h" />
     <ClInclude Include="XReceiveServer.h" />
     <ClInclude Include="XServer.h" />
+    <ClInclude Include="XSignal.h" />
     <ClInclude Include="XTaskServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
