@@ -5,7 +5,7 @@
 #include "XIEvent.h"
 #include "XReceiveServer.h"
 #include "XClient.h"
-#include "XSignal.h"
+#include "XThread.h"
 #include <vector>
 
 //监听Server类
@@ -16,26 +16,26 @@ public:
 	~XServer();
 
 	int Start();
-	int OnRun();
 	int Stop();
 
 private:
 	SOCKET _Socket;												//服务器监听Socket
 	std::vector<std::shared_ptr<XReceiveServer>> _AllServers;	//服务器信息
 
-	bool _Run;													//当前线程是否运行
-	XSignal _Signal;											//同步信号
+	XThread _Thread;											//任务线程
 
 private:
-	int Init();
-	int Done();
+	void Init();
+	void Open();
+	void Bind(const char* ip, unsigned short port);
+	void Listen(int n);
 
-	int Open();
-	int Close();
+	void Close();
+	void Done();
 
-	int Bind(const char* ip, unsigned short port);
-	int Listen(int n);
-	int Accept();
+	void Accept();
+
+	void OnRun(XThread* pThread);
 };
 
 

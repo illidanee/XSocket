@@ -26,6 +26,9 @@
     <Filter Include="Signal">
       <UniqueIdentifier>{2ca6829b-ba36-46c5-b741-5896ce27fa71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{2bf634c9-e3ec-4b97-bee3-04ab912ce6c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Memory\XMemory.cpp">
@@ -63,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="XSignal.cpp">
       <Filter>Signal</Filter>
+    </ClCompile>
+    <ClCompile Include="XThread.cpp">
+      <Filter>Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="XSignal.h">
       <Filter>Signal</Filter>
+    </ClInclude>
+    <ClInclude Include="XThread.h">
+      <Filter>Thread</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

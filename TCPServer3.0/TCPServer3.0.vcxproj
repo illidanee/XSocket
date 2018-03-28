@@ -166,6 +166,7 @@
     <ClCompile Include="XServer.cpp" />
     <ClCompile Include="XSignal.cpp" />
     <ClCompile Include="XTaskServer.cpp" />
+    <ClCompile Include="XThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Memory\XMemory.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="XServer.h" />
     <ClInclude Include="XSignal.h" />
     <ClInclude Include="XTaskServer.h" />
+    <ClInclude Include="XThread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

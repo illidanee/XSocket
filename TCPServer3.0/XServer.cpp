@@ -2,8 +2,7 @@
 
 XServer::XServer()
 	:
-	_Socket(INVALID_SOCKET),
-	_Run(false)
+	_Socket(INVALID_SOCKET)
 {
 }
 
@@ -34,8 +33,14 @@ int XServer::Start()
 		_AllServers.push_back(pServer);
 	}
 
-	//开始服务器
-	_Run = true;
+	//开始监听线程
+	_Thread.Start(
+		nullptr,
+		[this](XThread* pThread) {
+			OnRun(pThread);
+		},
+		nullptr
+	);
 
 	XLog("XServer:Start() End\n");
 	return 0;
@@ -45,9 +50,8 @@ int XServer::Stop()
 {
 	XLog("XServer:Stop() Begin\n");
 
-	//关闭服务器 - 注意顺序。
-	_Run = false;
-	_Signal.Wait();
+	//关闭监听线程
+	_Thread.Stop();
 
 	//关闭服务线程
 	for (auto iter : _AllServers)
@@ -65,44 +69,7 @@ int XServer::Stop()
 	return 0;
 }
 
-int XServer::OnRun()
-{
-	XLog("XServer:OnRun() Begin\n");
-
-	while (_Run)
-	{
-		OnRunLoopBegin();
-
-		fd_set fdRead;
-		FD_ZERO(&fdRead);
-		FD_SET(_Socket, &fdRead);
-
-		//设置10毫秒间隔，可以提高数据接受和发送select效率。
-		timeval tv = { 0, 1000 };
-		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
-		if (SOCKET_ERROR == ret)
-		{
-			XLog("Error<Socket=%d>:Select!\n", (int)_Socket);
-			return -1;
-		}
-		else if (0 == ret)
-		{
-			continue;
-		}
-
-		if (FD_ISSET(_Socket, &fdRead))
-		{
-			FD_CLR(_Socket, &fdRead);
-			Accept();
-		}
-	}
-
-	XLog("XServer:OnRun() End\n");
-	_Signal.Wake();
-	return 0;
-}
-
-int XServer::Init()
+void XServer::Init()
 {
 	//初始化网络环境
 #ifdef _WIN32
@@ -112,37 +79,15 @@ int XServer::Init()
 	if (iRet)
 	{
 		XLog("Error:WSAStartup!\n");
-		return -1;
 	}
 	else
 	{
 		XLog("OK:WSAStartup!\n");
 	}
 #endif
-
-	return 0;
 }
 
-int XServer::Done()
-{
-	//销毁网络环境
-#ifdef _WIN32
-	int iRet = WSACleanup();
-	if (SOCKET_ERROR == iRet)
-	{
-		XLog("Error:WSACleanup!\n");
-		return -1;
-	}
-	else
-	{
-		XLog("OK:WSACleanup!\n");
-	}
-#endif
-
-	return 0;
-}
-
-int XServer::Open()
+void XServer::Open()
 {
 	assert(INVALID_SOCKET == _Socket);
 
@@ -150,48 +95,14 @@ int XServer::Open()
 	if (INVALID_SOCKET == _Socket)
 	{
 		XLog("Error:socket!\n");
-		return -1;
 	}
 	else
 	{
 		XLog("OK<Socket=%d>:socket!\n", (int)_Socket);
 	}
-
-	return 0;
 }
 
-int XServer::Close()
-{
-	assert(INVALID_SOCKET != _Socket);
-
-	if (INVALID_SOCKET != _Socket)
-	{
-#ifdef _WIN32
-		if (SOCKET_ERROR == closesocket(_Socket))
-		{
-			XLog("Error<Socket=%d>:closesocket!\n", (int)_Socket);
-		}
-		else
-		{
-			XLog("OK<Socket=%d>:closesocket!\n", (int)_Socket);
-		}
-#else
-		if (SOCKET_ERROR == close(_Socket))
-		{
-			XLog("Error<Socket=%d>:close!\n", (int)_Socket);
-		}
-		else
-		{
-			XLog("OK<Socket=%d>:close!\n", (int)_Socket);
-		}
-#endif
-		_Socket = INVALID_SOCKET;
-	}
-
-	return 0;
-}
-
-int XServer::Bind(const char* ip, unsigned short port)
+void XServer::Bind(const char* ip, unsigned short port)
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -221,17 +132,14 @@ int XServer::Bind(const char* ip, unsigned short port)
 	if (SOCKET_ERROR == iRet)
 	{
 		XLog("Error<Socket=%d>:bind!\n", (int)_Socket);
-		return -1;
 	}
 	else
 	{
 		XLog("OK<Socket=%d>:bind!\n", (int)_Socket);
 	}
-
-	return 0;
 }
 
-int XServer::Listen(int n)
+void XServer::Listen(int n)
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -239,17 +147,59 @@ int XServer::Listen(int n)
 	if (SOCKET_ERROR == iRet)
 	{
 		XLog("Error<Socket=%d>:listen!\n", (int)_Socket);
-		return -1;
 	}
 	else
 	{
 		XLog("OK<Socket=%d>:listen!\n", (int)_Socket);
 	}
-
-	return 0;
 }
 
-int XServer::Accept()
+void XServer::Close()
+{
+	assert(INVALID_SOCKET != _Socket);
+
+	if (INVALID_SOCKET != _Socket)
+	{
+#ifdef _WIN32
+		if (SOCKET_ERROR == closesocket(_Socket))
+		{
+			XLog("Error<Socket=%d>:closesocket!\n", (int)_Socket);
+		}
+		else
+		{
+			XLog("OK<Socket=%d>:closesocket!\n", (int)_Socket);
+		}
+#else
+		if (SOCKET_ERROR == close(_Socket))
+		{
+			XLog("Error<Socket=%d>:close!\n", (int)_Socket);
+		}
+		else
+		{
+			XLog("OK<Socket=%d>:close!\n", (int)_Socket);
+		}
+#endif
+		_Socket = INVALID_SOCKET;
+	}
+}
+
+void XServer::Done()
+{
+	//销毁网络环境
+#ifdef _WIN32
+	int iRet = WSACleanup();
+	if (SOCKET_ERROR == iRet)
+	{
+		XLog("Error:WSACleanup!\n");
+	}
+	else
+	{
+		XLog("OK:WSACleanup!\n");
+	}
+#endif
+}
+
+void XServer::Accept()
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -263,7 +213,6 @@ int XServer::Accept()
 	if (client == INVALID_SOCKET)
 	{
 		XLog("Error<Socket=%d>:accept!\n", (int)_Socket);
-		return -1;
 	}
 	else
 	{
@@ -280,8 +229,43 @@ int XServer::Accept()
 		pClient->Init(this, pLessServer.get());
 		pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
 	}
-	
-	return 0;
 }
+
+void XServer::OnRun(XThread* pThread)
+{
+	XLog("XServer:OnRun() Begin\n");
+
+	while (pThread->IsRun())
+	{
+		OnRunLoopBegin();
+
+		fd_set fdRead;
+		FD_ZERO(&fdRead);
+		FD_SET(_Socket, &fdRead);
+
+		//设置10毫秒间隔，可以提高数据接受和发送select效率。
+		timeval tv = { 0, 1000 };
+		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
+		if (SOCKET_ERROR == ret)
+		{
+			XLog("Error<Socket=%d>:Select!\n", (int)_Socket);
+			pThread->Exit();
+		}
+		else if (0 == ret)
+		{
+			continue;
+		}
+
+		if (FD_ISSET(_Socket, &fdRead))
+		{
+			FD_CLR(_Socket, &fdRead);
+			Accept();
+		}
+	}
+
+	XLog("XServer:OnRun() End\n");
+}
+
+
 
 

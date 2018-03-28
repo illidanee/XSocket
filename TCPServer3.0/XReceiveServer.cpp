@@ -6,8 +6,7 @@ XReceiveServer::XReceiveServer(int id)
 	_pEventObj(nullptr),
 	_LastTime(0),
 	_ClientChange(true),
-	_MaxSocketID(0),
-	_Run(false)
+	_MaxSocketID(0)
 {
 }
 
@@ -15,47 +14,47 @@ XReceiveServer::~XReceiveServer()
 {
 }
 
-int XReceiveServer::Init(XIEvent* pEventObj)
+void XReceiveServer::Init(XIEvent* pEventObj)
 {
 	//设置对象
 	_pEventObj = pEventObj;
 	//设置时间
 	_LastTime = XTimer::GetTimeByMicroseconds();
-
-	return 0;
 }
 
-int XReceiveServer::Done()
+void XReceiveServer::Done()
 {
 	_pEventObj = nullptr;
 	_LastTime = 0;
-
-	return 0;
 }
 
-int XReceiveServer::Start()
+void XReceiveServer::Start()
 {
 	XLog("XReceiveServer<ID=%d>:Start() Begin\n", _ID);
 
+	//开启任务线程
 	_TaskServer.Start(_ID);
 
-	_Run = true;
-	std::thread t(std::mem_fn(&XReceiveServer::OnRun), this);
-	t.detach();
+	//开始服务线程
+	_Thread.Start(
+		nullptr,
+		[this](XThread* pThread) {
+		OnRun(pThread);
+	},
+		nullptr
+		);
 
 	XLog("XReceiveServer<ID=%d>:Start() End\n", _ID);
-	return 0;
 }
 
-int XReceiveServer::Stop()
+void XReceiveServer::Stop()
 {
 	XLog("XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
 
 	//关闭服务线程
-	_Run = false;
-	_Signal.Wait();
+	_Thread.Stop();
 
-	//关闭任务服务线程
+	//关闭任务线程
 	_TaskServer.Stop(_ID);
 
 	//关闭所有客户端连接
@@ -63,7 +62,6 @@ int XReceiveServer::Stop()
 	_AllClientsCache.clear();
 
 	XLog("XReceiveServer<ID=%d>:Stop() End\n", _ID);
-	return 0;
 }
 
 void XReceiveServer::AddClient(const std::shared_ptr<XClient> pClient)
@@ -82,10 +80,11 @@ void XReceiveServer::AddTask(std::function<void()> pTask)
 	_TaskServer.AddTask(pTask);
 }
 
-int XReceiveServer::OnRun()
+void XReceiveServer::OnRun(XThread* pThread)
 {
 	XLog("XReceiveServer<ID=%d>:OnRun() Begin\n", _ID);
-	while (_Run)
+
+	while (pThread->IsRun())
 	{
 		//循环计时。
 		time_t curTime = XTimer::GetTimeByMicroseconds();
@@ -165,7 +164,7 @@ int XReceiveServer::OnRun()
 		if (SOCKET_ERROR == ret)
 		{
 			XLog("Error:Select!\n");
-			return -1;
+			pThread->Exit();
 		}
 		else if (0 == ret)
 		{
@@ -195,6 +194,4 @@ int XReceiveServer::OnRun()
 	}
 
 	XLog("XReceiveServer<ID=%d>:OnRun() End\n", _ID);
-	_Signal.Wake();
-	return 0;
 }

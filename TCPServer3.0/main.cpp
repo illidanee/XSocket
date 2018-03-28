@@ -5,32 +5,6 @@
 #include <signal.h>
 #endif
 
-XSignal _gSignal;
-
-//命令线程
-void CmdThread(XServer* pServer)
-{
-	while (true)
-	{
-		char buffer[32] = {};
-		scanf("%s", buffer);
-		if (0 == strcmp(buffer, "exit"))
-		{
-			pServer->Stop();
-			//唤醒同步信号
-			_gSignal.Wake();
-			break;
-		}
-		else if (0 == strcmp(buffer, "Exit"))
-		{
-			pServer->Stop();
-			//唤醒同步信号
-			_gSignal.Wake();
-			break;
-		}
-	}
-}
-
 int main()
 {
 //去除中断信号关闭服务器。
@@ -49,14 +23,21 @@ int main()
 	//开启服务器
 	server->Start();
 
-	//开启命令线程
-	std::thread cmdThread(CmdThread, server);
-	cmdThread.detach();
+	while (true)
+	{
+		char buffer[32] = {};
+		scanf("%s", buffer);
+		if (0 == strcmp(buffer, "exit"))
+		{
+			server->Stop();
+			break;
+		}
+		else if (0 == strcmp(buffer, "Exit"))
+		{
+			server->Stop();
+			break;
+		}
+	}
 
-	//运行服务器
-	server->OnRun();
-
-	//等待同步信号
-	_gSignal.Wait();
 	return 0;
 }

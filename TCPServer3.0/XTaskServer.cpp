@@ -1,8 +1,6 @@
 #include "XTaskServer.h"
 
 XTaskServer::XTaskServer()
-	:
-	_Run(false)
 {
 }
 
@@ -15,9 +13,12 @@ int XTaskServer::Start(int id)
 	XLog("XTaskServer<ID=%d>:Start() Begin\n", id);
 
 	//开启服务线程
-	_Run = true;
-	std::thread t(std::mem_fn(&XTaskServer::OnRun), this, id);
-	t.detach();
+	_Thread.Start(
+		nullptr, 
+		[this](XThread* pThread) {
+			OnRun(pThread);
+		}, 
+		nullptr);
 
 	XLog("XTaskServer<ID=%d>:Start() End\n", id);
 	return 0;
@@ -28,22 +29,17 @@ int XTaskServer::Stop(int id)
 	XLog("XTaskServer<ID=%d>:Stop() Begin\n", id);
 
 	//关闭服务线程
-	_Run = false;
-	_Signal.Wait();
-
-	//关闭任务 - 循环执行完没有任务了。
-	//_Tasks.clear();
-	//_TasksCache.clear();
+	_Thread.Stop();
 
 	XLog("XTaskServer<ID=%d>:Stop() End\n", id);
 	return 0;
 }
 
-int XTaskServer::OnRun(int id)
+int XTaskServer::OnRun(XThread* pThread)
 {
-	XLog("XTaskServer<ID=%d>:OnRun() Begin\n", id);
+	XLog("XTaskServer<ID=%d>:OnRun() Begin\n", -1);
 
-	while (_Run)
+	while (pThread->IsRun())
 	{
 		//从缓冲区中取数据
 		if (!_TasksCache.empty())
@@ -74,8 +70,8 @@ int XTaskServer::OnRun(int id)
 		_Tasks.clear();
 	}
 
-	XLog("XTaskServer<ID=%d>:OnRun() End\n", id);
-	_Signal.Wake();
+	XLog("XTaskServer<ID=%d>:OnRun() End\n", -1);
+
 	return 0;
 }
 
