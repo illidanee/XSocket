@@ -61,26 +61,39 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	case MSG_LOGIN:
 	{
 		std::shared_ptr<MsgLoginRes> respond = std::make_shared<MsgLoginRes>();
-		//std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
 		std::function<void()> pTask = [pClient, respond]()
 		{
-			pClient->SendData(respond.get());
+			if (0 == pClient->SendData(respond.get()))
+			{
+				XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+			}
 		};
 		
 		pReceiveServer->AddTask(pTask);
 	}
+	break;
 	case MSG_HEART:
 	{
 		pClient->ResetHeartTime();
 
+		//使用任务系统
 		std::shared_ptr<MsgHeart> respond = std::make_shared<MsgHeart>();
-		//std::shared_ptr<XSendTask> pTask = std::make_shared<XSendTask>(pClient, respond.get());
 		std::function<void()> pTask = [pClient, respond]()
 		{
-			pClient->SendData(respond.get());
+			if (0 == pClient->SendData(respond.get()))
+			{
+				XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+			}
 		};
 
 		pReceiveServer->AddTask(pTask);
+
+		////直接发送数据
+		//MsgHeart respond;
+		//if (0 == pClient->SendData(&respond))
+		//{
+		//	XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+		//}
 	}
 	break;
 	default:

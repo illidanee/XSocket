@@ -244,12 +244,13 @@ void XServer::OnRun(XThread* pThread)
 		FD_SET(_Socket, &fdRead);
 
 		//设置10毫秒间隔，可以提高数据接受和发送select效率。
-		timeval tv = { 0, 1000 };
+		timeval tv = { 0, 1 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			XLog("Error<Socket=%d>:Select!\n", (int)_Socket);
 			pThread->Exit();
+			break;
 		}
 		else if (0 == ret)
 		{

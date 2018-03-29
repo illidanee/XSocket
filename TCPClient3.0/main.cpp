@@ -9,8 +9,8 @@
 XTimer timer;
 
 const int mCount = 1;
-const int cCount = 5;
-const int tCount = 1;
+const int cCount = 1000;
+const int tCount = 4;
 bool bRun = true;
 Client* client[cCount];
 
@@ -33,10 +33,15 @@ void CmdThread()
 
 void RecvThread(int begin, int end)
 {
+	std::chrono::time_point<std::chrono::high_resolution_clock> t1 = std::chrono::high_resolution_clock::now();
 	while (bRun)
 	{
+		std::chrono::time_point<std::chrono::high_resolution_clock> t2 = std::chrono::high_resolution_clock::now();
+		std::chrono::seconds t = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1);
 		for (int i = begin; i < end; ++i)
 		{
+			//if (t.count() > 3.0f && i == begin)
+			//	continue;
 			client[i]->OnRun();
 		}
 	}
@@ -44,12 +49,12 @@ void RecvThread(int begin, int end)
 
 void SendThread(int begin, int end)
 {
-	MsgLogin msg[mCount];
-	for (int i = 0; i < mCount; ++i)
-	{
-		memcpy(msg[i]._Name, "illidan", sizeof("illidan"));
-		memcpy(msg[i]._Pwd, "12345", sizeof("12345"));
-	}
+	MsgHeart msg[mCount];
+	//for (int i = 0; i < mCount; ++i)
+	//{
+	//	memcpy(msg[i]._Name, "illidan", sizeof("illidan"));
+	//	memcpy(msg[i]._Pwd, "12345", sizeof("12345"));
+	//}
 	int len = sizeof(msg);
 
 	while (bRun)
@@ -59,7 +64,7 @@ void SendThread(int begin, int end)
 			if (client[i]->SendData(msg, len) >= 0)
 				sendCount++;
 		}
-		std::this_thread::sleep_for(std::chrono::microseconds(1));
+		std::this_thread::sleep_for(std::chrono::milliseconds(99));
 	}
 
 	int a = 0;

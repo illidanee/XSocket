@@ -86,31 +86,6 @@ void XReceiveServer::OnRun(XThread* pThread)
 
 	while (pThread->IsRun())
 	{
-		//循环计时。
-		time_t curTime = XTimer::GetTimeByMicroseconds();
-		time_t delta = curTime - _LastTime;
-		_LastTime = curTime;
-
-		//计时检测。
-		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
-		{
-			//心跳检测！
-			if (iter->second->CheckHeartTime(delta))
-			{
-				if (_pEventObj)
-					_pEventObj->OnClientLeave(iter->second);
-
-				iter = _AllClients.erase(iter);
-				_ClientChange = true;
-				continue;
-			}
-
-			//计时发送检测！
-			iter->second->CheckSendTime(delta);
-
-			++iter;
-		}
-
 		//是否有新客户端加入？
 		if (!_AllClientsCache.empty())
 		{
@@ -137,11 +112,11 @@ void XReceiveServer::OnRun(XThread* pThread)
 
 		//检查是否有客户端向服务器发送数据。
 		fd_set fdRead;
-		FD_ZERO(&fdRead);
-
+		fd_set fdWrite;
+		
 		if (_ClientChange)
 		{
-			_ClientChange = false;
+			FD_ZERO(&fdRead);
 
 			_MaxSocketID = 0;
 			for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
@@ -152,46 +127,104 @@ void XReceiveServer::OnRun(XThread* pThread)
 			}
 
 			memcpy(&_fdSetCache, &fdRead, sizeof(fd_set));
+
+			_ClientChange = false;
 		}
 		else
 		{
 			memcpy(&fdRead, &_fdSetCache, sizeof(fd_set));
 		}
 
-		//设置10毫秒间隔，可以提高客户端连接select效率。
-		timeval tv = { 0, 1000 };			//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
-		int ret = select((int)_MaxSocketID + 1, &fdRead, NULL, NULL, &tv);
+		memcpy(&fdWrite, &fdRead, sizeof(fd_set));
+
+		//设置1毫秒间隔，可以提高客户端连接select效率。
+		timeval tv = { 0, 1 };						//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
+		int ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			XLog("Error:Select!\n");
 			pThread->Exit();
 		}
-		else if (0 == ret)
-		{
-			continue;
-		}
 
-		//接收客户端数据
-		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
-		{
-			if (FD_ISSET(iter->first, &fdRead))
-			{
-				int ret = iter->second->RecvData();
-				if (ret < 0)
-				{
-					if (_pEventObj)
-						_pEventObj->OnClientLeave(iter->second);
-
-					iter = _AllClients.erase(iter);
-					_ClientChange = true;
-					continue;
-				}
-			}
-
-			++iter;
-		}
-
+		RecvData(fdRead);
+		SendData(fdWrite);
+		
+		CheckTime();
 	}
 
 	XLog("XReceiveServer<ID=%d>:OnRun() End\n", _ID);
+}
+
+void XReceiveServer::RecvData(fd_set& fdSet)
+{
+	//接收客户端数据
+	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
+	{
+		if (FD_ISSET(iter->first, &fdSet))
+		{
+			int ret = iter->second->RecvData();
+			if (ret < 0)
+			{
+				if (_pEventObj)
+					_pEventObj->OnClientLeave(iter->second);
+
+				iter = _AllClients.erase(iter);
+				_ClientChange = true;
+				continue;
+			}
+		}
+
+		++iter;
+	}
+}
+
+void XReceiveServer::SendData(fd_set& fdSet)
+{	
+	//接收客户端数据
+	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
+	{
+		if (FD_ISSET(iter->first, &fdSet))
+		{
+			int ret = iter->second->SendData();
+			if (ret < 0)
+			{
+				if (_pEventObj)
+					_pEventObj->OnClientLeave(iter->second);
+
+				iter = _AllClients.erase(iter);
+				_ClientChange = true;
+				continue;
+			}
+		}
+
+		++iter;
+	}
+}
+
+void XReceiveServer::CheckTime()
+{
+	//循环计时。
+	time_t curTime = XTimer::GetTimeByMicroseconds();
+	time_t delta = curTime - _LastTime;
+	_LastTime = curTime;
+
+	//计时检测。
+	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
+	{
+		//心跳检测！
+		if (iter->second->CheckHeartTime(delta))
+		{
+			if (_pEventObj)
+				_pEventObj->OnClientLeave(iter->second);
+
+			iter = _AllClients.erase(iter);
+			_ClientChange = true;
+			continue;
+		}
+
+		//计时发送检测！
+		//iter->second->CheckSendTime(delta);
+
+		++iter;
+	}
 }

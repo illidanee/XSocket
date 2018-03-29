@@ -2,8 +2,8 @@
 #define __XCOMMON_H__
 
 //×Ô¶¨Òåºê
-#define _SERVER_SIZE_ 1
-#define _RECV_BUFFER_SIZE_ 10240
+#define _SERVER_SIZE_ 4
+#define _RECV_BUFFER_SIZE_ 8192
 #define _SEND_BUFFER_SIZE_ 10240
 #define _XCLIENT_HEART_TIME_ 60000000
 #define _XCLIENT_SEND_TIME_ 200000

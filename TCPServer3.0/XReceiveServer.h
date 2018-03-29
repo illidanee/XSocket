@@ -45,6 +45,10 @@ private:
 
 private:
 	void OnRun(XThread* pThread);
+
+	void RecvData(fd_set& fdSet);
+	void SendData(fd_set& fdSet);
+	void CheckTime();
 };
 
 #endif

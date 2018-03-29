@@ -38,8 +38,6 @@ int XClient::RecvData()
 	//接收数据到接收缓冲区中
 	char* pBuffer = _RecvBuffer + _RecvStartPos;
 	int size = recv(_Socket, pBuffer, _RECV_BUFFER_SIZE_ - _RecvStartPos, 0);
-	if (_pNetEventObj)
-		_pNetEventObj->OnNetRecv(this);
 	if (SOCKET_ERROR == size)
 	{
 		//printf("OK:Client<Socket=%d> off!\n", (int)_Socket);
@@ -52,6 +50,9 @@ int XClient::RecvData()
 	}
 
 	_RecvStartPos += size;
+
+	if (_pNetEventObj)
+		_pNetEventObj->OnNetRecv(this);
 
 	//数据缓冲区长度大于消息头长度
 	while (_RecvStartPos >= sizeof(MsgHeader))
@@ -82,64 +83,40 @@ int XClient::RecvData()
 
 int XClient::SendData(MsgHeader* pHeader)
 {
-	if (_pNetEventObj)
-		_pNetEventObj->OnNetMsgDone(this, pHeader, _pReceiveServerObj);
+	int ret = 0;
 
 	const char* pBuffer = (const char*)pHeader;
 	int nSendBufferSize = pHeader->_MsgLength;
 
-	while (true)
+	if (_SendStartPos + nSendBufferSize <= _SEND_BUFFER_SIZE_)
 	{
-		if (_SendStartPos + nSendBufferSize >= _SEND_BUFFER_SIZE_)
-		{
-			int len = _SEND_BUFFER_SIZE_ - _SendStartPos;
-			memcpy(_SendBuffer + _SendStartPos, pBuffer, len);
-			pBuffer += len;
-			nSendBufferSize -= len;
+		memcpy(_SendBuffer + _SendStartPos, pBuffer, nSendBufferSize);
+		_SendStartPos += nSendBufferSize;
+		ret = nSendBufferSize;
 
-			ResetSendTime();
-
-			int ret = send(_Socket, _SendBuffer, _SEND_BUFFER_SIZE_, 0);
-			if (_pNetEventObj)
-				_pNetEventObj->OnNetSend(this);
-
-			_SendStartPos = 0;
-
-			if (SOCKET_ERROR == ret)
-			{
-				return -1;
-			}
-		}
-		else
-		{
-			memcpy(_SendBuffer + _SendStartPos, pBuffer, nSendBufferSize);
-			_SendStartPos += nSendBufferSize;
-			break;
-		}
+		if (_pNetEventObj)
+			_pNetEventObj->OnNetMsgDone(this, pHeader, _pReceiveServerObj);
 	}
 
-	return 0;
+	return ret;
 }
 
 int XClient::SendData()
 {
+	int ret = 0;
+
 	ResetSendTime();
 
-	if (_SendStartPos > 0)
+	if (_SendStartPos > 0 && INVALID_SOCKET != _Socket)
 	{
-		int ret = send(_Socket, _SendBuffer, _SendStartPos, 0);
-		if (_pNetEventObj)
-			_pNetEventObj->OnNetSend(this);
-
+		ret = send(_Socket, _SendBuffer, _SendStartPos, 0);
 		_SendStartPos = 0;
 
-		if (SOCKET_ERROR == ret)
-		{
-			return -1;
-		}
+		if (_pNetEventObj)
+			_pNetEventObj->OnNetSend(this);
 	}
 
-	return 0;
+	return ret;
 }
 
 void XClient::ResetHeartTime()
