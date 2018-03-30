@@ -9,11 +9,12 @@ int main()
 {
 //去除中断信号关闭服务器。
 #ifndef _WIN32
-	sigset_t signal_mask;
-	sigemptyset(&signal_mask);
-	sigaddset(&signal_mask, SIGPIPE);
-	if (pthread_sigmask(SIG_BLOCK, &signal_mask, NULL) == -1)
-		perror("SIGPIPE");
+	//sigset_t signal_mask;
+	//sigemptyset(&signal_mask);
+	//sigaddset(&signal_mask, SIGPIPE);
+	//if (pthread_sigmask(SIG_BLOCK, &signal_mask, NULL) == -1)
+	//	perror("SIGPIPE");
+	signal(SIGPIPE, SIG_IGN);
 #endif
 
 	//创建服务器
