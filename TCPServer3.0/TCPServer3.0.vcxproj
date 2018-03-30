@@ -161,6 +161,7 @@
     <ClCompile Include="..\Timer\XTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyServer.cpp" />
+    <ClCompile Include="XBuffer.cpp" />
     <ClCompile Include="XClient.cpp" />
     <ClCompile Include="XReceiveServer.cpp" />
     <ClCompile Include="XServer.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="..\Timer\XTimer.h" />
     <ClInclude Include="MsgProtocol.h" />
     <ClInclude Include="MyServer.h" />
+    <ClInclude Include="XBuffer.h" />
     <ClInclude Include="XClient.h" />
     <ClInclude Include="XCommon.h" />
     <ClInclude Include="XIEvent.h" />

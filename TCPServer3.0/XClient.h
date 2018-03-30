@@ -4,15 +4,14 @@
 #include "XCommon.h"
 #include "XIEvent.h"
 #include "XReceiveServer.h"
+#include "XBuffer.h"
 
 //客户端信息类
 class XClient : public XObject<1024, XClient>
 {
 public:
-	XClient(SOCKET client);
+	XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServerObj);
 	~XClient();
-
-	void Init(XIEvent* pEventObj, XReceiveServer* pReceiveServerObj);
 
 	SOCKET GetSocket() { return _Socket; }
 
@@ -34,10 +33,8 @@ private:
 	XReceiveServer* _pReceiveServerObj;			//ReceiveServer对象
 
 	SOCKET _Socket;								//客户端Socket
-	char _RecvBuffer[_RECV_BUFFER_SIZE_];		//接收缓冲区
-	int _RecvStartPos;							//接收缓冲区中可以放入数据的起始位置
-	char _SendBuffer[_SEND_BUFFER_SIZE_];		//发送缓冲区
-	int _SendStartPos;							//发送缓冲区中可以放入数据的起始位置
+	XBuffer _RecvBuffer;						//接收缓冲区对象
+	XBuffer _SendBuffer;						//发送缓冲区对象
 
 private:
 	time_t	_HeartTime;							//心跳计时器

@@ -12,7 +12,7 @@ XServer::~XServer()
 
 int XServer::Start()
 {
-	XLog("XServer:Start() Begin\n");
+	XLog("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
 
 	//初始化服务器
 	Init();
@@ -42,13 +42,13 @@ int XServer::Start()
 		nullptr
 	);
 
-	XLog("XServer:Start() End\n");
+	XLog("---------------------------------------------------------------------------------------------------- XServer:Start() End \n");
 	return 0;
 }
 
 int XServer::Stop()
 {
-	XLog("XServer:Stop() Begin\n");
+	XLog("---------------------------------------------------------------------------------------------------- XServer:Stop() Begin \n");
 
 	//关闭监听线程
 	_Thread.Stop();
@@ -65,7 +65,7 @@ int XServer::Stop()
 	Close();
 	Done();
 
-	XLog("XServer:Stop() End\n");
+	XLog("---------------------------------------------------------------------------------------------------- XServer:Stop() End \n");
 	return 0;
 }
 
@@ -224,9 +224,7 @@ void XServer::Accept()
 				pLessServer = pServer;
 			}
 		}
-
-		std::shared_ptr<XClient> pClient(new XClient(client));
-		pClient->Init(this, pLessServer.get());
+		std::shared_ptr<XClient> pClient(new XClient(client, this, pLessServer.get()));
 		pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
 	}
 }

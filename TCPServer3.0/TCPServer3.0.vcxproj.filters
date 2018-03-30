@@ -70,6 +70,9 @@
     <ClCompile Include="XThread.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
+    <ClCompile Include="XBuffer.cpp">
+      <Filter>Cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Memory\XMemory.h">
@@ -123,5 +126,6 @@
     <ClInclude Include="XThread.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="XBuffer.h" />
   </ItemGroup>
 </Project>

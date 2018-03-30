@@ -60,13 +60,15 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	{
 	case MSG_LOGIN:
 	{
-		std::shared_ptr<MsgLoginRes> respond = std::make_shared<MsgLoginRes>();
+		MsgLoginRes* respond = new MsgLoginRes();
 		std::function<void()> pTask = [pClient, respond]()
 		{
-			if (0 == pClient->SendData(respond.get()))
+			if (pClient->SendData(respond) < 0)
 			{
 				XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
+
+			delete respond;
 		};
 		
 		pReceiveServer->AddTask(pTask);
@@ -77,13 +79,15 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 		pClient->ResetHeartTime();
 
 		//使用任务系统
-		std::shared_ptr<MsgHeart> respond = std::make_shared<MsgHeart>();
+		MsgHeart* respond = new MsgHeart();
 		std::function<void()> pTask = [pClient, respond]()
 		{
-			if (0 == pClient->SendData(respond.get()))
+			if (pClient->SendData(respond) < 0)
 			{
 				XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
+
+			delete respond;
 		};
 
 		pReceiveServer->AddTask(pTask);
