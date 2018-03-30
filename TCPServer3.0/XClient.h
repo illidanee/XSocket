@@ -28,11 +28,11 @@ public:
 	void CheckSendTime(time_t t);
 
 private:
-	//关联对象
+	SOCKET _Socket;								//客户端Socket
+
 	XIEvent* _pNetEventObj;						//主线程对象
 	XReceiveServer* _pReceiveServerObj;			//ReceiveServer对象
 
-	SOCKET _Socket;								//客户端Socket
 	XBuffer _RecvBuffer;						//接收缓冲区对象
 	XBuffer _SendBuffer;						//发送缓冲区对象
 

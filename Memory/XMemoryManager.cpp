@@ -18,7 +18,7 @@ XMemoryManager::XMemoryManager()
 	InitMemoryPools(128 + 1, 256, &_MemoryPool256);
 	InitMemoryPools(256 + 1, 512, &_MemoryPool512);
 	InitMemoryPools(512 + 1, 1024, &_MemoryPool1024);
-	//InitMemoryPools(1024 + 1, 16384, &_MemoryPool16384);
+	InitMemoryPools(1024 + 1, 10240, &_MemoryPool10240);
 	//InitMemoryPools(16384 + 1, 32768, &_MemoryPool32768);
 }
 
@@ -61,7 +61,7 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 		pMemoryBlock->_pNext = nullptr;
 		pMemoryBlock->_nRef = 1;
 
-		//XLog("AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XLog("--------------------------------------------- AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		return (char*)pMemoryBlock + sizeof(XMemoryBlock);
 	}
@@ -70,7 +70,7 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 void XMemoryManager::FreeMemory(void* pMem)
 {
 	XMemoryBlock* pMemoryBlock = (XMemoryBlock*)((char*)pMem - sizeof(XMemoryBlock));
-	//XError("FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, pMemoryBlock->_nID, pMemoryBlock->_nSize);
+	
 	if (pMemoryBlock->_pMemoryPool)
 	{
 		//使用内存池。
@@ -78,7 +78,7 @@ void XMemoryManager::FreeMemory(void* pMem)
 	}
 	else
 	{
-		//XLog("FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XLog("--------------------------------------------- FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		//没有内存池可以使用。
 		free(pMemoryBlock);

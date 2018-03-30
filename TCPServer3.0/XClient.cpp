@@ -2,9 +2,9 @@
 
 XClient::XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServerObj)
 	:
-	_pNetEventObj(nullptr),
-	_pReceiveServerObj(nullptr),
 	_Socket(client),
+	_pNetEventObj(pEventObj),
+	_pReceiveServerObj(pReceiveServerObj),
 	_RecvBuffer(_RECV_BUFFER_SIZE_),
 	_SendBuffer(_SEND_BUFFER_SIZE_),
 	_HeartTime(0),
@@ -14,8 +14,6 @@ XClient::XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServ
 
 XClient::~XClient()
 {
-	//XLog("XClient:~XClient()\n");
-
 	shutdown(_Socket, SD_BOTH);
 #ifdef _WIN32
 	closesocket(_Socket);

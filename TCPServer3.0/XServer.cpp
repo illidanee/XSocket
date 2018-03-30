@@ -231,7 +231,7 @@ void XServer::Accept()
 
 void XServer::OnRun(XThread* pThread)
 {
-	XLog("XServer:OnRun() Begin\n");
+	XLog("---------------------------------------------------------------------------------------------------- XServer:OnRun() Begin\n");
 
 	while (pThread->IsRun())
 	{
@@ -262,7 +262,7 @@ void XServer::OnRun(XThread* pThread)
 		}
 	}
 
-	XLog("XServer:OnRun() End\n");
+	XLog("---------------------------------------------------------------------------------------------------- XServer:OnRun() End\n");
 }
 
 

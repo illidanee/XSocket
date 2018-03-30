@@ -10,7 +10,7 @@ XTaskServer::~XTaskServer()
 
 int XTaskServer::Start(int id)
 {
-	XLog("XTaskServer<ID=%d>:Start() Begin\n", id);
+	XLog("        XTaskServer<ID=%d>:Start() Begin\n", id);
 
 	//开启服务线程
 	_Thread.Start(
@@ -20,24 +20,24 @@ int XTaskServer::Start(int id)
 		}, 
 		nullptr);
 
-	XLog("XTaskServer<ID=%d>:Start() End\n", id);
+	XLog("        XTaskServer<ID=%d>:Start() End\n", id);
 	return 0;
 }
 
 int XTaskServer::Stop(int id)
 {
-	XLog("XTaskServer<ID=%d>:Stop() Begin\n", id);
+	XLog("        XTaskServer<ID=%d>:Stop() Begin\n", id);
 
 	//关闭服务线程
 	_Thread.Stop();
 
-	XLog("XTaskServer<ID=%d>:Stop() End\n", id);
+	XLog("        XTaskServer<ID=%d>:Stop() End\n", id);
 	return 0;
 }
 
 int XTaskServer::OnRun(XThread* pThread)
 {
-	XLog("XTaskServer<ID=%d>:OnRun() Begin\n", -1);
+	XLog("        XTaskServer<ID=%d>:OnRun() Begin\n", -1);
 
 	while (pThread->IsRun())
 	{
@@ -70,7 +70,7 @@ int XTaskServer::OnRun(XThread* pThread)
 		_Tasks.clear();
 	}
 
-	XLog("XTaskServer<ID=%d>:OnRun() End\n", -1);
+	XLog("        XTaskServer<ID=%d>:OnRun() End\n", -1);
 
 	return 0;
 }
