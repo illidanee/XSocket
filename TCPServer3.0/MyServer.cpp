@@ -21,7 +21,7 @@ void MyServer::OnRunLoopBegin()
 {
 	if (_Timer.GetTime() > 1.0)
 	{
-		XLog("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
+		XInfo("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
 		_RecvNum = 0;
 		_SendNum = 0;
 		_RecvPackageNum = 0;
@@ -65,7 +65,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 		{
 			if (pClient->SendData(respond) < 0)
 			{
-				XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
 
 			delete respond;
@@ -84,7 +84,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 		{
 			if (pClient->SendData(respond) < 0)
 			{
-				XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
 
 			delete respond;
@@ -102,7 +102,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	break;
 	default:
 	{
-		XLog("Warn£º default Msg¡£");
+		XInfo("Warn£º default Msg¡£");
 	}
 	}
 }

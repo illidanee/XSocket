@@ -12,7 +12,7 @@ XServer::~XServer()
 
 int XServer::Start()
 {
-	XLog("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
+	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
 
 	//初始化服务器
 	Init();
@@ -42,13 +42,13 @@ int XServer::Start()
 		nullptr
 	);
 
-	XLog("---------------------------------------------------------------------------------------------------- XServer:Start() End \n");
+	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() End \n");
 	return 0;
 }
 
 int XServer::Stop()
 {
-	XLog("---------------------------------------------------------------------------------------------------- XServer:Stop() Begin \n");
+	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() Begin \n");
 
 	//关闭监听线程
 	_Thread.Stop();
@@ -65,7 +65,7 @@ int XServer::Stop()
 	Close();
 	Done();
 
-	XLog("---------------------------------------------------------------------------------------------------- XServer:Stop() End \n");
+	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() End \n");
 	return 0;
 }
 
@@ -78,11 +78,11 @@ void XServer::Init()
 	int iRet = WSAStartup(wsaVersion, &wsaData);
 	if (iRet)
 	{
-		XLog("Error:WSAStartup!\n");
+		XInfo("Error:WSAStartup!\n");
 	}
 	else
 	{
-		XLog("OK:WSAStartup!\n");
+		XInfo("OK:WSAStartup!\n");
 	}
 #endif
 }
@@ -94,11 +94,11 @@ void XServer::Open()
 	_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (INVALID_SOCKET == _Socket)
 	{
-		XLog("Error:socket!\n");
+		XInfo("Error:socket!\n");
 	}
 	else
 	{
-		XLog("OK<Socket=%d>:socket!\n", (int)_Socket);
+		XInfo("OK<Socket=%d>:socket!\n", (int)_Socket);
 	}
 }
 
@@ -131,11 +131,11 @@ void XServer::Bind(const char* ip, unsigned short port)
 	int iRet = bind(_Socket, (sockaddr*)&sin, sizeof(sockaddr_in));
 	if (SOCKET_ERROR == iRet)
 	{
-		XLog("Error<Socket=%d>:bind!\n", (int)_Socket);
+		XInfo("Error<Socket=%d>:bind!\n", (int)_Socket);
 	}
 	else
 	{
-		XLog("OK<Socket=%d>:bind!\n", (int)_Socket);
+		XInfo("OK<Socket=%d>:bind!\n", (int)_Socket);
 	}
 }
 
@@ -146,11 +146,11 @@ void XServer::Listen(int n)
 	int iRet = listen(_Socket, n);
 	if (SOCKET_ERROR == iRet)
 	{
-		XLog("Error<Socket=%d>:listen!\n", (int)_Socket);
+		XInfo("Error<Socket=%d>:listen!\n", (int)_Socket);
 	}
 	else
 	{
-		XLog("OK<Socket=%d>:listen!\n", (int)_Socket);
+		XInfo("OK<Socket=%d>:listen!\n", (int)_Socket);
 	}
 }
 
@@ -163,20 +163,20 @@ void XServer::Close()
 #ifdef _WIN32
 		if (SOCKET_ERROR == closesocket(_Socket))
 		{
-			XLog("Error<Socket=%d>:closesocket!\n", (int)_Socket);
+			XInfo("Error<Socket=%d>:closesocket!\n", (int)_Socket);
 		}
 		else
 		{
-			XLog("OK<Socket=%d>:closesocket!\n", (int)_Socket);
+			XInfo("OK<Socket=%d>:closesocket!\n", (int)_Socket);
 		}
 #else
 		if (SOCKET_ERROR == close(_Socket))
 		{
-			XLog("Error<Socket=%d>:close!\n", (int)_Socket);
+			XInfo("Error<Socket=%d>:close!\n", (int)_Socket);
 		}
 		else
 		{
-			XLog("OK<Socket=%d>:close!\n", (int)_Socket);
+			XInfo("OK<Socket=%d>:close!\n", (int)_Socket);
 		}
 #endif
 		_Socket = INVALID_SOCKET;
@@ -190,11 +190,11 @@ void XServer::Done()
 	int iRet = WSACleanup();
 	if (SOCKET_ERROR == iRet)
 	{
-		XLog("Error:WSACleanup!\n");
+		XInfo("Error:WSACleanup!\n");
 	}
 	else
 	{
-		XLog("OK:WSACleanup!\n");
+		XInfo("OK:WSACleanup!\n");
 	}
 #endif
 }
@@ -212,7 +212,7 @@ void XServer::Accept()
 #endif
 	if (client == INVALID_SOCKET)
 	{
-		XLog("Error<Socket=%d>:accept!\n", (int)_Socket);
+		XInfo("Error<Socket=%d>:accept!\n", (int)_Socket);
 	}
 	else
 	{
@@ -231,7 +231,7 @@ void XServer::Accept()
 
 void XServer::OnRun(XThread* pThread)
 {
-	XLog("---------------------------------------------------------------------------------------------------- XServer:OnRun() Begin\n");
+	XInfo("---------------------------------------------------------------------------------------------------- XServer:OnRun() Begin\n");
 
 	while (pThread->IsRun())
 	{
@@ -246,7 +246,7 @@ void XServer::OnRun(XThread* pThread)
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
-			XLog("Error<Socket=%d>:Select!\n", (int)_Socket);
+			XInfo("Error<Socket=%d>:Select!\n", (int)_Socket);
 			pThread->Exit();
 			break;
 		}
@@ -262,7 +262,7 @@ void XServer::OnRun(XThread* pThread)
 		}
 	}
 
-	XLog("---------------------------------------------------------------------------------------------------- XServer:OnRun() End\n");
+	XInfo("---------------------------------------------------------------------------------------------------- XServer:OnRun() End\n");
 }
 
 

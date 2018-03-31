@@ -81,7 +81,7 @@ void* XMemoryPool::AllocMemory(size_t nSize)
 		pMemoryBlock->_pNext = nullptr;
 		pMemoryBlock->_nRef = 1;
 
-		XLog("--------------------------------------------- AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XPrint("--------------------------------------------- AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 	}
 	else
 	{
@@ -104,7 +104,7 @@ void XMemoryPool::FreeMemory(void* pMem)
 	std::lock_guard<std::mutex> lock(_mutex);
 	if (-1 == pMemoryBlock->_nID)
 	{
-		XLog("--------------------------------------------- FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XPrint("--------------------------------------------- FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		//使用系统申请的内存块。
 		free(pMemoryBlock);

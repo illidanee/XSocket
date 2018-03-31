@@ -1,0 +1,132 @@
+#include "XLog.h"
+
+XLog& XLog::GetInstance()
+{
+	static XLog log;
+	return log;
+}
+
+void XLog::SetFile(const char* pFile, const char* pMode)
+{
+	XLog& log = GetInstance();
+
+	if (log._File)
+	{
+		fclose(log._File);
+		log._File = nullptr;
+	}
+
+	log._File = fopen(pFile, pMode);
+	
+	assert(log._File != nullptr);
+}
+
+XLog::XLog()
+	:
+	_File(nullptr),
+	_Run(false),
+	_WaitNum(0),
+	_WakeNum(0)
+{
+	Start();
+}
+
+XLog::~XLog()
+{
+	Stop();
+
+	if (_File)
+		fclose(_File);
+}
+
+void XLog::Start()
+{
+	std::lock_guard<std::mutex> lock(_ThreadlMutex);
+
+	if (!_Run)
+	{
+		//设置状态
+		_Run = true;
+
+		//启动服务器进程
+		std::thread t(std::mem_fn(&XLog::Run), this);
+		t.detach();	
+	}
+}
+
+void XLog::Stop()
+{
+	std::lock_guard<std::mutex> lock(_ThreadlMutex);
+
+	if (_Run)
+	{
+		//设置状态
+		_Run = false;
+
+		//信号-等待
+		std::unique_lock<std::mutex> lock(_SignalMutex);
+		if (--_WaitNum < 0)
+		{
+			_CV.wait(lock, [this]()->bool {
+				return _WakeNum > 0;
+			});
+			--_WakeNum;
+		}
+	}
+}
+
+void XLog::Run()
+{
+	while (_Run)
+	{
+		//从缓冲区中取数据
+		if (!_TasksCache.empty())
+		{
+			std::lock_guard<std::mutex> lock(_TasksCacheMutex);
+			for (std::list<std::function<void()>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
+			{
+				_Tasks.push_back(*iter);
+			}
+			_TasksCache.clear();
+		}
+
+		//没有数据。
+		if (_Tasks.empty())
+		{
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+			continue;
+		}
+
+		//处理任务
+		for (std::list<std::function<void()>>::iterator iter = _Tasks.begin(); iter != _Tasks.end(); ++iter)
+		{
+			(*iter)();
+		}
+
+		//清空任务
+		_Tasks.clear();
+	}
+
+	//处理缓存中的剩余数据。
+	for (std::list<std::function<void()>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
+	{
+		(*iter)();
+	}
+
+	//清空任务
+	_TasksCache.clear();
+
+	//信号-发送
+	std::lock_guard<std::mutex> lock(_SignalMutex);
+	if (++_WaitNum <= 0)
+	{
+		++_WakeNum;
+		_CV.notify_one();
+	}
+}
+
+void XLog::AddTask(std::function<void()> pTask)
+{
+	std::lock_guard<std::mutex> lock(_TasksCacheMutex);
+	_TasksCache.push_back(pTask);
+}

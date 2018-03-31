@@ -29,6 +29,12 @@
     <Filter Include="Thread">
       <UniqueIdentifier>{2bf634c9-e3ec-4b97-bee3-04ab912ce6c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Buffer">
+      <UniqueIdentifier>{632c3525-6629-4831-8ef8-3ff5ff93d2d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{4b6d9c8d-e37f-4054-a548-e7a297f0d605}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Memory\XMemory.cpp">
@@ -71,7 +77,10 @@
       <Filter>Thread</Filter>
     </ClCompile>
     <ClCompile Include="XBuffer.cpp">
-      <Filter>Cpp</Filter>
+      <Filter>Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Log\XLog.cpp">
+      <Filter>Log</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +103,6 @@
       <Filter>Task</Filter>
     </ClInclude>
     <ClInclude Include="XCommon.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="MsgProtocol.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="XClient.h">
@@ -126,6 +132,14 @@
     <ClInclude Include="XThread.h">
       <Filter>Thread</Filter>
     </ClInclude>
-    <ClInclude Include="XBuffer.h" />
+    <ClInclude Include="XBuffer.h">
+      <Filter>Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="MsgProtocol.h">
+      <Filter>Cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Log\XLog.h">
+      <Filter>Log</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

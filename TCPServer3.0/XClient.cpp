@@ -87,7 +87,7 @@ bool XClient::CheckHeartTime(time_t t)
 	_HeartTime += t;
 	if (_HeartTime >= _XCLIENT_HEART_TIME_)
 	{
-		XLog("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
+		XInfo("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
 		return true;
 	}
 

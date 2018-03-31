@@ -4,9 +4,8 @@
 #include "XCommon.h"
 #include "XThread.h"
 
-#include <list>
 #include <mutex>
-#include <thread>
+#include <list>
 #include <chrono>
 #include <functional>
 

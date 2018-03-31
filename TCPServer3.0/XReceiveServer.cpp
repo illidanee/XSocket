@@ -30,7 +30,7 @@ void XReceiveServer::Done()
 
 void XReceiveServer::Start()
 {
-	XLog("    XReceiveServer<ID=%d>:Start() Begin\n", _ID);
+	XInfo("    XReceiveServer<ID=%d>:Start() Begin\n", _ID);
 
 	//开启任务线程
 	_TaskServer.Start(_ID);
@@ -44,12 +44,12 @@ void XReceiveServer::Start()
 		nullptr
 		);
 
-	XLog("    XReceiveServer<ID=%d>:Start() End\n", _ID);
+	XInfo("    XReceiveServer<ID=%d>:Start() End\n", _ID);
 }
 
 void XReceiveServer::Stop()
 {
-	XLog("    XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
+	XInfo("    XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
 
 	//关闭服务线程
 	_Thread.Stop();
@@ -61,7 +61,7 @@ void XReceiveServer::Stop()
 	_AllClients.clear();
 	_AllClientsCache.clear();
 
-	XLog("    XReceiveServer<ID=%d>:Stop() End\n", _ID);
+	XInfo("    XReceiveServer<ID=%d>:Stop() End\n", _ID);
 }
 
 void XReceiveServer::AddClient(const std::shared_ptr<XClient> pClient)
@@ -82,7 +82,7 @@ void XReceiveServer::AddTask(std::function<void()> pTask)
 
 void XReceiveServer::OnRun(XThread* pThread)
 {
-	XLog("    XReceiveServer<ID=%d>:OnRun() Begin\n", _ID);
+	XInfo("    XReceiveServer<ID=%d>:OnRun() Begin\n", _ID);
 
 	while (pThread->IsRun())
 	{
@@ -142,7 +142,7 @@ void XReceiveServer::OnRun(XThread* pThread)
 		int ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
-			XLog("Error:Select!\n");
+			XInfo("Error:Select!\n");
 			pThread->Exit();
 		}
 
@@ -152,7 +152,7 @@ void XReceiveServer::OnRun(XThread* pThread)
 		CheckTime();
 	}
 
-	XLog("    XReceiveServer<ID=%d>:OnRun() End\n", _ID);
+	XInfo("    XReceiveServer<ID=%d>:OnRun() End\n", _ID);
 }
 
 void XReceiveServer::RecvData(fd_set& fdSet)

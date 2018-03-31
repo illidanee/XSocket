@@ -8,6 +8,19 @@
 #define _XCLIENT_HEART_TIME_ 60000000
 #define _XCLIENT_SEND_TIME_ 200000
 
+//日志
+#include "../Log/XLog.h"
+
+//调试宏
+#ifndef XInfo
+#include <stdio.h>
+#ifdef _DEBUG
+#define XInfo(...) XLog::Info(__VA_ARGS__)
+#else
+#define XInfo(...) XLog::Info(__VA_ARGS__)
+#endif
+#endif
+
 //内存池
 #include "../Memory/XMemory.h"
 
@@ -43,15 +56,5 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory>
-
-//调试宏
-#ifndef XLog
-#include <stdio.h>
-#ifdef _DEBUG
-#define XLog(...) printf(__VA_ARGS__)
-#else
-#define XLog(...) printf(__VA_ARGS__)
-#endif
-#endif
 
 #endif

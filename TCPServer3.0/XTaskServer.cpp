@@ -10,7 +10,7 @@ XTaskServer::~XTaskServer()
 
 int XTaskServer::Start(int id)
 {
-	XLog("        XTaskServer<ID=%d>:Start() Begin\n", id);
+	XInfo("        XTaskServer<ID=%d>:Start() Begin\n", id);
 
 	//开启服务线程
 	_Thread.Start(
@@ -20,24 +20,24 @@ int XTaskServer::Start(int id)
 		}, 
 		nullptr);
 
-	XLog("        XTaskServer<ID=%d>:Start() End\n", id);
+	XInfo("        XTaskServer<ID=%d>:Start() End\n", id);
 	return 0;
 }
 
 int XTaskServer::Stop(int id)
 {
-	XLog("        XTaskServer<ID=%d>:Stop() Begin\n", id);
+	XInfo("        XTaskServer<ID=%d>:Stop() Begin\n", id);
 
 	//关闭服务线程
 	_Thread.Stop();
 
-	XLog("        XTaskServer<ID=%d>:Stop() End\n", id);
+	XInfo("        XTaskServer<ID=%d>:Stop() End\n", id);
 	return 0;
 }
 
 int XTaskServer::OnRun(XThread* pThread)
 {
-	XLog("        XTaskServer<ID=%d>:OnRun() Begin\n", -1);
+	XInfo("        XTaskServer<ID=%d>:OnRun() Begin\n", -1);
 
 	while (pThread->IsRun())
 	{
@@ -63,14 +63,22 @@ int XTaskServer::OnRun(XThread* pThread)
 		for (std::list<std::function<void()>>::iterator iter = _Tasks.begin(); iter != _Tasks.end(); ++iter)
 		{
 			(*iter)();
-			//delete *iter;
 		}
 
 		//清空任务
 		_Tasks.clear();
 	}
 
-	XLog("        XTaskServer<ID=%d>:OnRun() End\n", -1);
+	//处理缓存中的剩余数据。
+	for (std::list<std::function<void()>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
+	{
+		(*iter)();
+	}
+
+	//清空任务
+	_TasksCache.clear();
+
+	XInfo("        XTaskServer<ID=%d>:OnRun() End\n", -1);
 
 	return 0;
 }

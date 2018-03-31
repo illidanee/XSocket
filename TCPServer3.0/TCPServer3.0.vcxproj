@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Log\XLog.cpp" />
     <ClCompile Include="..\Memory\XMemory.cpp" />
     <ClCompile Include="..\Memory\XMemoryBlock.cpp" />
     <ClCompile Include="..\Memory\XMemoryManager.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="XThread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Log\XLog.h" />
     <ClInclude Include="..\Memory\XMemory.h" />
     <ClInclude Include="..\Memory\XMemoryBlock.h" />
     <ClInclude Include="..\Memory\XMemoryManager.h" />
