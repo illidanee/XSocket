@@ -1,4 +1,4 @@
-#ifndef __XSIGNAL_H__
+ï»¿#ifndef __XSIGNAL_H__
 #define __XSIGNAL_H__
 
 #include <condition_variable>
@@ -13,11 +13,11 @@ public:
 	void Wake();
 
 private:
-	std::condition_variable _CV;	//Ìõ¼ş±äÁ¿
-	std::mutex _Mutex;				//Ëø
+	std::condition_variable _CV;	//æ¡ä»¶å˜é‡
+	std::mutex _Mutex;				//é”
 
-	int _WaitNum;					//µÈ´ı¼ÆÊı
-	int _WakeNum;					//»½ĞÑ¼ÆÊı
+	int _WaitNum;					//ç­‰å¾…è®¡æ•°
+	int _WakeNum;					//å”¤é†’è®¡æ•°
 };
 
 #endif

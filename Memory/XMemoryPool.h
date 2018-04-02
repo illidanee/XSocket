@@ -1,4 +1,4 @@
-#ifndef __XMEMORYPOOL_H__
+ï»¿#ifndef __XMEMORYPOOL_H__
 #define __XMEMORYPOOL_H__
 
 #include "XMemoryBlock.h"
@@ -8,12 +8,12 @@
 class XMemoryPool
 {
 protected:
-	size_t _nCount;					//ÄÚ´æ¿é¸öÊı¡£
-	size_t _nSize;					//ÄÚ´æ¿é´óĞ¡¡£
-	void* _pBuffer;					//ÄÚ´æ¿éÊ×µØÖ·¡£-- Ê¹ÓÃmallocºÍfreeµÄÊ±ºò¿ÉÒÔÊ¹ÓÃvoid*£¬Èç¹ûÊ¹ÓÃnew char·½Ê½£¬×îºÃÊ¹ÓÃchar*ÀàĞÍ£¬·ñÔòÔÚlinuxÏÂdelete void*ÊÇÓĞ¾¯¸æµÄ¡£
-	XMemoryBlock* _pCur;			//µ±Ç°¿ÕÏĞÄÚ´æ¿éµØÖ·¡£
+	size_t _nCount;					//å†…å­˜å—ä¸ªæ•°ã€‚
+	size_t _nSize;					//å†…å­˜å—å¤§å°ã€‚
+	void* _pBuffer;					//å†…å­˜å—é¦–åœ°å€ã€‚-- ä½¿ç”¨mallocå’Œfreeçš„æ—¶å€™å¯ä»¥ä½¿ç”¨void*ï¼Œå¦‚æœä½¿ç”¨new charæ–¹å¼ï¼Œæœ€å¥½ä½¿ç”¨char*ç±»å‹ï¼Œå¦åˆ™åœ¨linuxä¸‹delete void*æ˜¯æœ‰è­¦å‘Šçš„ã€‚
+	XMemoryBlock* _pCur;			//å½“å‰ç©ºé—²å†…å­˜å—åœ°å€ã€‚
 
-	std::mutex _mutex;				//Ëø¡£
+	std::mutex _mutex;				//é”ã€‚
 
 public:
 	XMemoryPool();
@@ -33,16 +33,16 @@ public:
 	{
 		size_t n = sizeof(void*);
 		_nCount = nCount;
-		_nSize = nSize / n * n + (nSize % n ? n : 0);	//Ê¹ÓÃÄÚ´æ¶ÔÆë´óĞ¡¡£
+		_nSize = nSize / n * n + (nSize % n ? n : 0);	//ä½¿ç”¨å†…å­˜å¯¹é½å¤§å°ã€‚
 
-		XPrint("XTMemoryPool() £º count = %d, size = %d \n", (int)_nCount, (int)_nSize);
+		XPrint("XTMemoryPool() ï¼š count = %d, size = %d \n", (int)_nCount, (int)_nSize);
 
 		XMemoryPool::Init();
 	}
 
 	~XTMemoryPool()
 	{
-		XPrint("~XTMemoryPool() £º count = %d, size = %d \n", (int)_nCount, (int)_nSize);
+		XPrint("~XTMemoryPool() ï¼š count = %d, size = %d \n", (int)_nCount, (int)_nSize);
 
 		XMemoryPool::Done();
 	}

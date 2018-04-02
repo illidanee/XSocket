@@ -1,4 +1,4 @@
-#ifndef __XLOG_H__
+ï»¿#ifndef __XLOG_H__
 #define __XLOG_H__
 
 #include <assert.h>
@@ -18,13 +18,13 @@ public:
 	template <typename... Args>
 	static void Info(Args... args)
 	{
-		//Êä³öµ½ÖÕ¶Ë
+		//è¾“å‡ºåˆ°ç»ˆç«¯
 		printf(args...);
 
-		//Êä³öµ½ÎÄ¼ş
+		//è¾“å‡ºåˆ°æ–‡ä»¶
 		XLog& log = GetInstance();
 
-		//log ±ØĞëÊ¹ÓÃÒıÓÃ¡£·ñÔò»á×èÈû×¡¡£
+		//log å¿…é¡»ä½¿ç”¨å¼•ç”¨ã€‚å¦åˆ™ä¼šé˜»å¡ä½ã€‚
 		log.AddTask([&log, args...]() {
 			fprintf(log._File, args...);
 			fflush(log._File);
@@ -42,19 +42,28 @@ private:
 	void AddTask(std::function<void()> pTask);
 
 private:
-	FILE* _File;												//ÈÕÖ¾ÎÄ¼ş
+	FILE* _File;												//æ—¥å¿—æ–‡ä»¶
 
-	bool _Run;													//µ±Ç°Ïß³ÌÊÇ·ñÕıÔÚÔËĞĞ
-	std::mutex _ThreadlMutex;									//Ïß³ÌËø
+	bool _Run;													//å½“å‰çº¿ç¨‹æ˜¯å¦æ­£åœ¨è¿è¡Œ
+	std::mutex _ThreadlMutex;									//çº¿ç¨‹é”
 
-	std::condition_variable _CV;								//Ìõ¼ş±äÁ¿
-	std::mutex _SignalMutex;									//Ëø
-	int _WaitNum;												//µÈ´ı¼ÆÊı
-	int _WakeNum;												//»½ĞÑ¼ÆÊı
+	std::condition_variable _CV;								//æ¡ä»¶å˜é‡
+	std::mutex _SignalMutex;									//é”
+	int _WaitNum;												//ç­‰å¾…è®¡æ•°
+	int _WakeNum;												//å”¤é†’è®¡æ•°
 
-	std::list<std::function<void()>> _Tasks;					//ÈÎÎñÁĞ±í
-	std::list<std::function<void()>> _TasksCache;				//ÈÎÎñ»º³åÇø
-	std::mutex _TasksCacheMutex;								//ÈÎÎñ»º³åÇøËø
+	std::list<std::function<void()>> _Tasks;					//ä»»åŠ¡åˆ—è¡¨
+	std::list<std::function<void()>> _TasksCache;				//ä»»åŠ¡ç¼“å†²åŒº
+	std::mutex _TasksCacheMutex;								//ä»»åŠ¡ç¼“å†²åŒºé”
 };
+
+//è°ƒè¯•å®
+#ifndef XInfo
+#ifdef _DEBUG
+#define XInfo(...) XLog::Info(__VA_ARGS__)
+#else
+#define XInfo(...) XLog::Info(__VA_ARGS__)
+#endif
+#endif
 
 #endif

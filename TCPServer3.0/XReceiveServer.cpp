@@ -1,4 +1,4 @@
-#include "XReceiveServer.h"
+ï»¿#include "XReceiveServer.h"
 
 XReceiveServer::XReceiveServer(int id)
 	:
@@ -16,9 +16,9 @@ XReceiveServer::~XReceiveServer()
 
 void XReceiveServer::Init(XIEvent* pEventObj)
 {
-	//ÉèÖÃ¶ÔÏó
+	//è®¾ç½®å¯¹è±¡
 	_pEventObj = pEventObj;
-	//ÉèÖÃÊ±¼ä
+	//è®¾ç½®æ—¶é—´
 	_LastTime = XTimer::GetTimeByMicroseconds();
 }
 
@@ -32,10 +32,10 @@ void XReceiveServer::Start()
 {
 	XInfo("    XReceiveServer<ID=%d>:Start() Begin\n", _ID);
 
-	//¿ªÆôÈÎÎñÏß³Ì
+	//å¼€å¯ä»»åŠ¡çº¿ç¨‹
 	_TaskServer.Start(_ID);
 
-	//¿ªÊ¼·şÎñÏß³Ì
+	//å¼€å§‹æœåŠ¡çº¿ç¨‹
 	_Thread.Start(
 		nullptr,
 		[this](XThread* pThread) {
@@ -51,13 +51,13 @@ void XReceiveServer::Stop()
 {
 	XInfo("    XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
 
-	//¹Ø±Õ·şÎñÏß³Ì
+	//å…³é—­æœåŠ¡çº¿ç¨‹
 	_Thread.Stop();
 
-	//¹Ø±ÕÈÎÎñÏß³Ì
+	//å…³é—­ä»»åŠ¡çº¿ç¨‹
 	_TaskServer.Stop(_ID);
 
-	//¹Ø±ÕËùÓĞ¿Í»§¶ËÁ¬½Ó
+	//å…³é—­æ‰€æœ‰å®¢æˆ·ç«¯è¿æ¥
 	_AllClients.clear();
 	_AllClientsCache.clear();
 
@@ -86,7 +86,7 @@ void XReceiveServer::OnRun(XThread* pThread)
 
 	while (pThread->IsRun())
 	{
-		//ÊÇ·ñÓĞĞÂ¿Í»§¶Ë¼ÓÈë£¿
+		//æ˜¯å¦æœ‰æ–°å®¢æˆ·ç«¯åŠ å…¥ï¼Ÿ
 		if (!_AllClientsCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
@@ -101,16 +101,16 @@ void XReceiveServer::OnRun(XThread* pThread)
 			_ClientChange = true;
 		}
 
-		//ÊÇ·ñÓĞ¿Í»§¶ËÁ¬½Ó£¿
+		//æ˜¯å¦æœ‰å®¢æˆ·ç«¯è¿æ¥ï¼Ÿ
 		if (_AllClients.empty())
 		{
-			//¼õÉÙCPUÏûºÄ¡£
+			//å‡å°‘CPUæ¶ˆè€—ã€‚
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 
 			continue;
 		}
 
-		//¼ì²éÊÇ·ñÓĞ¿Í»§¶ËÏò·şÎñÆ÷·¢ËÍÊı¾İ¡£
+		//æ£€æŸ¥æ˜¯å¦æœ‰å®¢æˆ·ç«¯å‘æœåŠ¡å™¨å‘é€æ•°æ®ã€‚
 		fd_set fdRead;
 		fd_set fdWrite;
 		
@@ -137,8 +137,8 @@ void XReceiveServer::OnRun(XThread* pThread)
 
 		memcpy(&fdWrite, &fdRead, sizeof(fd_set));
 
-		//ÉèÖÃ1ºÁÃë¼ä¸ô£¬¿ÉÒÔÌá¸ß¿Í»§¶ËÁ¬½ÓselectĞ§ÂÊ¡£
-		timeval tv = { 0, 1 };						//Ê¹ÓÃÊ±¼ä¼ä¸ô¿ÉÒÔÌá¸ß¿Í»§¶ËÁ¬½ÓËÙ¶È¡£Ê¹ÓÃ×èÈûÄ£Ê½¸ü¿ì¡£µ«´Ë´¦²»ÄÜÊ¹ÓÃ×éÈûÄ£Ê½£¬ĞèÒªÖ´ĞĞ¶¨Ê±¼ì²âÈÎÎñ¡£
+		//è®¾ç½®1æ¯«ç§’é—´éš”ï¼Œå¯ä»¥æé«˜å®¢æˆ·ç«¯è¿æ¥selectæ•ˆç‡ã€‚
+		timeval tv = { 0, 1 };						//ä½¿ç”¨æ—¶é—´é—´éš”å¯ä»¥æé«˜å®¢æˆ·ç«¯è¿æ¥é€Ÿåº¦ã€‚ä½¿ç”¨é˜»å¡æ¨¡å¼æ›´å¿«ã€‚ä½†æ­¤å¤„ä¸èƒ½ä½¿ç”¨ç»„å¡æ¨¡å¼ï¼Œéœ€è¦æ‰§è¡Œå®šæ—¶æ£€æµ‹ä»»åŠ¡ã€‚
 		int ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
@@ -157,7 +157,7 @@ void XReceiveServer::OnRun(XThread* pThread)
 
 void XReceiveServer::RecvData(fd_set& fdSet)
 {
-	//½ÓÊÕ¿Í»§¶ËÊı¾İ
+	//æ¥æ”¶å®¢æˆ·ç«¯æ•°æ®
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
 		if (FD_ISSET(iter->first, &fdSet))
@@ -180,7 +180,7 @@ void XReceiveServer::RecvData(fd_set& fdSet)
 
 void XReceiveServer::SendData(fd_set& fdSet)
 {	
-	//½ÓÊÕ¿Í»§¶ËÊı¾İ
+	//æ¥æ”¶å®¢æˆ·ç«¯æ•°æ®
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
 		if (FD_ISSET(iter->first, &fdSet))
@@ -203,15 +203,15 @@ void XReceiveServer::SendData(fd_set& fdSet)
 
 void XReceiveServer::CheckTime()
 {
-	//Ñ­»·¼ÆÊ±¡£
+	//å¾ªç¯è®¡æ—¶ã€‚
 	time_t curTime = XTimer::GetTimeByMicroseconds();
 	time_t delta = curTime - _LastTime;
 	_LastTime = curTime;
 
-	//¼ÆÊ±¼ì²â¡£
+	//è®¡æ—¶æ£€æµ‹ã€‚
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
 	{
-		//ĞÄÌø¼ì²â£¡
+		//å¿ƒè·³æ£€æµ‹ï¼
 		if (iter->second->CheckHeartTime(delta))
 		{
 			if (_pEventObj)
@@ -222,7 +222,7 @@ void XReceiveServer::CheckTime()
 			continue;
 		}
 
-		//¼ÆÊ±·¢ËÍ¼ì²â£¡
+		//è®¡æ—¶å‘é€æ£€æµ‹ï¼
 		//iter->second->CheckSendTime(delta);
 
 		++iter;

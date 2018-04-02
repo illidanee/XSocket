@@ -1,4 +1,4 @@
-#ifndef __MYSERVER_H__
+ï»¿#ifndef __MYSERVER_H__
 #define __MYSERVER_H__
 
 #include "XCommon.h"
@@ -6,17 +6,17 @@
 #include <atomic>
 #include <functional>
 
-//×Ô¶¨ÒåServer
+//è‡ªå®šä¹‰Server
 class MyServer : public XServer
 {
 private:
-	XTimer _Timer;								//¼ÆÊ±Æ÷
-	std::atomic_int _ClientNum;					//¿Í»§¶Ë¼ÆÊıÆ÷
-	std::atomic_int _RecvNum;					//recv()º¯Êıµ÷ÓÃ¼ÆÊı
-	std::atomic_int _SendNum;					//send()º¯Êıµ÷ÓÃ¼ÆÊı
-	std::atomic_int _RecvPackageNum;			//½ÓÊÕÊı¾İ°ü¼ÆÊıÆ÷
-	std::atomic_int _DonePackageNum;			//´¦ÀíÊı¾İ°ü¼ÆÊıÆ÷
-	std::atomic_int _PackageNum;				//Ê£ÓàÈÎÎñ°ü¼ÆÊı
+	XTimer _Timer;								//è®¡æ—¶å™¨
+	std::atomic_int _ClientNum;					//å®¢æˆ·ç«¯è®¡æ•°å™¨
+	std::atomic_int _RecvNum;					//recv()å‡½æ•°è°ƒç”¨è®¡æ•°
+	std::atomic_int _SendNum;					//send()å‡½æ•°è°ƒç”¨è®¡æ•°
+	std::atomic_int _RecvPackageNum;			//æ¥æ”¶æ•°æ®åŒ…è®¡æ•°å™¨
+	std::atomic_int _DonePackageNum;			//å¤„ç†æ•°æ®åŒ…è®¡æ•°å™¨
+	std::atomic_int _PackageNum;				//å‰©ä½™ä»»åŠ¡åŒ…è®¡æ•°
 
 public:
 	MyServer();

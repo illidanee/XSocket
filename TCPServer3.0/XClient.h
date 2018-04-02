@@ -1,4 +1,4 @@
-#ifndef __XCLIENT_H__
+ï»¿#ifndef __XCLIENT_H__
 #define __XCLIENT_H__
 
 #include "XCommon.h"
@@ -6,7 +6,7 @@
 #include "XReceiveServer.h"
 #include "XBuffer.h"
 
-//¿Í»§¶ËĞÅÏ¢Àà
+//å®¢æˆ·ç«¯ä¿¡æ¯ç±»
 class XClient : public XObject<1024, XClient>
 {
 public:
@@ -19,26 +19,26 @@ public:
 	int SendData(MsgHeader* pHeader);
 	int SendData();
 
-	//ĞÄÌø
+	//å¿ƒè·³
 	void ResetHeartTime();
 	bool CheckHeartTime(time_t t);
 
-	//¶¨Ê±·¢ËÍÊı¾İ
+	//å®šæ—¶å‘é€æ•°æ®
 	void ResetSendTime();
 	void CheckSendTime(time_t t);
 
 private:
-	SOCKET _Socket;								//¿Í»§¶ËSocket
+	SOCKET _Socket;								//å®¢æˆ·ç«¯Socket
 
-	XIEvent* _pNetEventObj;						//Ö÷Ïß³Ì¶ÔÏó
-	XReceiveServer* _pReceiveServerObj;			//ReceiveServer¶ÔÏó
+	XIEvent* _pNetEventObj;						//ä¸»çº¿ç¨‹å¯¹è±¡
+	XReceiveServer* _pReceiveServerObj;			//ReceiveServerå¯¹è±¡
 
-	XBuffer _RecvBuffer;						//½ÓÊÕ»º³åÇø¶ÔÏó
-	XBuffer _SendBuffer;						//·¢ËÍ»º³åÇø¶ÔÏó
+	XBuffer _RecvBuffer;						//æ¥æ”¶ç¼“å†²åŒºå¯¹è±¡
+	XBuffer _SendBuffer;						//å‘é€ç¼“å†²åŒºå¯¹è±¡
 
 private:
-	time_t	_HeartTime;							//ĞÄÌø¼ÆÊ±Æ÷
-	time_t	_SendTime;							//¶¨Ê±·¢ËÍÊı¾İ¼ÆÊ±Æ÷
+	time_t	_HeartTime;							//å¿ƒè·³è®¡æ—¶å™¨
+	time_t	_SendTime;							//å®šæ—¶å‘é€æ•°æ®è®¡æ—¶å™¨
 };
 
 

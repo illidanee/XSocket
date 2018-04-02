@@ -1,4 +1,4 @@
-#include "XCommon.h"
+ï»¿#include "XCommon.h"
 #include "MyServer.h"
 #include "XSignal.h"
 
@@ -15,7 +15,7 @@ int main()
 	XInfo("                                                                                                        Designed by Org.illidan        \n");
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 
-//È¥³ýÖÐ¶ÏÐÅºÅ¹Ø±Õ·þÎñÆ÷¡£
+//åŽ»é™¤ä¸­æ–­ä¿¡å·å…³é—­æœåŠ¡å™¨ã€‚
 #ifndef _WIN32
 	//sigset_t signal_mask;
 	//sigemptyset(&signal_mask);
@@ -25,11 +25,11 @@ int main()
 	signal(SIGPIPE, SIG_IGN);
 #endif
 
-	//´´½¨·þÎñÆ÷
+	//åˆ›å»ºæœåŠ¡å™¨
 	//int nSize = sizeof(MyServer);
 	MyServer* server = new MyServer;
 
-	//¿ªÆô·þÎñÆ÷
+	//å¼€å¯æœåŠ¡å™¨
 	server->Start();
 
 	while (true)

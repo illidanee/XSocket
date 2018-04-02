@@ -1,4 +1,4 @@
-#include "XMemory.h"
+﻿#include "XMemory.h"
 #include "XMemoryManager.h"
 
 void* operator new(size_t nSize)

@@ -1,39 +1,29 @@
-#ifndef __XCOMMON_H__
+ï»¿#ifndef __XCOMMON_H__
 #define __XCOMMON_H__
 
-//×Ô¶¨Òåºê
+//è‡ªå®šä¹‰å®
 #define _SERVER_SIZE_ 4
 #define _RECV_BUFFER_SIZE_ 8192
 #define _SEND_BUFFER_SIZE_ 10240
 #define _XCLIENT_HEART_TIME_ 60000000
 #define _XCLIENT_SEND_TIME_ 200000
 
-//ÈÕÖ¾
+//æ—¥å¿—
 #include "../Log/XLog.h"
 
-//µ÷ÊÔºê
-#ifndef XInfo
-#include <stdio.h>
-#ifdef _DEBUG
-#define XInfo(...) XLog::Info(__VA_ARGS__)
-#else
-#define XInfo(...) XLog::Info(__VA_ARGS__)
-#endif
-#endif
-
-//ÄÚ´æ³Ø
+//å†…å­˜æ± 
 #include "../Memory/XMemory.h"
 
-//¶ÔÏó³Ø
+//å¯¹è±¡æ± 
 #include "../Object/XObject.h"
 
-//¼ÆÊ±Æ÷
+//è®¡æ—¶å™¨
 #include "../Timer/XTimer.h"
 
-//Ğ­ÒéÍ·
+//åè®®å¤´
 #include "MsgProtocol.h"
 
-//SocketÏà¹Ø
+//Socketç›¸å…³
 #ifdef _WIN32
 #define FD_SETSIZE 1024
 #define WIN32_LEAN_AND_MEAN
@@ -51,7 +41,7 @@
 #define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
-//ÏµÍ³Í·ÎÄ¼ş
+//ç³»ç»Ÿå¤´æ–‡ä»¶
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>

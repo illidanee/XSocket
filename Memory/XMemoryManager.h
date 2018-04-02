@@ -1,4 +1,4 @@
-#ifndef __XMEMORYMANAGER_H__
+﻿#ifndef __XMEMORYMANAGER_H__
 #define __XMEMORYMANAGER_H__
 
 #include "XMemoryPool.h"

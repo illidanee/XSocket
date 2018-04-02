@@ -1,4 +1,4 @@
-#include "XClient.h"
+ï»¿#include "XClient.h"
 
 XClient::XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServerObj)
 	:
@@ -61,11 +61,11 @@ int XClient::SendData()
 {
 	int nRet = _SendBuffer.Send(_Socket);
 
-	//ÓĞ´íÎó·¢Éú
+	//æœ‰é”™è¯¯å‘ç”Ÿ
 	if (nRet < 0)
 		return -1;
 
-	//·¢ËÍÁËÊı¾İ
+	//å‘é€äº†æ•°æ®
 	if (nRet == 0)
 	{
 		if (_pNetEventObj)

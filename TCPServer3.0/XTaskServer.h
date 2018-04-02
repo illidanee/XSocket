@@ -1,4 +1,4 @@
-#ifndef __XTASKSERVER_H__
+ï»¿#ifndef __XTASKSERVER_H__
 #define __XTASKSERVER_H__
 
 #include "XCommon.h"
@@ -21,9 +21,9 @@ public:
 	void AddTask(std::function<void()> pTask);
 
 private:									
-	std::list<std::function<void()>> _Tasks;					//ÈÎÎñÁĞ±í
-	std::list<std::function<void()>> _TasksCache;				//ÈÎÎñ»º³åÇø
-	std::mutex _TaskSCacheMutex;								//ÈÎÎñ»º³åÇøËø
+	std::list<std::function<void()>> _Tasks;					//ä»»åŠ¡åˆ—è¡¨
+	std::list<std::function<void()>> _TasksCache;				//ä»»åŠ¡ç¼“å†²åŒº
+	std::mutex _TaskSCacheMutex;								//ä»»åŠ¡ç¼“å†²åŒºé”
 
 	XThread _Thread;
 

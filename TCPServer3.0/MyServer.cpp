@@ -1,8 +1,8 @@
-#include "MyServer.h"
+ï»¿#include "MyServer.h"
 
 MyServer::MyServer()
 {
-	//³õÊ¼»¯ÆäËû
+	//åˆå§‹åŒ–å…¶ä»–
 	_Timer.XInit();
 	_ClientNum = 0;
 	_RecvNum = 0;
@@ -55,7 +55,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	++_RecvPackageNum;
 	++_PackageNum;
 
-	//´¦Àí¿Í»§¶ËÇëÇó
+	//å¤„ç†å®¢æˆ·ç«¯è¯·æ±‚
 	switch (pMsgHeader->_MsgType)
 	{
 	case MSG_LOGIN:
@@ -78,7 +78,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	{
 		pClient->ResetHeartTime();
 
-		//Ê¹ÓÃÈÎÎñÏµÍ³
+		//ä½¿ç”¨ä»»åŠ¡ç³»ç»Ÿ
 		MsgHeart* respond = new MsgHeart();
 		std::function<void()> pTask = [pClient, respond]()
 		{
@@ -92,7 +92,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 
 		pReceiveServer->AddTask(pTask);
 
-		////Ö±½Ó·¢ËÍÊı¾İ
+		////ç›´æ¥å‘é€æ•°æ®
 		//MsgHeart respond;
 		//if (0 == pClient->SendData(&respond))
 		//{
@@ -102,7 +102,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	break;
 	default:
 	{
-		XInfo("Warn£º default Msg¡£");
+		XInfo("Warnï¼š default Msgã€‚");
 	}
 	}
 }

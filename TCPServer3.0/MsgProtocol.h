@@ -1,4 +1,4 @@
-#ifndef __MSG_PROTOCOL_H__
+﻿#ifndef __MSG_PROTOCOL_H__
 #define __MSG_PROTOCOL_H__
 
 enum MGS_TYPE

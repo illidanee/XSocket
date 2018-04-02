@@ -1,4 +1,4 @@
-#include "XTaskServer.h"
+ï»¿#include "XTaskServer.h"
 
 XTaskServer::XTaskServer()
 {
@@ -12,7 +12,7 @@ int XTaskServer::Start(int id)
 {
 	XInfo("        XTaskServer<ID=%d>:Start() Begin\n", id);
 
-	//¿ªÆô·şÎñÏß³Ì
+	//å¼€å¯æœåŠ¡çº¿ç¨‹
 	_Thread.Start(
 		nullptr, 
 		[this](XThread* pThread) {
@@ -28,7 +28,7 @@ int XTaskServer::Stop(int id)
 {
 	XInfo("        XTaskServer<ID=%d>:Stop() Begin\n", id);
 
-	//¹Ø±Õ·şÎñÏß³Ì
+	//å…³é—­æœåŠ¡çº¿ç¨‹
 	_Thread.Stop();
 
 	XInfo("        XTaskServer<ID=%d>:Stop() End\n", id);
@@ -41,7 +41,7 @@ int XTaskServer::OnRun(XThread* pThread)
 
 	while (pThread->IsRun())
 	{
-		//´Ó»º³åÇøÖĞÈ¡Êı¾İ
+		//ä»ç¼“å†²åŒºä¸­å–æ•°æ®
 		if (!_TasksCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_TaskSCacheMutex);
@@ -52,30 +52,30 @@ int XTaskServer::OnRun(XThread* pThread)
 			_TasksCache.clear();
 		}
 
-		//Ã»ÓĞÊı¾İ¡£
+		//æ²¡æœ‰æ•°æ®ã€‚
 		if (_Tasks.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 			continue;
 		}
 
-		//´¦ÀíÈÎÎñ
+		//å¤„ç†ä»»åŠ¡
 		for (std::list<std::function<void()>>::iterator iter = _Tasks.begin(); iter != _Tasks.end(); ++iter)
 		{
 			(*iter)();
 		}
 
-		//Çå¿ÕÈÎÎñ
+		//æ¸…ç©ºä»»åŠ¡
 		_Tasks.clear();
 	}
 
-	//´¦Àí»º´æÖĞµÄÊ£ÓàÊı¾İ¡£
+	//å¤„ç†ç¼“å­˜ä¸­çš„å‰©ä½™æ•°æ®ã€‚
 	for (std::list<std::function<void()>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
 	{
 		(*iter)();
 	}
 
-	//Çå¿ÕÈÎÎñ
+	//æ¸…ç©ºä»»åŠ¡
 	_TasksCache.clear();
 
 	XInfo("        XTaskServer<ID=%d>:OnRun() End\n", -1);

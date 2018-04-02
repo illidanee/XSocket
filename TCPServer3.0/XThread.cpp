@@ -1,4 +1,4 @@
-#include "XThread.h"
+﻿#include "XThread.h"
 
 XThread::XThread()
 	:

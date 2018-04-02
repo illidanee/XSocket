@@ -1,4 +1,4 @@
-#ifndef __XRECEIVESERVER_H__
+ï»¿#ifndef __XRECEIVESERVER_H__
 #define __XRECEIVESERVER_H__
 
 #include "XCommon.h"
@@ -25,23 +25,23 @@ public:
 	void AddTask(std::function<void()> pTask);
 
 private:
-	int _ID;														//·şÎñÏß³Ì±àºÅ¡£
-	XIEvent* _pEventObj;											//Ö÷Ïß³Ì¶ÔÏó
+	int _ID;														//æœåŠ¡çº¿ç¨‹ç¼–å·ã€‚
+	XIEvent* _pEventObj;											//ä¸»çº¿ç¨‹å¯¹è±¡
 
-	XTaskServer _TaskServer;										//·şÎñÆ÷¶ÔÓ¦µÄÈÎÎñÏß³Ì¡£
+	XTaskServer _TaskServer;										//æœåŠ¡å™¨å¯¹åº”çš„ä»»åŠ¡çº¿ç¨‹ã€‚
 
-	std::map<SOCKET, std::shared_ptr<XClient>> _AllClients;			//¿Í»§¶Ë
-	std::map<SOCKET, std::shared_ptr<XClient>> _AllClientsCache;	//¿Í»§¶Ë»º³åÇø
-	std::mutex _AllClientsCacheMutex;								//¿Í»§¶Ë»º³åÇøËø
+	std::map<SOCKET, std::shared_ptr<XClient>> _AllClients;			//å®¢æˆ·ç«¯
+	std::map<SOCKET, std::shared_ptr<XClient>> _AllClientsCache;	//å®¢æˆ·ç«¯ç¼“å†²åŒº
+	std::mutex _AllClientsCacheMutex;								//å®¢æˆ·ç«¯ç¼“å†²åŒºé”
 
-	XThread _Thread;												//·şÎñÏß³Ì
+	XThread _Thread;												//æœåŠ¡çº¿ç¨‹
 
 private:
-	time_t _LastTime;												//ÉÏ´ÎÑ­»··şÎñÆ÷Ê±¼ä
+	time_t _LastTime;												//ä¸Šæ¬¡å¾ªç¯æœåŠ¡å™¨æ—¶é—´
 
-	fd_set _fdSetCache;												//fd_set »º´æ¡£
-	bool _ClientChange;												//ÊÇ·ñ¿Í»§¶Ë±ä»¯¡£
-	SOCKET _MaxSocketID;											//¿Í»§¶Ë×î´óSocket¡£
+	fd_set _fdSetCache;												//fd_set ç¼“å­˜ã€‚
+	bool _ClientChange;												//æ˜¯å¦å®¢æˆ·ç«¯å˜åŒ–ã€‚
+	SOCKET _MaxSocketID;											//å®¢æˆ·ç«¯æœ€å¤§Socketã€‚
 
 private:
 	void OnRun(XThread* pThread);

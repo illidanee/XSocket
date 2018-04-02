@@ -1,4 +1,4 @@
-#include "XMemoryManager.h"
+ï»¿#include "XMemoryManager.h"
 #include <stdlib.h>
 
 void XMemoryManager::InitMemoryPools(size_t nBegin, size_t nEnd, XMemoryPool* pPool)
@@ -48,12 +48,12 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 {
 	if (nSize <= _MAX_MEMORY_POOL_SIZE_)
 	{
-		//Ê¹ÓÃÄÚ´æ³Ø¡£
+		//ä½¿ç”¨å†…å­˜æ± ã€‚
 		return _AllMemoryPools[nSize]->AllocMemory(nSize);
 	}
 	else
 	{
-		//Ã»ÓĞ¶ÔÓ¦µÄÄÚ´æ³Ø¿ÉÒÔÊ¹ÓÃ¡£
+		//æ²¡æœ‰å¯¹åº”çš„å†…å­˜æ± å¯ä»¥ä½¿ç”¨ã€‚
 		XMemoryBlock* pMemoryBlock = (XMemoryBlock*)malloc(sizeof(XMemoryBlock) + nSize);
 		pMemoryBlock->_nID = -1;
 		pMemoryBlock->_nSize = nSize;
@@ -73,14 +73,14 @@ void XMemoryManager::FreeMemory(void* pMem)
 	
 	if (pMemoryBlock->_pMemoryPool)
 	{
-		//Ê¹ÓÃÄÚ´æ³Ø¡£
+		//ä½¿ç”¨å†…å­˜æ± ã€‚
 		pMemoryBlock->_pMemoryPool->FreeMemory(pMem);
 	}
 	else
 	{
 		XPrint("--------------------------------------------- FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
-		//Ã»ÓĞÄÚ´æ³Ø¿ÉÒÔÊ¹ÓÃ¡£
+		//æ²¡æœ‰å†…å­˜æ± å¯ä»¥ä½¿ç”¨ã€‚
 		free(pMemoryBlock);
 	}
 }

@@ -1,4 +1,4 @@
-#include "XMemoryPool.h"
+ï»¿#include "XMemoryPool.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -25,7 +25,7 @@ int XMemoryPool::Init()
 
 	_pBuffer = malloc(_nCount * nBlockSize);
 
-	//³õÊ¼»¯ÄÚ´æ¿é¡£
+	//åˆå§‹åŒ–å†…å­˜å—ã€‚
 	_pCur = (XMemoryBlock*)_pBuffer;
 	_pCur->_nID = 0;
 	_pCur->_nSize = _nSize;
@@ -73,7 +73,7 @@ void* XMemoryPool::AllocMemory(size_t nSize)
 	std::lock_guard<std::mutex> lock(_mutex);
 	if (nullptr == _pCur)
 	{	
-		//µ±Ç°ÄÚ´æ³ØÃ»ÓÐ¿ÉÓÃÄÚ´æ¿é£¬ÔÚÄÚ´æÖÐÉêÇë¡£
+		//å½“å‰å†…å­˜æ± æ²¡æœ‰å¯ç”¨å†…å­˜å—ï¼Œåœ¨å†…å­˜ä¸­ç”³è¯·ã€‚
 		pMemoryBlock = (XMemoryBlock*)malloc(sizeof(XMemoryBlock) + nSize);
 		pMemoryBlock->_nID = -1;
 		pMemoryBlock->_nSize = nSize;
@@ -85,7 +85,7 @@ void* XMemoryPool::AllocMemory(size_t nSize)
 	}
 	else
 	{
-		//Ê¹ÓÃÄÚ´æ³ØÖÐµÄÄÚ´æ¿é¡£
+		//ä½¿ç”¨å†…å­˜æ± ä¸­çš„å†…å­˜å—ã€‚
 		pMemoryBlock = _pCur;
 		pMemoryBlock->_nRef += 1;
 		_pCur = _pCur->_pNext;
@@ -106,12 +106,12 @@ void XMemoryPool::FreeMemory(void* pMem)
 	{
 		XPrint("--------------------------------------------- FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
-		//Ê¹ÓÃÏµÍ³ÉêÇëµÄÄÚ´æ¿é¡£
+		//ä½¿ç”¨ç³»ç»Ÿç”³è¯·çš„å†…å­˜å—ã€‚
 		free(pMemoryBlock);
 	}
 	else
 	{
-		//Ê¹ÓÃÄÚ´æ³ØÖÐµÄÄÚ´æ¿é¡£ 
+		//ä½¿ç”¨å†…å­˜æ± ä¸­çš„å†…å­˜å—ã€‚ 
 		pMemoryBlock->_pNext = _pCur;
 		pMemoryBlock->_nRef -= 1;
 		_pCur = pMemoryBlock;

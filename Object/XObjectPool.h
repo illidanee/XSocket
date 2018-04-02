@@ -1,4 +1,4 @@
-#ifndef __XOBJECTPOOL_H__
+ï»¿#ifndef __XOBJECTPOOL_H__
 #define __XOBJECTPOOL_H__
 
 #include <assert.h>
@@ -20,20 +20,20 @@ public:
 	class XObjectBlock
 	{
 	public:
-		size_t _nID;						//¶ÔÏó¿éID¡£- id Îª -1 ËµÃ÷²»ÔÚ¶ÔÏó³ØÖÐ¡£
-		size_t _nSize;						//¶ÔÏó¿é´óÐ¡¡£
-		XObjectPool* _pObjectPool;			//ËùÊô¶ÔÏó³Ø¡£- _pMemoryPool Îª nullptr ËµÃ÷²»ÔÚ¶ÔÏó³ØÖÐ¡£
-		XObjectBlock* _pNext;				//ÏÂÒ»¸ö¿ÉÓÃ¶ÔÏó¿éµØÖ·¡£
-		size_t _nRef;						//µ±Ç°¶ÔÏó¿é±»ÒýÓÃ´ÎÊý¡£
+		size_t _nID;						//å¯¹è±¡å—IDã€‚- id ä¸º -1 è¯´æ˜Žä¸åœ¨å¯¹è±¡æ± ä¸­ã€‚
+		size_t _nSize;						//å¯¹è±¡å—å¤§å°ã€‚
+		XObjectPool* _pObjectPool;			//æ‰€å±žå¯¹è±¡æ± ã€‚- _pMemoryPool ä¸º nullptr è¯´æ˜Žä¸åœ¨å¯¹è±¡æ± ä¸­ã€‚
+		XObjectBlock* _pNext;				//ä¸‹ä¸€ä¸ªå¯ç”¨å¯¹è±¡å—åœ°å€ã€‚
+		size_t _nRef;						//å½“å‰å¯¹è±¡å—è¢«å¼•ç”¨æ¬¡æ•°ã€‚
 	};
 
 private:
-	size_t _nCount;					//¶ÔÏó¿é¸öÊý¡£
-	size_t _nSize;					//¶ÔÏó¿é´óÐ¡¡£
-	char* _pBuffer;					//¶ÔÏó¿éÊ×µØÖ·¡£
-	XObjectBlock* _pCur;			//µ±Ç°¿ÕÏÐ¶ÔÏó¿éµØÖ·¡£
+	size_t _nCount;					//å¯¹è±¡å—ä¸ªæ•°ã€‚
+	size_t _nSize;					//å¯¹è±¡å—å¤§å°ã€‚
+	char* _pBuffer;					//å¯¹è±¡å—é¦–åœ°å€ã€‚
+	XObjectBlock* _pCur;			//å½“å‰ç©ºé—²å¯¹è±¡å—åœ°å€ã€‚
 
-	std::mutex _mutex;				//Ëø¡£
+	std::mutex _mutex;				//é”ã€‚
 
 public:
 	XObjectPool()
@@ -62,7 +62,7 @@ public:
 
 		_pBuffer = new char[_nCount * nBlockSize];
 
-		//³õÊ¼»¯ÄÚ´æ¿é¡£
+		//åˆå§‹åŒ–å†…å­˜å—ã€‚
 		_pCur = (XObjectBlock*)_pBuffer;
 		_pCur->_nID = 0;
 		_pCur->_nSize = _nSize;
@@ -110,7 +110,7 @@ public:
 		std::lock_guard<std::mutex> lock(_mutex);
 		if (nullptr == _pCur)
 		{
-			//µ±Ç°ÄÚ´æ³ØÃ»ÓÐ¿ÉÓÃÄÚ´æ¿é£¬ÔÚÄÚ´æÖÐÉêÇë¡£
+			//å½“å‰å†…å­˜æ± æ²¡æœ‰å¯ç”¨å†…å­˜å—ï¼Œåœ¨å†…å­˜ä¸­ç”³è¯·ã€‚
 			pObjectBlock = (XObjectBlock*)new char[sizeof(XObjectBlock) + nSize];
 			pObjectBlock->_nID = -1;
 			pObjectBlock->_nSize = nSize;
@@ -122,7 +122,7 @@ public:
 		}
 		else
 		{
-			//Ê¹ÓÃÄÚ´æ³ØÖÐµÄÄÚ´æ¿é¡£
+			//ä½¿ç”¨å†…å­˜æ± ä¸­çš„å†…å­˜å—ã€‚
 			pObjectBlock = _pCur;
 			pObjectBlock->_nRef += 1;
 			_pCur = _pCur->_pNext;
@@ -142,12 +142,12 @@ public:
 		if (-1 == pObjectBlock->_nID)
 		{
 			XPrint("FreeObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
-			//Ê¹ÓÃÏµÍ³ÉêÇëµÄÄÚ´æ¿é¡£
+			//ä½¿ç”¨ç³»ç»Ÿç”³è¯·çš„å†…å­˜å—ã€‚
 			delete[] pObjectBlock;
 		}
 		else
 		{
-			//Ê¹ÓÃÄÚ´æ³ØÖÐµÄÄÚ´æ¿é¡£ 
+			//ä½¿ç”¨å†…å­˜æ± ä¸­çš„å†…å­˜å—ã€‚ 
 			pObjectBlock->_pNext = _pCur;
 			pObjectBlock->_nRef -= 1;
 			_pCur = pObjectBlock;

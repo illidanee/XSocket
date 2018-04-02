@@ -1,4 +1,4 @@
-#ifndef __XOBJECT_MANAGER_H__
+﻿#ifndef __XOBJECT_MANAGER_H__
 #define __XOBJECT_MANAGER_H__
 
 #include "XObjectPool.h"

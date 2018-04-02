@@ -1,4 +1,4 @@
-#ifndef __XMEMORYBLOCK_H__
+﻿#ifndef __XMEMORYBLOCK_H__
 #define __XMEMORYBLOCK_H__
 
 #ifndef XPrint
@@ -15,11 +15,11 @@ class XMemoryPool;
 class XMemoryBlock
 {
 public:
-	size_t _nID;						//�ڴ��ID��- id Ϊ -1 ˵�������ڴ���С�
-	size_t _nSize;						//�ڴ���С��
-	XMemoryPool* _pMemoryPool;			//�����ڴ�ء�- _pMemoryPool Ϊ nullptr ˵�������ڴ���С�
-	XMemoryBlock* _pNext;				//��һ�������ڴ���ַ��
-	size_t _nRef;						//��ǰ�ڴ�鱻���ô�����
+	size_t _nID;						//内存块ID。- id 为 -1 说明不在内存池中。
+	size_t _nSize;						//内存块大小。
+	XMemoryPool* _pMemoryPool;			//所属内存池。- _pMemoryPool 为 nullptr 说明不在内存池中。
+	XMemoryBlock* _pNext;				//下一个可用内存块地址。
+	size_t _nRef;						//当前内存块被引用次数。
 };
 
 #endif

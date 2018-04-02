@@ -1,4 +1,4 @@
-#include "XLog.h"
+ï»¿#include "XLog.h"
 
 XLog& XLog::GetInstance()
 {
@@ -45,10 +45,10 @@ void XLog::Start()
 
 	if (!_Run)
 	{
-		//ÉèÖÃ×´Ì¬
+		//è®¾ç½®çŠ¶æ€
 		_Run = true;
 
-		//Æô¶¯·şÎñÆ÷½ø³Ì
+		//å¯åŠ¨æœåŠ¡å™¨è¿›ç¨‹
 		std::thread t(std::mem_fn(&XLog::Run), this);
 		t.detach();	
 	}
@@ -60,10 +60,10 @@ void XLog::Stop()
 
 	if (_Run)
 	{
-		//ÉèÖÃ×´Ì¬
+		//è®¾ç½®çŠ¶æ€
 		_Run = false;
 
-		//ĞÅºÅ-µÈ´ı
+		//ä¿¡å·-ç­‰å¾…
 		std::unique_lock<std::mutex> lock(_SignalMutex);
 		if (--_WaitNum < 0)
 		{
@@ -79,7 +79,7 @@ void XLog::Run()
 {
 	while (_Run)
 	{
-		//´Ó»º³åÇøÖĞÈ¡Êı¾İ
+		//ä»ç¼“å†²åŒºä¸­å–æ•°æ®
 		if (!_TasksCache.empty())
 		{
 			std::lock_guard<std::mutex> lock(_TasksCacheMutex);
@@ -90,33 +90,33 @@ void XLog::Run()
 			_TasksCache.clear();
 		}
 
-		//Ã»ÓĞÊı¾İ¡£
+		//æ²¡æœ‰æ•°æ®ã€‚
 		if (_Tasks.empty())
 		{
 			std::this_thread::sleep_for(std::chrono::microseconds(1));
 			continue;
 		}
 
-		//´¦ÀíÈÎÎñ
+		//å¤„ç†ä»»åŠ¡
 		for (std::list<std::function<void()>>::iterator iter = _Tasks.begin(); iter != _Tasks.end(); ++iter)
 		{
 			(*iter)();
 		}
 
-		//Çå¿ÕÈÎÎñ
+		//æ¸…ç©ºä»»åŠ¡
 		_Tasks.clear();
 	}
 
-	//´¦Àí»º´æÖĞµÄÊ£ÓàÊı¾İ¡£
+	//å¤„ç†ç¼“å­˜ä¸­çš„å‰©ä½™æ•°æ®ã€‚
 	for (std::list<std::function<void()>>::iterator iter = _TasksCache.begin(); iter != _TasksCache.end(); ++iter)
 	{
 		(*iter)();
 	}
 
-	//Çå¿ÕÈÎÎñ
+	//æ¸…ç©ºä»»åŠ¡
 	_TasksCache.clear();
 
-	//ĞÅºÅ-·¢ËÍ
+	//ä¿¡å·-å‘é€
 	std::lock_guard<std::mutex> lock(_SignalMutex);
 	if (++_WaitNum <= 0)
 	{

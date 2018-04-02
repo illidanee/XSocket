@@ -1,4 +1,4 @@
-#ifndef __XSERVER_H__
+ï»¿#ifndef __XSERVER_H__
 #define __XSERVER_H__
 
 #include "XCommon.h"
@@ -8,7 +8,7 @@
 #include "XThread.h"
 #include <vector>
 
-//¼àÌıServerÀà
+//ç›‘å¬Serverç±»
 class XServer : public XIEvent
 {
 public:
@@ -19,10 +19,10 @@ public:
 	int Stop();
 
 private:
-	SOCKET _Socket;												//·şÎñÆ÷¼àÌıSocket
-	std::vector<std::shared_ptr<XReceiveServer>> _AllServers;	//·şÎñÆ÷ĞÅÏ¢
+	SOCKET _Socket;												//æœåŠ¡å™¨ç›‘å¬Socket
+	std::vector<std::shared_ptr<XReceiveServer>> _AllServers;	//æœåŠ¡å™¨ä¿¡æ¯
 
-	XThread _Thread;											//ÈÎÎñÏß³Ì
+	XThread _Thread;											//ä»»åŠ¡çº¿ç¨‹
 
 private:
 	void Init();

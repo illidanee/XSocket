@@ -1,7 +1,7 @@
-#ifndef __XIEVENT_H__
+ï»¿#ifndef __XIEVENT_H__
 #define __XIEVENT_H__
 
-//·şÎñÆ÷È«¾ÖÊÂ¼ş½Ó¿Ú¡£
+//æœåŠ¡å™¨å…¨å±€äº‹ä»¶æ¥å£ã€‚
 struct MsgHeader;
 class XClient;
 class XReceiveServer;

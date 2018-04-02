@@ -1,4 +1,4 @@
-#include "XServer.h"
+ï»¿#include "XServer.h"
 
 XServer::XServer()
 	:
@@ -14,18 +14,18 @@ int XServer::Start()
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
 
-	//³õÊ¼»¯·şÎñÆ÷
+	//åˆå§‹åŒ–æœåŠ¡å™¨
 	Init();
 	Open();
 	Bind(NULL, 9090);
 	Listen(1000);
 
-	//¿ªÆô·şÎñÏß³Ì
+	//å¼€å¯æœåŠ¡çº¿ç¨‹
 	for (int i = 0; i < _SERVER_SIZE_; ++i)
 	{
-		//1-²»Ê¹ÓÃ¶ÔÏó³Ø¡£
+		//1-ä¸ä½¿ç”¨å¯¹è±¡æ± ã€‚
 		//std::shared_ptr<XReceiveServer> pServer = std::make_shared<XReceiveServer>();
-		//2-Ê¹ÓÃ¶ÔÏó³Ø¡£
+		//2-ä½¿ç”¨å¯¹è±¡æ± ã€‚
 		std::shared_ptr<XReceiveServer> pServer(new XReceiveServer(i));
 
 		pServer->Init(this);
@@ -33,7 +33,7 @@ int XServer::Start()
 		_AllServers.push_back(pServer);
 	}
 
-	//¿ªÊ¼¼àÌıÏß³Ì
+	//å¼€å§‹ç›‘å¬çº¿ç¨‹
 	_Thread.Start(
 		nullptr,
 		[this](XThread* pThread) {
@@ -50,10 +50,10 @@ int XServer::Stop()
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() Begin \n");
 
-	//¹Ø±Õ¼àÌıÏß³Ì
+	//å…³é—­ç›‘å¬çº¿ç¨‹
 	_Thread.Stop();
 
-	//¹Ø±Õ·şÎñÏß³Ì
+	//å…³é—­æœåŠ¡çº¿ç¨‹
 	for (auto iter : _AllServers)
 	{	
 		iter->Stop();
@@ -61,7 +61,7 @@ int XServer::Stop()
 	}
 	_AllServers.clear();
 
-	//Ïú»Ù·şÎñÆ÷
+	//é”€æ¯æœåŠ¡å™¨
 	Close();
 	Done();
 
@@ -71,7 +71,7 @@ int XServer::Stop()
 
 void XServer::Init()
 {
-	//³õÊ¼»¯ÍøÂç»·¾³
+	//åˆå§‹åŒ–ç½‘ç»œç¯å¢ƒ
 #ifdef _WIN32
 	WORD wsaVersion = MAKEWORD(2, 2);
 	WSADATA wsaData = {};
@@ -185,7 +185,7 @@ void XServer::Close()
 
 void XServer::Done()
 {
-	//Ïú»ÙÍøÂç»·¾³
+	//é”€æ¯ç½‘ç»œç¯å¢ƒ
 #ifdef _WIN32
 	int iRet = WSACleanup();
 	if (SOCKET_ERROR == iRet)
@@ -241,7 +241,7 @@ void XServer::OnRun(XThread* pThread)
 		FD_ZERO(&fdRead);
 		FD_SET(_Socket, &fdRead);
 
-		//ÉèÖÃ10ºÁÃë¼ä¸ô£¬¿ÉÒÔÌá¸ßÊı¾İ½ÓÊÜºÍ·¢ËÍselectĞ§ÂÊ¡£
+		//è®¾ç½®10æ¯«ç§’é—´éš”ï¼Œå¯ä»¥æé«˜æ•°æ®æ¥å—å’Œå‘é€selectæ•ˆç‡ã€‚
 		timeval tv = { 0, 1 };
 		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)

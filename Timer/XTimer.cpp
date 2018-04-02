@@ -1,4 +1,4 @@
-#include "XTimer.h"
+﻿#include "XTimer.h"
 
 time_t XTimer::GetTimeByMicroseconds()
 {

@@ -1,4 +1,4 @@
-#include "XSignal.h"
+﻿#include "XSignal.h"
 
 XSignal::XSignal()
 	:

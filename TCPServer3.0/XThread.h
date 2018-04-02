@@ -1,4 +1,4 @@
-#ifndef __XTHREAD_H__
+ï»¿#ifndef __XTHREAD_H__
 #define __XTHREAD_H__
 
 #include "XSignal.h"
@@ -20,9 +20,9 @@ private:
 	void OnWork();
 
 private:
-	bool _Run;											//µ±Ç°Ïß³ÌÊÇ·ñÕıÔÚÔËĞĞ
-	XSignal _Signal;									//Í¬²½ĞÅºÅ
-	std::mutex _Mutex;									//°²È«Ëø
+	bool _Run;											//å½“å‰çº¿ç¨‹æ˜¯å¦æ­£åœ¨è¿è¡Œ
+	XSignal _Signal;									//åŒæ­¥ä¿¡å·
+	std::mutex _Mutex;									//å®‰å…¨é”
 
 	PThreadFunc _pBegin;
 	PThreadFunc _pRun;
