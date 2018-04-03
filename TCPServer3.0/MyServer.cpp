@@ -1,5 +1,7 @@
 ﻿#include "MyServer.h"
 
+#include "XMariaDB.h"
+
 MyServer::MyServer()
 {
 	//初始化其他
@@ -63,9 +65,28 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 		MsgLoginRes* respond = new MsgLoginRes();
 		std::function<void()> pTask = [pClient, respond]()
 		{
+			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
+			int num = 0;
+
+			if (connect)
+				num = (int)connect->SearchStudent();
+			else
+			{
+				printf("Error Conenct Data : -------------------  Task\n");
+			}
+
+			printf("------------------- Student = %d    \n", num);
+
 			if (pClient->SendData(respond) < 0)
 			{
 				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+			}
+
+			if (connect)
+				XMariaDB::GetInstance().PushConnect(connect);
+			else
+			{
+				printf("Error Conenct Data : ------------------- Task\n");
 			}
 
 			delete respond;

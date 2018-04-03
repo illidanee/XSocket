@@ -14,10 +14,11 @@ XClient::XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServ
 
 XClient::~XClient()
 {
-	shutdown(_Socket, SD_BOTH);
 #ifdef _WIN32
+	shutdown(_Socket, SD_BOTH);
 	closesocket(_Socket);
 #else
+	shutdown(_Socket, SHUT_RDWR);
 	close(_Socket);
 #endif
 }

@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{04F127D7-48FD-4018-A9F7-5104182767BA}</ProjectGuid>
+    <ProjectGuid>{4CF4B72A-9922-4274-8FF9-F073304C3073}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>TCPServer30</RootNamespace>
+    <RootNamespace>HelloMariaDB</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,29 +71,21 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)/bin/$(Configuration)/$(Platform)/</OutDir>
-    <IntDir>$(SolutionDir)/temp/$(Configuration)/$(Platform)/$(ProjectName)/</IntDir>
     <IncludePath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)/bin/$(Configuration)/$(Platform)/</OutDir>
-    <IntDir>$(SolutionDir)/temp/$(Configuration)/$(Platform)/$(ProjectName)/</IntDir>
     <IncludePath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)/bin/$(Configuration)/$(Platform)/</OutDir>
-    <IntDir>$(SolutionDir)/temp/$(Configuration)/$(Platform)/$(ProjectName)/</IntDir>
     <IncludePath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)/bin/$(Configuration)/$(Platform)/</OutDir>
-    <IntDir>$(SolutionDir)/temp/$(Configuration)/$(Platform)/$(ProjectName)/</IntDir>
     <IncludePath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -104,7 +96,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +110,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +126,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +144,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,46 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Log\XLog.cpp" />
-    <ClCompile Include="..\Memory\XMemory.cpp" />
-    <ClCompile Include="..\Memory\XMemoryBlock.cpp" />
-    <ClCompile Include="..\Memory\XMemoryManager.cpp" />
-    <ClCompile Include="..\Memory\XMemoryPool.cpp" />
-    <ClCompile Include="..\Timer\XTimer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyServer.cpp" />
-    <ClCompile Include="XBuffer.cpp" />
-    <ClCompile Include="XClient.cpp" />
-    <ClCompile Include="XMariaDB.cpp" />
-    <ClCompile Include="XMariaDBConnect.cpp" />
-    <ClCompile Include="XReceiveServer.cpp" />
-    <ClCompile Include="XServer.cpp" />
-    <ClCompile Include="XSignal.cpp" />
-    <ClCompile Include="XTaskServer.cpp" />
-    <ClCompile Include="XThread.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Log\XLog.h" />
-    <ClInclude Include="..\Memory\XMemory.h" />
-    <ClInclude Include="..\Memory\XMemoryBlock.h" />
-    <ClInclude Include="..\Memory\XMemoryManager.h" />
-    <ClInclude Include="..\Memory\XMemoryPool.h" />
-    <ClInclude Include="..\Object\XObject.h" />
-    <ClInclude Include="..\Object\XObjectPool.h" />
-    <ClInclude Include="..\Timer\XTimer.h" />
-    <ClInclude Include="MsgProtocol.h" />
-    <ClInclude Include="MyServer.h" />
-    <ClInclude Include="XBuffer.h" />
-    <ClInclude Include="XClient.h" />
-    <ClInclude Include="XCommon.h" />
-    <ClInclude Include="XIEvent.h" />
-    <ClInclude Include="XMariaDB.h" />
-    <ClInclude Include="XMariaDBConnect.h" />
-    <ClInclude Include="XReceiveServer.h" />
-    <ClInclude Include="XServer.h" />
-    <ClInclude Include="XSignal.h" />
-    <ClInclude Include="XTaskServer.h" />
-    <ClInclude Include="XThread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

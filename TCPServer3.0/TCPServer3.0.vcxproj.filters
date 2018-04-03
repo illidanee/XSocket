@@ -82,6 +82,12 @@
     <ClCompile Include="..\Log\XLog.cpp">
       <Filter>Log</Filter>
     </ClCompile>
+    <ClCompile Include="XMariaDB.cpp">
+      <Filter>Cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="XMariaDBConnect.cpp">
+      <Filter>Cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Memory\XMemory.h">
@@ -141,5 +147,7 @@
     <ClInclude Include="..\Log\XLog.h">
       <Filter>Log</Filter>
     </ClInclude>
+    <ClInclude Include="XMariaDB.h" />
+    <ClInclude Include="XMariaDBConnect.h" />
   </ItemGroup>
 </Project>

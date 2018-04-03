@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include <list>
 #include <functional>
+#include <thread>
 
 class XLog
 {

@@ -4,6 +4,7 @@
 #include "XSignal.h"
 #include <functional>
 #include <mutex>
+#include <thread>
 
 class XThread
 {

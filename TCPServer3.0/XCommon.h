@@ -8,6 +8,8 @@
 #define _XCLIENT_HEART_TIME_ 60000000
 #define _XCLIENT_SEND_TIME_ 200000
 
+#define _MARIADB_CONNECT_NUM_ 1000
+
 //日志
 #include "../Log/XLog.h"
 
