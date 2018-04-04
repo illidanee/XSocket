@@ -16,7 +16,7 @@ XMariaDBConnect::~XMariaDBConnect()
 my_ulonglong XMariaDBConnect::SearchStudent()
 {
 	const char *query = "select * from Students where School = 'Mide'";
-	if (mysql_real_query(_pConnect, query, strlen(query)))
+	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
 		show_error(_pConnect);
 
 	MYSQL_RES *ret = mysql_store_result(_pConnect);

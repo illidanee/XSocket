@@ -1,16 +1,19 @@
 ﻿#ifndef __XCLIENT_H__
 #define __XCLIENT_H__
 
-#include "XCommon.h"
-#include "XIEvent.h"
-#include "XReceiveServer.h"
-#include "XBuffer.h"
+#include "../XCommon.h"
+#include "XNet.h"
+#include "XIGlobalEvent.h"
+#include "XIServerEvent.h"
+#include "../Buffer/XBuffer.h"
+
+class XServer;
 
 //客户端信息类
 class XClient : public XObject<1024, XClient>
 {
 public:
-	XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServerObj);
+	XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj);
 	~XClient();
 
 	SOCKET GetSocket() { return _Socket; }
@@ -27,11 +30,14 @@ public:
 	void ResetSendTime();
 	void CheckSendTime(time_t t);
 
+	XIGlobalEvent* GetGlobalObj();
+	XIServerEvent* GetServerObj();
+
 private:
 	SOCKET _Socket;								//客户端Socket
 
-	XIEvent* _pNetEventObj;						//主线程对象
-	XReceiveServer* _pReceiveServerObj;			//ReceiveServer对象
+	XIGlobalEvent* _pGlobalObj;					//全局对象
+	XIServerEvent* _pServerObj;					//服务对象
 
 	XBuffer _RecvBuffer;						//接收缓冲区对象
 	XBuffer _SendBuffer;						//发送缓冲区对象

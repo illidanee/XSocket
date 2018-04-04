@@ -156,14 +156,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp" />
+    <ClCompile Include="..\XSrc\Server\XClient.cpp" />
+    <ClCompile Include="..\XSrc\Server\XNet.cpp" />
+    <ClCompile Include="..\XSrc\Server\XTCPClient.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="XTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client.h" />
-    <ClInclude Include="MsgProtocol.h" />
-    <ClInclude Include="XTimer.h" />
+    <ClInclude Include="..\XSrc\Server\XClient.h" />
+    <ClInclude Include="..\XSrc\Server\XIGlobalEvent.h" />
+    <ClInclude Include="..\XSrc\Server\XNet.h" />
+    <ClInclude Include="..\XSrc\Server\XTCPClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

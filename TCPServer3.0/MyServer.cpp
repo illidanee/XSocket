@@ -1,6 +1,6 @@
 ﻿#include "MyServer.h"
 
-#include "XMariaDB.h"
+#include "../XSrc/MariaDB/XMariaDB.h"
 
 MyServer::MyServer()
 {
@@ -52,7 +52,7 @@ void MyServer::OnNetSend(XClient* pClient)
 	++_SendNum;
 }
 
-void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveServer* pReceiveServer)
+void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 {
 	++_RecvPackageNum;
 	++_PackageNum;
@@ -92,7 +92,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 			delete respond;
 		};
 		
-		pReceiveServer->AddTask(pTask);
+		pClient->GetServerObj()->AddTask(pTask);
 	}
 	break;
 	case MSG_HEART:
@@ -111,7 +111,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 			delete respond;
 		};
 
-		pReceiveServer->AddTask(pTask);
+		//pReceiveServer->AddTask(pTask);
 
 		////直接发送数据
 		//MsgHeart respond;
@@ -128,7 +128,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveSer
 	}
 }
 
-void MyServer::OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader, XReceiveServer* pReceiveServer)
+void MyServer::OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader)
 {
 	++_DonePackageNum;
 	--_PackageNum;

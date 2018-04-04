@@ -1,34 +1,34 @@
-﻿#include "XReceiveServer.h"
+﻿#include "XServer.h"
 
-XReceiveServer::XReceiveServer(int id)
+XServer::XServer(int id)
 	:
 	_ID(id),
-	_pEventObj(nullptr),
+	_pGlobalEventObj(nullptr),
 	_LastTime(0),
 	_ClientChange(true),
 	_MaxSocketID(0)
 {
 }
 
-XReceiveServer::~XReceiveServer()
+XServer::~XServer()
 {
 }
 
-void XReceiveServer::Init(XIEvent* pEventObj)
+void XServer::Init(XIGlobalEvent* pGlobalEventObj)
 {
 	//设置对象
-	_pEventObj = pEventObj;
+	_pGlobalEventObj = pGlobalEventObj;
 	//设置时间
 	_LastTime = XTimer::GetTimeByMicroseconds();
 }
 
-void XReceiveServer::Done()
+void XServer::Done()
 {
-	_pEventObj = nullptr;
+	_pGlobalEventObj = nullptr;
 	_LastTime = 0;
 }
 
-void XReceiveServer::Start()
+void XServer::Start()
 {
 	XInfo("    XReceiveServer<ID=%d>:Start() Begin\n", _ID);
 
@@ -47,7 +47,7 @@ void XReceiveServer::Start()
 	XInfo("    XReceiveServer<ID=%d>:Start() End\n", _ID);
 }
 
-void XReceiveServer::Stop()
+void XServer::Stop()
 {
 	XInfo("    XReceiveServer<ID=%d>:Stop() Begin\n", _ID);
 
@@ -64,23 +64,28 @@ void XReceiveServer::Stop()
 	XInfo("    XReceiveServer<ID=%d>:Stop() End\n", _ID);
 }
 
-void XReceiveServer::AddClient(const std::shared_ptr<XClient> pClient)
+void XServer::AddClient(const std::shared_ptr<XClient> pClient)
 {
 	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
 	_AllClientsCache.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(pClient->GetSocket(), pClient));
 }
 
-int XReceiveServer::GetClientNum()
+int XServer::GetClientNum()
 {
 	return (int)_AllClients.size() + (int)_AllClientsCache.size();
 }
 
-void XReceiveServer::AddTask(std::function<void()> pTask)
+XIGlobalEvent* XServer::GetGlobalObj()
+{
+	return _pGlobalEventObj;
+}
+
+void XServer::AddTask(std::function<void()> pTask)
 {
 	_TaskServer.AddTask(pTask);
 }
 
-void XReceiveServer::OnRun(XThread* pThread)
+void XServer::OnRun(XThread* pThread)
 {
 	XInfo("    XReceiveServer<ID=%d>:OnRun() Begin\n", _ID);
 
@@ -93,8 +98,8 @@ void XReceiveServer::OnRun(XThread* pThread)
 			for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
 			{
 				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
-				if (_pEventObj)
-					_pEventObj->OnClientJoin(iter->second);
+				if (_pGlobalEventObj)
+					_pGlobalEventObj->OnClientJoin(iter->second);
 			}
 			_AllClientsCache.clear();
 
@@ -155,7 +160,7 @@ void XReceiveServer::OnRun(XThread* pThread)
 	XInfo("    XReceiveServer<ID=%d>:OnRun() End\n", _ID);
 }
 
-void XReceiveServer::RecvData(fd_set& fdSet)
+void XServer::RecvData(fd_set& fdSet)
 {
 	//接收客户端数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
@@ -165,8 +170,8 @@ void XReceiveServer::RecvData(fd_set& fdSet)
 			int ret = iter->second->RecvData();
 			if (ret < 0)
 			{
-				if (_pEventObj)
-					_pEventObj->OnClientLeave(iter->second);
+				if (_pGlobalEventObj)
+					_pGlobalEventObj->OnClientLeave(iter->second);
 
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
@@ -178,7 +183,7 @@ void XReceiveServer::RecvData(fd_set& fdSet)
 	}
 }
 
-void XReceiveServer::SendData(fd_set& fdSet)
+void XServer::SendData(fd_set& fdSet)
 {	
 	//接收客户端数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
@@ -188,8 +193,8 @@ void XReceiveServer::SendData(fd_set& fdSet)
 			int ret = iter->second->SendData();
 			if (ret < 0)
 			{
-				if (_pEventObj)
-					_pEventObj->OnClientLeave(iter->second);
+				if (_pGlobalEventObj)
+					_pGlobalEventObj->OnClientLeave(iter->second);
 
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
@@ -201,7 +206,7 @@ void XReceiveServer::SendData(fd_set& fdSet)
 	}
 }
 
-void XReceiveServer::CheckTime()
+void XServer::CheckTime()
 {
 	//循环计时。
 	time_t curTime = XTimer::GetTimeByMicroseconds();
@@ -214,8 +219,8 @@ void XReceiveServer::CheckTime()
 		//心跳检测！
 		if (iter->second->CheckHeartTime(delta))
 		{
-			if (_pEventObj)
-				_pEventObj->OnClientLeave(iter->second);
+			if (_pGlobalEventObj)
+				_pGlobalEventObj->OnClientLeave(iter->second);
 
 			iter = _AllClients.erase(iter);
 			_ClientChange = true;

@@ -1,13 +1,13 @@
 ﻿#ifndef __MYSERVER_H__
 #define __MYSERVER_H__
 
-#include "XCommon.h"
-#include "XServer.h"
+#include "../XSrc/XCommon.h"
+#include "../XSrc/Server/XTCPServer.h"
 #include <atomic>
 #include <functional>
 
 //自定义Server
-class MyServer : public XServer
+class MyServer : public XTCPServer
 {
 private:
 	XTimer _Timer;								//计时器
@@ -26,8 +26,8 @@ public:
 	virtual void OnClientLeave(std::shared_ptr<XClient> pClient);
 	virtual void OnNetRecv(XClient* pClient);
 	virtual void OnNetSend(XClient* pClient);
-	virtual void OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader, XReceiveServer* pReceiveServer);
-	virtual void OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader, XReceiveServer* pReceiveServer);
+	virtual void OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader);
+	virtual void OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader);
 };
 
 #endif

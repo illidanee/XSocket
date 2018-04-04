@@ -1,7 +1,7 @@
 #ifndef __XBUFFER_H__
 #define __XBUFFER_H__
 
-#include "XCommon.h"
+#include "../XCommon.h"
 
 class XBuffer
 {

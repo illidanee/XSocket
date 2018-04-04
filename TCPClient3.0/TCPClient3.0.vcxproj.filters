@@ -1,39 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="Cpp">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="XSrc">
+      <UniqueIdentifier>{2b9cf1a0-6970-42f3-8491-53f39a16606b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="XSrc\Server">
+      <UniqueIdentifier>{4085c83a-e4f3-4200-ba1a-59a32125ef19}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Client.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Cpp</Filter>
     </ClCompile>
-    <ClCompile Include="XTimer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\XSrc\Server\XClient.cpp">
+      <Filter>XSrc\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XTCPClient.cpp">
+      <Filter>XSrc\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XNet.cpp">
+      <Filter>XSrc\Server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Client.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\XSrc\Server\XClient.h">
+      <Filter>XSrc\Server</Filter>
     </ClInclude>
-    <ClInclude Include="MsgProtocol.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\XSrc\Server\XTCPClient.h">
+      <Filter>XSrc\Server</Filter>
     </ClInclude>
-    <ClInclude Include="XTimer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\XSrc\Server\XNet.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XIGlobalEvent.h">
+      <Filter>XSrc\Server</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

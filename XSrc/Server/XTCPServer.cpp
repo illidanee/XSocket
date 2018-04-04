@@ -1,21 +1,23 @@
-﻿#include "XServer.h"
+﻿#include "XTCPServer.h"
 
-XServer::XServer()
+XTCPServer::XTCPServer()
 	:
 	_Socket(INVALID_SOCKET)
 {
 }
 
-XServer::~XServer()
+XTCPServer::~XTCPServer()
 {
 }
 
-int XServer::Start()
+int XTCPServer::Start()
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
 
+	//初始化网络环境
+	XNet::Go();
+
 	//初始化服务器
-	Init();
 	Open();
 	Bind(NULL, 9090);
 	Listen(1000);
@@ -26,7 +28,7 @@ int XServer::Start()
 		//1-不使用对象池。
 		//std::shared_ptr<XReceiveServer> pServer = std::make_shared<XReceiveServer>();
 		//2-使用对象池。
-		std::shared_ptr<XReceiveServer> pServer(new XReceiveServer(i));
+		std::shared_ptr<XServer> pServer(new XServer(i));
 
 		pServer->Init(this);
 		pServer->Start();
@@ -46,7 +48,7 @@ int XServer::Start()
 	return 0;
 }
 
-int XServer::Stop()
+int XTCPServer::Stop()
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() Begin \n");
 
@@ -63,31 +65,12 @@ int XServer::Stop()
 
 	//销毁服务器
 	Close();
-	Done();
 
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() End \n");
 	return 0;
 }
 
-void XServer::Init()
-{
-	//初始化网络环境
-#ifdef _WIN32
-	WORD wsaVersion = MAKEWORD(2, 2);
-	WSADATA wsaData = {};
-	int iRet = WSAStartup(wsaVersion, &wsaData);
-	if (iRet)
-	{
-		XInfo("Error:WSAStartup!\n");
-	}
-	else
-	{
-		XInfo("OK:WSAStartup!\n");
-	}
-#endif
-}
-
-void XServer::Open()
+void XTCPServer::Open()
 {
 	assert(INVALID_SOCKET == _Socket);
 
@@ -102,7 +85,7 @@ void XServer::Open()
 	}
 }
 
-void XServer::Bind(const char* ip, unsigned short port)
+void XTCPServer::Bind(const char* ip, unsigned short port)
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -139,7 +122,7 @@ void XServer::Bind(const char* ip, unsigned short port)
 	}
 }
 
-void XServer::Listen(int n)
+void XTCPServer::Listen(int n)
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -154,7 +137,7 @@ void XServer::Listen(int n)
 	}
 }
 
-void XServer::Close()
+void XTCPServer::Close()
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -183,23 +166,7 @@ void XServer::Close()
 	}
 }
 
-void XServer::Done()
-{
-	//销毁网络环境
-#ifdef _WIN32
-	int iRet = WSACleanup();
-	if (SOCKET_ERROR == iRet)
-	{
-		XInfo("Error:WSACleanup!\n");
-	}
-	else
-	{
-		XInfo("OK:WSACleanup!\n");
-	}
-#endif
-}
-
-void XServer::Accept()
+void XTCPServer::Accept()
 {
 	assert(INVALID_SOCKET != _Socket);
 
@@ -216,7 +183,7 @@ void XServer::Accept()
 	}
 	else
 	{
-		std::shared_ptr<XReceiveServer> pLessServer = _AllServers[0];
+		std::shared_ptr<XServer> pLessServer = _AllServers[0];
 		for (auto pServer : _AllServers)
 		{
 			if (pLessServer->GetClientNum() > pServer->GetClientNum())
@@ -229,7 +196,7 @@ void XServer::Accept()
 	}
 }
 
-void XServer::OnRun(XThread* pThread)
+void XTCPServer::OnRun(XThread* pThread)
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:OnRun() Begin\n");
 

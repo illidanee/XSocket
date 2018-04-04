@@ -2,9 +2,8 @@
 #include <thread>
 #include <atomic>
 #include <chrono>
-#include "Client.h"
-
-#include "XTimer.h"
+#include "../XSrc/Server/XTCPClient.h"
+#include "../XSrc/Timer/XTimer.h"
 
 XTimer timer;
 
@@ -12,7 +11,7 @@ const int mCount = 1;
 const int cCount = 1000;
 const int tCount = 1;
 bool bRun = true;
-Client* client[cCount];
+XTCPClient* client[cCount];
 
 std::atomic_int readyCount = 0;
 std::atomic_int sendCount = 0;
@@ -80,14 +79,14 @@ void ClientThread(int id)
 	//创建客户端
 	for (int i = begin; i < end; ++i)
 	{
-		client[i] = new Client();
+		client[i] = new XTCPClient();
 	}
 
 	//连接服务器
 	for (int i = begin; i < end; ++i)
 	{
 		client[i]->Open();
-		client[i]->Connect("192.168.0.90", 9090);
+		client[i]->Connect("192.168.0.99", 9090);
 	}
 
 	//使用原子计数器优化线程等待。
@@ -114,7 +113,7 @@ void ClientThread(int id)
 int main()
 {
 	timer.XInit();
-	Client::Init();
+	XTCPClient::Init();
 
 	//启动命令线程
 	std::thread cmdThread(CmdThread);
@@ -141,7 +140,7 @@ int main()
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 
-	Client::Done();
+	XTCPClient::Done();
 	timer.XDone();
 	return 0;
 }

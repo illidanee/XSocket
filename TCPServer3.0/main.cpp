@@ -1,6 +1,6 @@
-﻿#include "XCommon.h"
+﻿#include "../XSrc/XCommon.h"
+#include "../XSrc/Signal/XSignal.h"
 #include "MyServer.h"
-#include "XSignal.h"
 
 #ifndef _WIN32
 #include <signal.h>

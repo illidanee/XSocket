@@ -1,10 +1,10 @@
 ﻿#include "XClient.h"
 
-XClient::XClient(SOCKET client, XIEvent* pEventObj, XReceiveServer* pReceiveServerObj)
+XClient::XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj)
 	:
 	_Socket(client),
-	_pNetEventObj(pEventObj),
-	_pReceiveServerObj(pReceiveServerObj),
+	_pGlobalObj(pGlobalObj),
+	_pServerObj(pServerObj),
 	_RecvBuffer(_RECV_BUFFER_SIZE_),
 	_SendBuffer(_SEND_BUFFER_SIZE_),
 	_HeartTime(0),
@@ -31,13 +31,13 @@ int XClient::RecvData()
 
 	if (nRet == 0)
 	{
-		if (_pNetEventObj)
-			_pNetEventObj->OnNetRecv(this);
+		if (_pGlobalObj)
+			_pGlobalObj->OnNetRecv(this);
 
 		while (_RecvBuffer.HasMsg())
 		{
-			if (_pNetEventObj)
-				_pNetEventObj->OnNetMsgRecv(this, _RecvBuffer.Front(), _pReceiveServerObj);
+			if (_pGlobalObj)
+				_pGlobalObj->OnNetMsgRecv(this, _RecvBuffer.Front());
 
 			_RecvBuffer.Pop();
 		}
@@ -52,8 +52,8 @@ int XClient::SendData(MsgHeader* pHeader)
 	if (nRet < 0)
 		return -1;
 
-	if (_pNetEventObj)
-		_pNetEventObj->OnNetMsgDone(this, pHeader, _pReceiveServerObj);
+	if (_pGlobalObj)
+		_pGlobalObj->OnNetMsgDone(this, pHeader);
 
 	return 0;
 }
@@ -69,8 +69,8 @@ int XClient::SendData()
 	//发送了数据
 	if (nRet == 0)
 	{
-		if (_pNetEventObj)
-			_pNetEventObj->OnNetSend(this);
+		if (_pGlobalObj)
+			_pGlobalObj->OnNetSend(this);
 	}
 
 	ResetSendTime();
@@ -108,4 +108,14 @@ void XClient::CheckSendTime(time_t t)
 		//XError("CheckSendTime! \n");
 		SendData();
 	}
+}
+
+XIGlobalEvent* XClient::GetGlobalObj()
+{
+	return _pGlobalObj;
+}
+
+XIServerEvent* XClient::GetServerObj()
+{
+	return _pServerObj;
 }

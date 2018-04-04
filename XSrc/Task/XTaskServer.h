@@ -1,8 +1,8 @@
 ﻿#ifndef __XTASKSERVER_H__
 #define __XTASKSERVER_H__
 
-#include "XCommon.h"
-#include "XThread.h"
+#include "../XCommon.h"
+#include "../Thread/XThread.h"
 
 #include <mutex>
 #include <list>
