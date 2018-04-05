@@ -11,32 +11,125 @@
     <Filter Include="XSrc\Server">
       <UniqueIdentifier>{4085c83a-e4f3-4200-ba1a-59a32125ef19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XSrc\Buffer">
+      <UniqueIdentifier>{c145b2ca-a856-4690-a32f-8eedce8ab8ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Log">
+      <UniqueIdentifier>{1678e9c7-172e-4aa8-b812-f3ef39833598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\MariaDB">
+      <UniqueIdentifier>{110518b9-f69a-4fec-b2be-9c5924204924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Memory">
+      <UniqueIdentifier>{497b1715-b806-4201-91d1-1de75aeb771e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Protocol">
+      <UniqueIdentifier>{3c99c7b2-908f-4adc-b6e0-a24cf513beb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Object">
+      <UniqueIdentifier>{0e9dfd1b-4c08-402e-a521-e4c4b96f5d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Signal">
+      <UniqueIdentifier>{3ecfb7b3-dc92-4771-b963-a4dfb435b5b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Task">
+      <UniqueIdentifier>{779d0e22-02fd-4eb0-8b14-f9db0aa152a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Thread">
+      <UniqueIdentifier>{e31c31f2-f5a7-494d-9e8c-f398b99fd9b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Timer">
+      <UniqueIdentifier>{6b634c4f-a31a-4ef1-b098-3323d4120bb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Cpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\XSrc\Server\XClient.cpp">
-      <Filter>XSrc\Server</Filter>
+    <ClCompile Include="MyClient.cpp">
+      <Filter>Cpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\XSrc\Server\XTCPClient.cpp">
+    <ClCompile Include="..\XSrc\Buffer\XBuffer.cpp">
+      <Filter>XSrc\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Log\XLog.cpp">
+      <Filter>XSrc\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemory.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemoryBlock.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemoryManager.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemoryPool.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Timer\XTimer.cpp">
+      <Filter>XSrc\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XClient.cpp">
       <Filter>XSrc\Server</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\Server\XNet.cpp">
       <Filter>XSrc\Server</Filter>
     </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XTCPClient.cpp">
+      <Filter>XSrc\Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyClient.h">
+      <Filter>Cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Buffer\XBuffer.h">
+      <Filter>XSrc\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Log\XLog.h">
+      <Filter>XSrc\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemory.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemoryBlock.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemoryManager.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemoryPool.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Object\XObject.h">
+      <Filter>XSrc\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Object\XObjectPool.h">
+      <Filter>XSrc\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Protocol\MsgProtocol.h">
+      <Filter>XSrc\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Timer\XTimer.h">
+      <Filter>XSrc\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XCommon.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
     <ClInclude Include="..\XSrc\Server\XClient.h">
       <Filter>XSrc\Server</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\Server\XTCPClient.h">
+    <ClInclude Include="..\XSrc\Server\XIGlobalEvent.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XIServerEvent.h">
       <Filter>XSrc\Server</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\Server\XNet.h">
       <Filter>XSrc\Server</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\Server\XIGlobalEvent.h">
+    <ClInclude Include="..\XSrc\Server\XTCPClient.h">
       <Filter>XSrc\Server</Filter>
     </ClInclude>
   </ItemGroup>

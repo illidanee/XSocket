@@ -25,7 +25,7 @@ void XTCPClient::Open()
 			printf("Error:socket!\n");
 		}
 
-		_Client = new XClient(_Socket, nullptr, nullptr);
+		_Client = new XClient(_Socket, this, this);
 	}
 }
 
@@ -66,7 +66,7 @@ bool XTCPClient::IsRun()
 
 void XTCPClient::OnRun()
 {
-	while (IsRun())
+	if (IsRun())
 	{
 		SOCKET _Socket = _Client->GetSocket();
 
@@ -83,10 +83,11 @@ void XTCPClient::OnRun()
 		{
 			printf("Error:select!\n");
 			Close();
+			return;
 		}
 		else if ( 0 == ret )
 		{
-			continue;
+			return;
 		}
 
 		if (FD_ISSET(_Socket, &fdRead))
@@ -109,26 +110,7 @@ void XTCPClient::OnRun()
 	}
 }
 
-int XTCPClient::SendData(MsgHeader* pHeader, int len)
+int XTCPClient::SendData(MsgHeader* pHeader)
 {
 	return _Client->SendData(pHeader);
-}
-
-int XTCPClient::OnNetMsg(MsgHeader* pHeader)
-{
-	switch (pHeader->_MsgType)
-	{
-	case MSG_LOGIN_RES:
-	{
-		//MsgLoginRes* login = (MsgLoginRes*)pHeader;
-		//printf("----Login Ret:%d\n", login->_Ret);
-	}
-	break;
-	default:
-	{
-		//printf("----Recv Error Msg!\n");
-	}
-	}
-
-	return 0;
 }

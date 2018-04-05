@@ -156,16 +156,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\XSrc\Buffer\XBuffer.cpp" />
+    <ClCompile Include="..\XSrc\Log\XLog.cpp" />
+    <ClCompile Include="..\XSrc\Memory\XMemory.cpp" />
+    <ClCompile Include="..\XSrc\Memory\XMemoryBlock.cpp" />
+    <ClCompile Include="..\XSrc\Memory\XMemoryManager.cpp" />
+    <ClCompile Include="..\XSrc\Memory\XMemoryPool.cpp" />
     <ClCompile Include="..\XSrc\Server\XClient.cpp" />
     <ClCompile Include="..\XSrc\Server\XNet.cpp" />
     <ClCompile Include="..\XSrc\Server\XTCPClient.cpp" />
+    <ClCompile Include="..\XSrc\Timer\XTimer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyClient.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\XSrc\Buffer\XBuffer.h" />
+    <ClInclude Include="..\XSrc\Log\XLog.h" />
+    <ClInclude Include="..\XSrc\Memory\XMemory.h" />
+    <ClInclude Include="..\XSrc\Memory\XMemoryBlock.h" />
+    <ClInclude Include="..\XSrc\Memory\XMemoryManager.h" />
+    <ClInclude Include="..\XSrc\Memory\XMemoryPool.h" />
+    <ClInclude Include="..\XSrc\Object\XObject.h" />
+    <ClInclude Include="..\XSrc\Object\XObjectPool.h" />
+    <ClInclude Include="..\XSrc\Protocol\MsgProtocol.h" />
     <ClInclude Include="..\XSrc\Server\XClient.h" />
     <ClInclude Include="..\XSrc\Server\XIGlobalEvent.h" />
+    <ClInclude Include="..\XSrc\Server\XIServerEvent.h" />
     <ClInclude Include="..\XSrc\Server\XNet.h" />
     <ClInclude Include="..\XSrc\Server\XTCPClient.h" />
+    <ClInclude Include="..\XSrc\Timer\XTimer.h" />
+    <ClInclude Include="..\XSrc\XCommon.h" />
+    <ClInclude Include="MyClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

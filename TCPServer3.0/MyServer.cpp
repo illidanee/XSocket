@@ -65,29 +65,29 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 		MsgLoginRes* respond = new MsgLoginRes();
 		std::function<void()> pTask = [pClient, respond]()
 		{
-			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
-			int num = 0;
+			//XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
+			//int num = 0;
 
-			if (connect)
-				num = (int)connect->SearchStudent();
-			else
-			{
-				printf("Error Conenct Data : -------------------  Task\n");
-			}
+			//if (connect)
+			//	num = (int)connect->SearchStudent();
+			//else
+			//{
+			//	printf("Error Conenct Data : -------------------  Task\n");
+			//}
 
-			printf("------------------- Student = %d    \n", num);
+			//printf("------------------- Student = %d    \n", num);
 
 			if (pClient->SendData(respond) < 0)
 			{
 				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
 
-			if (connect)
-				XMariaDB::GetInstance().PushConnect(connect);
-			else
-			{
-				printf("Error Conenct Data : ------------------- Task\n");
-			}
+			//if (connect)
+			//	XMariaDB::GetInstance().PushConnect(connect);
+			//else
+			//{
+			//	printf("Error Conenct Data : ------------------- Task\n");
+			//}
 
 			delete respond;
 		};
@@ -111,7 +111,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			delete respond;
 		};
 
-		//pReceiveServer->AddTask(pTask);
+		pClient->GetServerObj()->AddTask(pTask);
 
 		////直接发送数据
 		//MsgHeart respond;

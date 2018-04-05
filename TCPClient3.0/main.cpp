@@ -2,7 +2,7 @@
 #include <thread>
 #include <atomic>
 #include <chrono>
-#include "../XSrc/Server/XTCPClient.h"
+#include "MyClient.h"
 #include "../XSrc/Timer/XTimer.h"
 
 XTimer timer;
@@ -11,7 +11,7 @@ const int mCount = 1;
 const int cCount = 1000;
 const int tCount = 1;
 bool bRun = true;
-XTCPClient* client[cCount];
+MyClient* client[cCount];
 
 std::atomic_int readyCount = 0;
 std::atomic_int sendCount = 0;
@@ -32,11 +32,11 @@ void CmdThread()
 
 void RecvThread(int begin, int end)
 {
-	std::chrono::time_point<std::chrono::high_resolution_clock> t1 = std::chrono::high_resolution_clock::now();
+	//std::chrono::time_point<std::chrono::high_resolution_clock> t1 = std::chrono::high_resolution_clock::now();
 	while (bRun)
 	{
-		std::chrono::time_point<std::chrono::high_resolution_clock> t2 = std::chrono::high_resolution_clock::now();
-		std::chrono::seconds t = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1);
+		//std::chrono::time_point<std::chrono::high_resolution_clock> t2 = std::chrono::high_resolution_clock::now();
+		//std::chrono::seconds t = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1);
 		for (int i = begin; i < end; ++i)
 		{
 			//if (t.count() > 3.0f && i == begin)
@@ -48,19 +48,13 @@ void RecvThread(int begin, int end)
 
 void SendThread(int begin, int end)
 {
-	MsgHeart msg[mCount];
-	//for (int i = 0; i < mCount; ++i)
-	//{
-	//	memcpy(msg[i]._Name, "illidan", sizeof("illidan"));
-	//	memcpy(msg[i]._Pwd, "12345", sizeof("12345"));
-	//}
-	int len = sizeof(msg);
+	MsgHeart msg;
 
 	while (bRun)
 	{
 		for (int i = begin; i < end; ++i)
 		{
-			if (client[i]->SendData(msg, len) >= 0)
+			if (client[i]->SendData(&msg) >= 0)
 				sendCount++;
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(99));
@@ -79,7 +73,7 @@ void ClientThread(int id)
 	//创建客户端
 	for (int i = begin; i < end; ++i)
 	{
-		client[i] = new XTCPClient();
+		client[i] = new MyClient();
 	}
 
 	//连接服务器
@@ -112,8 +106,14 @@ void ClientThread(int id)
 
 int main()
 {
+	XLog::SetFile("./Client.log", "w");
+
+	//XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
+	//XInfo("                                                               C++ Client                                                              \n");
+	//XInfo("                                                                                                        Designed by Org.illidan        \n");
+	//XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
+
 	timer.XInit();
-	XTCPClient::Init();
 
 	//启动命令线程
 	std::thread cmdThread(CmdThread);
@@ -140,7 +140,6 @@ int main()
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 
-	XTCPClient::Done();
 	timer.XDone();
 	return 0;
 }

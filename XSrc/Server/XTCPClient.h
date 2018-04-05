@@ -3,9 +3,11 @@
 
 #include "../XCommon.h"
 #include "XClient.h"
+#include "XIGlobalEvent.h"
+#include "XIServerEvent.h"
 
 //Client¿‡
-class XTCPClient : public XIGlobalEvent
+class XTCPClient : public XIGlobalEvent, public XIServerEvent
 {
 public:
 	XTCPClient();
@@ -18,8 +20,7 @@ public:
 	bool IsRun();
 	void OnRun();
 
-	int SendData(MsgHeader* pHeader, int len);
-	virtual int OnNetMsg(MsgHeader* pHeader);
+	int SendData(MsgHeader* pHeader);
 
 private:
 	XClient* _Client;
