@@ -3,6 +3,8 @@
 
 #include "../XSrc/XCommon.h"
 #include "../XSrc/Server/XTCPServer.h"
+#include "../XSrc/ByteStream/XRecvByteStream.h"
+#include "../XSrc/ByteStream/XSendByteStream.h"
 #include <atomic>
 #include <functional>
 

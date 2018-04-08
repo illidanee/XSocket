@@ -60,9 +60,12 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 	//处理客户端请求
 	switch (pMsgHeader->_MsgType)
 	{
-	case MSG_LOGIN:
+	case MSG_HEART:
 	{
-		MsgLoginRes* respond = new MsgLoginRes();
+		pClient->ResetHeartTime();
+
+		//使用任务系统
+		MsgHeart* respond = new MsgHeart();
 		std::function<void()> pTask = [pClient, respond]()
 		{
 			//XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
@@ -91,25 +94,6 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 
 			delete respond;
 		};
-		
-		pClient->GetServerObj()->AddTask(pTask);
-	}
-	break;
-	case MSG_HEART:
-	{
-		pClient->ResetHeartTime();
-
-		//使用任务系统
-		MsgHeart* respond = new MsgHeart();
-		std::function<void()> pTask = [pClient, respond]()
-		{
-			if (pClient->SendData(respond) < 0)
-			{
-				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
-			}
-
-			delete respond;
-		};
 
 		pClient->GetServerObj()->AddTask(pTask);
 
@@ -119,6 +103,52 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 		//{
 		//	XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 		//}
+	}
+	break;
+	case MSG_BYTESTREAM:
+	{
+		pClient->ResetHeartTime();
+
+		std::function<void()> pTask = [pClient, pMsgHeader]()
+		{
+			XRecvByteStream r(pMsgHeader);
+			int8_t r1;
+			r.ReadInt8(r1);
+			int16_t r2;
+			r.ReadInt16(r2);
+			int32_t r3;
+			r.ReadInt32(r3);
+			int64_t r4;
+			r.ReadInt64(r4);
+			float r5;
+			r.ReadFloat(r5);
+			double r6;
+			r.ReadDouble(r6);
+			char aa[32] = {};
+			r.ReadArray(aa, 32);
+			int bb[32] = {};
+			r.ReadArray(bb, 32);
+
+			XSendByteStream s(1024);
+			s.WriteInt8(1);
+			s.WriteInt16(2);
+			s.WriteInt32(3);
+			s.WriteInt64(4);
+			s.WriteFloat(5.6f);
+			s.WriteDouble(7.8);
+			char a[] = "hahah";
+			s.WriteArray(a, strlen(a));
+			int b[] = { 1, 3, 5 };
+			s.WriteArray(b, sizeof(b));
+			s.Finish(MSG_BYTESTREAM);
+
+			if (pClient->SendData((MsgHeader*)s.GetBuffer()) < 0)
+			{
+				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+			}
+		};
+
+		pClient->GetServerObj()->AddTask(pTask);
 	}
 	break;
 	default:

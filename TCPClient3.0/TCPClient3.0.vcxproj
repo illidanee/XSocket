@@ -157,6 +157,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\XSrc\Buffer\XBuffer.cpp" />
+    <ClCompile Include="..\XSrc\ByteStream\XByteStream.cpp" />
+    <ClCompile Include="..\XSrc\ByteStream\XRecvByteStream.cpp" />
+    <ClCompile Include="..\XSrc\ByteStream\XSendByteStream.cpp" />
     <ClCompile Include="..\XSrc\Log\XLog.cpp" />
     <ClCompile Include="..\XSrc\Memory\XMemory.cpp" />
     <ClCompile Include="..\XSrc\Memory\XMemoryBlock.cpp" />
@@ -171,6 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\XSrc\Buffer\XBuffer.h" />
+    <ClInclude Include="..\XSrc\ByteStream\XByteStream.h" />
+    <ClInclude Include="..\XSrc\ByteStream\XRecvByteStream.h" />
+    <ClInclude Include="..\XSrc\ByteStream\XSendByteStream.h" />
     <ClInclude Include="..\XSrc\Log\XLog.h" />
     <ClInclude Include="..\XSrc\Memory\XMemory.h" />
     <ClInclude Include="..\XSrc\Memory\XMemoryBlock.h" />

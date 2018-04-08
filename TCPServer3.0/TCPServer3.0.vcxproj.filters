@@ -41,6 +41,9 @@
     <Filter Include="XSrc\Timer">
       <UniqueIdentifier>{5f04ca41-d7c3-4049-b299-06d71000d9bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="XSrc\ByteStream">
+      <UniqueIdentifier>{8c8a2122-c5b4-4b35-a7df-b09eb2c389ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -96,6 +99,15 @@
     </ClCompile>
     <ClCompile Include="..\XSrc\Server\XClient.cpp">
       <Filter>XSrc\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\ByteStream\XByteStream.cpp">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\ByteStream\XRecvByteStream.cpp">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\ByteStream\XSendByteStream.cpp">
+      <Filter>XSrc\ByteStream</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +179,15 @@
     </ClInclude>
     <ClInclude Include="..\XSrc\Server\XIServerEvent.h">
       <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\ByteStream\XByteStream.h">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\ByteStream\XRecvByteStream.h">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\ByteStream\XSendByteStream.h">
+      <Filter>XSrc\ByteStream</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

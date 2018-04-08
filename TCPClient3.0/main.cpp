@@ -4,6 +4,7 @@
 #include <chrono>
 #include "MyClient.h"
 #include "../XSrc/Timer/XTimer.h"
+#include "../XSrc/ByteStream/XSendByteStream.h"
 
 XTimer timer;
 
@@ -48,19 +49,31 @@ void RecvThread(int begin, int end)
 
 void SendThread(int begin, int end)
 {
+	XSendByteStream s(1024);
+	s.WriteInt8(1);
+	s.WriteInt16(2);
+	s.WriteInt32(3);
+	s.WriteInt64(4);
+	s.WriteFloat(5.6f);
+	s.WriteDouble(7.8);
+	char a[] = "hahah";
+	s.WriteArray(a, strlen(a));
+	int b[] = { 1, 3, 5 };
+	s.WriteArray(b, sizeof(b));
+	s.Finish(MSG_BYTESTREAM);
+
 	MsgHeart msg;
 
 	while (bRun)
 	{
 		for (int i = begin; i < end; ++i)
 		{
-			if (client[i]->SendData(&msg) >= 0)
+			if (client[i]->SendData((MsgHeart*)s.GetBuffer()) >= 0)
 				sendCount++;
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(99));
 	}
 
-	int a = 0;
 	return;
 }
 

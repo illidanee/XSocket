@@ -2,6 +2,7 @@
 #define __MYCLIENT_H__
 
 #include "../XSrc/Server/XTCPClient.h"
+#include "../XSrc/ByteStream/XRecvByteStream.h"
 
 class MyClient : public XTCPClient
 {
