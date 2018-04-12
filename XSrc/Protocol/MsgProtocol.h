@@ -1,6 +1,8 @@
 ﻿#ifndef __MSG_PROTOCOL_H__
 #define __MSG_PROTOCOL_H__
 
+#include <stdint.h>
+
 enum MGS_TYPE
 {
 	MSG_HEADER,
@@ -16,8 +18,8 @@ struct MsgHeader
 		_MsgType = MSG_HEADER;
 		_MsgLength = sizeof(MsgHeader);
 	}
-	MGS_TYPE _MsgType;
-	int _MsgLength;
+	int32_t _MsgType;
+	int32_t _MsgLength;
 };
 
 struct MsgError : public MsgHeader
