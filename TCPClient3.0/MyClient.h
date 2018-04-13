@@ -7,8 +7,8 @@
 class MyClient : public XTCPClient
 {
 	virtual void OnRunLoopBegin();
-	virtual void OnClientJoin(std::shared_ptr<XClient> pClient);
-	virtual void OnClientLeave(std::shared_ptr<XClient> pClient);
+	virtual void OnClientJoin(XClient* pClient);
+	virtual void OnClientLeave(XClient* pClient);
 	virtual void OnNetRecv(XClient* pClient);
 	virtual void OnNetSend(XClient* pClient);
 	virtual void OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader);

@@ -2,12 +2,9 @@
 #define __XCLIENT_H__
 
 #include "../XCommon.h"
-#include "XNet.h"
 #include "XIGlobalEvent.h"
 #include "XIServerEvent.h"
 #include "../Buffer/XBuffer.h"
-
-class XServer;
 
 //客户端信息类
 class XClient : public XObject<1024, XClient>

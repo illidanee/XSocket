@@ -32,12 +32,12 @@ void MyServer::OnRunLoopBegin()
 	}
 }
 
-void MyServer::OnClientJoin(std::shared_ptr<XClient> pClient)
+void MyServer::OnClientJoin(XClient* pClient)
 {
 	++_ClientNum;
 }
 
-void MyServer::OnClientLeave(std::shared_ptr<XClient> pClient)
+void MyServer::OnClientLeave(XClient* pClient)
 {
 	--_ClientNum;
 }

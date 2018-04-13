@@ -1,11 +1,11 @@
 #include "XBuffer.h"
 
 XBuffer::XBuffer(int nSize)
+	:
+	_nSize(nSize),
+	_pBuffer(nullptr),
+	_nOffset(0)
 {
-	_nSize = nSize;
-	_pBuffer = nullptr;
-	_nOffset = 0;
-
 	Init();
 }
 
@@ -44,12 +44,12 @@ int XBuffer::Recv(SOCKET socket)
 	if (size == -1)
 	{
 		//Socket错误。
-		return -2;
+		return -1;
 	}
 	else if (size == 0)
 	{
 		//对端断开。
-		return -3;
+		return -2;
 	}
 
 	//正常接收。
@@ -70,12 +70,12 @@ int XBuffer::Send(SOCKET socket)
 	if (size == -1)
 	{
 		//Socket错误。
-		return -2;
+		return -1;
 	}
 	else if (size == 0)
 	{
 		//对端断开。
-		return -3;
+		return -2;
 	}
 
 	//正常发送。

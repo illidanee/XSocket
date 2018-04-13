@@ -38,7 +38,6 @@ struct MsgHeart : public MsgHeader
 		_MsgType = MSG_HEART;
 		_MsgLength = sizeof(MsgHeart);
 	}
-	char _data[92];
 };
 
 #endif

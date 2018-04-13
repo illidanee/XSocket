@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloMariaDB", "HelloMariaD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloByteStream", "HelloByteStream\HelloByteStream.vcxproj", "{754F503C-0FFC-489F-B65C-8866015B9BCF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "U3DPlugin", "U3DPlugin\U3DPlugin.vcxproj", "{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,14 @@ Global
 		{754F503C-0FFC-489F-B65C-8866015B9BCF}.Release|x64.Build.0 = Release|x64
 		{754F503C-0FFC-489F-B65C-8866015B9BCF}.Release|x86.ActiveCfg = Release|Win32
 		{754F503C-0FFC-489F-B65C-8866015B9BCF}.Release|x86.Build.0 = Release|Win32
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Debug|x64.ActiveCfg = Debug|x64
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Debug|x64.Build.0 = Debug|x64
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Debug|x86.ActiveCfg = Debug|Win32
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Debug|x86.Build.0 = Debug|Win32
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Release|x64.ActiveCfg = Release|x64
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Release|x64.Build.0 = Release|x64
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Release|x86.ActiveCfg = Release|Win32
+		{9E1EF0D0-783E-4EE5-BB30-9026B0D976F6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

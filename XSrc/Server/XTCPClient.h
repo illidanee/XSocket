@@ -2,9 +2,10 @@
 #define __CLIENT_H__
 
 #include "../XCommon.h"
-#include "XClient.h"
 #include "XIGlobalEvent.h"
 #include "XIServerEvent.h"
+#include "XNet.h"
+#include "XClient.h"
 
 //Client¿‡
 class XTCPClient : public XIGlobalEvent, public XIServerEvent

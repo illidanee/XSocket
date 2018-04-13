@@ -99,7 +99,7 @@ void XServer::OnRun(XThread* pThread)
 			{
 				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
 				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientJoin(iter->second);
+					_pGlobalEventObj->OnClientJoin(iter->second.get());
 			}
 			_AllClientsCache.clear();
 
@@ -168,10 +168,10 @@ void XServer::RecvData(fd_set& fdSet)
 		if (FD_ISSET(iter->first, &fdSet))
 		{
 			int ret = iter->second->RecvData();
-			if (ret < 0)
+			if (ret != 0)
 			{
 				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientLeave(iter->second);
+					_pGlobalEventObj->OnClientLeave(iter->second.get());
 
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
@@ -191,10 +191,10 @@ void XServer::SendData(fd_set& fdSet)
 		if (FD_ISSET(iter->first, &fdSet))
 		{
 			int ret = iter->second->SendData();
-			if (ret < 0)
+			if (ret != 0)
 			{
 				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientLeave(iter->second);
+					_pGlobalEventObj->OnClientLeave(iter->second.get());
 
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
@@ -220,7 +220,7 @@ void XServer::CheckTime()
 		if (iter->second->CheckHeartTime(delta))
 		{
 			if (_pGlobalEventObj)
-				_pGlobalEventObj->OnClientLeave(iter->second);
+				_pGlobalEventObj->OnClientLeave(iter->second.get());
 
 			iter = _AllClients.erase(iter);
 			_ClientChange = true;

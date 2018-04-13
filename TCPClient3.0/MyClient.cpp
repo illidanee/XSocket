@@ -5,11 +5,11 @@ void MyClient::OnRunLoopBegin()
 
 }
 
-void MyClient::OnClientJoin(std::shared_ptr<XClient> pClient)
+void MyClient::OnClientJoin(XClient* pClient)
 {
 
 }
-void MyClient::OnClientLeave(std::shared_ptr<XClient> pClient)
+void MyClient::OnClientLeave(XClient* pClient)
 {
 
 }

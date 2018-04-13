@@ -3,9 +3,9 @@
 
 #include "../XCommon.h"
 #include "XIGlobalEvent.h"
+#include "XNet.h"
 #include "XServer.h"
 #include "XClient.h"
-#include "XNet.h"
 #include "../Thread/XThread.h"
 #include <vector>
 
