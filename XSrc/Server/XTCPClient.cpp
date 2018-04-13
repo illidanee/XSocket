@@ -26,6 +26,8 @@ void XTCPClient::Open()
 		}
 
 		_Client = new XClient(_Socket, this, this);
+
+		OnClientJoin(_Client);
 	}
 }
 
@@ -54,6 +56,8 @@ void XTCPClient::Close()
 
 	if (_Client != nullptr)
 	{
+		OnClientLeave(_Client);
+
 		delete _Client;
 		_Client = nullptr;
 	}
@@ -68,6 +72,8 @@ void XTCPClient::OnRun()
 {
 	if (IsRun())
 	{
+		OnRunLoopBegin();
+
 		SOCKET _Socket = _Client->GetSocket();
 
 		fd_set fdRead;

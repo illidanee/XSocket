@@ -8,8 +8,7 @@
 
 XTimer timer;
 
-const int mCount = 1;
-const int cCount = 1000;
+const int cCount = 4;
 const int tCount = 1;
 bool bRun = true;
 MyClient* client[cCount];
@@ -33,15 +32,10 @@ void CmdThread()
 
 void RecvThread(int begin, int end)
 {
-	//std::chrono::time_point<std::chrono::high_resolution_clock> t1 = std::chrono::high_resolution_clock::now();
 	while (bRun)
 	{
-		//std::chrono::time_point<std::chrono::high_resolution_clock> t2 = std::chrono::high_resolution_clock::now();
-		//std::chrono::seconds t = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1);
 		for (int i = begin; i < end; ++i)
 		{
-			//if (t.count() > 3.0f && i == begin)
-			//	continue;
 			client[i]->OnRun();
 		}
 	}
