@@ -168,7 +168,7 @@ void XServer::RecvData(fd_set& fdSet)
 		if (FD_ISSET(iter->first, &fdSet))
 		{
 			int ret = iter->second->RecvData();
-			if (ret != 0)
+			if (ret != 0)			//不等于0，ret为1说明接收缓冲区满了，主动断开连接。
 			{
 				if (_pGlobalEventObj)
 					_pGlobalEventObj->OnClientLeave(iter->second.get());
@@ -191,7 +191,7 @@ void XServer::SendData(fd_set& fdSet)
 		if (FD_ISSET(iter->first, &fdSet))
 		{
 			int ret = iter->second->SendData();
-			if (ret != 0)
+			if (ret < 0)			//小于0，ret为1时说明发送缓冲区为空，不应该断开。
 			{
 				if (_pGlobalEventObj)
 					_pGlobalEventObj->OnClientLeave(iter->second.get());
