@@ -1,4 +1,4 @@
-#include "Unity3DPlugin.h"
+#include "MyClient.h"
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
@@ -59,43 +59,4 @@ void MyClient::OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader)
 void MyClient::AddTask(std::function<void()> pTask)
 {
 
-}
-
-//µ¼³ö
-
-void SetLogPath(const char* pLogPath)
-{
-	XLog::SetFile(pLogPath, "w");
-}
-
-MyClient* Open()
-{
-	MyClient* pClient = new MyClient();
-	pClient->Open();
-	return pClient;
-}
-
-void Connect(MyClient* pClient, const char* ip, unsigned short port)
-{
-	pClient->Connect(ip, port);
-}
-
-void Close(MyClient* pClient)
-{
-	pClient->Close();
-}
-
-bool IsRun(MyClient* pClient)
-{
-	return pClient->IsRun();
-}
-
-void OnRun(MyClient* pClient)
-{
-	pClient->OnRun();
-}
-
-int SendData(MyClient* pClient, MsgHeader* pHeader)
-{
-	return pClient->SendData(pHeader);
 }

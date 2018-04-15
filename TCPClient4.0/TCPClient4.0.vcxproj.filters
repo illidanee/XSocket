@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="XSrc">
+      <UniqueIdentifier>{4e2f8a96-0495-4a13-b92c-6c56180ecb0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Server">
+      <UniqueIdentifier>{fbfe588b-f389-42d1-8ac9-a96cd869b126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Buffer">
+      <UniqueIdentifier>{b4516c3c-6a8c-4018-acfc-e5d11f760748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Log">
+      <UniqueIdentifier>{846e5cf8-fe8d-4780-b652-95810b282f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\MariaDB">
+      <UniqueIdentifier>{ab86f0fa-a762-4ca9-a714-fe7f2a365614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Memory">
+      <UniqueIdentifier>{9854f581-bc0e-4486-9726-db02c8e3b18d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Protocol">
+      <UniqueIdentifier>{973ad356-15ba-4eba-9844-9f12f66fae07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Object">
+      <UniqueIdentifier>{d201ab07-4c80-4d15-989c-ee881bc4268e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Signal">
+      <UniqueIdentifier>{22131bb1-425a-4ce5-b0fa-aa540cafb437}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Task">
+      <UniqueIdentifier>{409bfb04-eb44-45d5-8eab-5014a85e3961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Thread">
+      <UniqueIdentifier>{144b2e4d-2232-4fae-8aa0-dfa144e8969a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\Timer">
+      <UniqueIdentifier>{20d20f9c-c024-457c-b8e8-308c7da19ea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XSrc\ByteStream">
+      <UniqueIdentifier>{a5852fec-cf14-4f12-9cc7-61161d86354f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XClient.cpp">
+      <Filter>XSrc\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XNet.cpp">
+      <Filter>XSrc\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Server\XTCPClient.cpp">
+      <Filter>XSrc\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Buffer\XBuffer.cpp">
+      <Filter>XSrc\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Log\XLog.cpp">
+      <Filter>XSrc\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemory.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemoryBlock.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemoryManager.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Memory\XMemoryPool.cpp">
+      <Filter>XSrc\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\Timer\XTimer.cpp">
+      <Filter>XSrc\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\ByteStream\XByteStream.cpp">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\ByteStream\XRecvByteStream.cpp">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\ByteStream\XSendByteStream.cpp">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClCompile>
+    <ClCompile Include="MyClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\XSrc\XCommon.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XClient.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XIGlobalEvent.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XIServerEvent.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XNet.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Server\XTCPClient.h">
+      <Filter>XSrc\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Buffer\XBuffer.h">
+      <Filter>XSrc\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Log\XLog.h">
+      <Filter>XSrc\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemory.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemoryBlock.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemoryManager.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Memory\XMemoryPool.h">
+      <Filter>XSrc\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Protocol\MsgProtocol.h">
+      <Filter>XSrc\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Object\XObject.h">
+      <Filter>XSrc\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Object\XObjectPool.h">
+      <Filter>XSrc\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\Timer\XTimer.h">
+      <Filter>XSrc\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\ByteStream\XByteStream.h">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\ByteStream\XRecvByteStream.h">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\ByteStream\XSendByteStream.h">
+      <Filter>XSrc\ByteStream</Filter>
+    </ClInclude>
+    <ClInclude Include="MyClient.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

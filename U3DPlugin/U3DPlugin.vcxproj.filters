@@ -66,12 +66,6 @@
     <ClInclude Include="..\XSrc\Log\XLog.h">
       <Filter>XSrc\Log</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\MariaDB\XMariaDB.h">
-      <Filter>XSrc\MariaDB</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\MariaDB\XMariaDBConnect.h">
-      <Filter>XSrc\MariaDB</Filter>
-    </ClInclude>
     <ClInclude Include="..\XSrc\Memory\XMemory.h">
       <Filter>XSrc\Memory</Filter>
     </ClInclude>
@@ -145,12 +139,6 @@
     </ClCompile>
     <ClCompile Include="..\XSrc\Log\XLog.cpp">
       <Filter>XSrc\Log</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\MariaDB\XMariaDB.cpp">
-      <Filter>XSrc\MariaDB</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\MariaDB\XMariaDBConnect.cpp">
-      <Filter>XSrc\MariaDB</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\Memory\XMemory.cpp">
       <Filter>XSrc\Memory</Filter>

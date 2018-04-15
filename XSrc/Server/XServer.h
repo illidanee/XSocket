@@ -45,6 +45,8 @@ private:
 
 private:
 	time_t _LastTime;												//上次循环服务器时间
+	time_t _CurTime;												//本次循环服务器时间
+	time_t _TimeDelta;												//每次循环服务器时间间隔
 
 	fd_set _fdSetCache;												//fd_set 缓存
 	bool _ClientChange;												//是否客户端变化
@@ -53,6 +55,7 @@ private:
 private:
 	void OnRun(XThread* pThread);
 
+	void TimeDelta();
 	void RecvData(fd_set& fdSet);
 	void SendData(fd_set& fdSet);
 	void CheckTime();

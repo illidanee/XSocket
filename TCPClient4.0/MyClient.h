@@ -1,11 +1,5 @@
-#ifndef __UNITY3DPLUGIN_H__
-#define __UNITY3DPLUGIN_H__
-
-#if _WIN32
-#define EXPORT_DLL _declspec(dllexport)
-#else
-#define EXPORT_DLL
-#endif
+#ifndef __MYCLIENT_H__
+#define __MYCLIENT_H__
 
 #include "../XSrc/Server/XTCPClient.h"
 #include "../XSrc/ByteStream/XRecvByteStream.h"
@@ -26,19 +20,5 @@ private:
 
 	virtual void AddTask(std::function<void()> pTask);
 };
-
-extern "C"
-{
-	EXPORT_DLL void SetLogPath(const char* pLogPath);
-
-	EXPORT_DLL MyClient* Open();
-	EXPORT_DLL void Connect(MyClient* pClient, const char* ip, unsigned short port);
-	EXPORT_DLL void Close(MyClient* pClient);
-
-	EXPORT_DLL bool IsRun(MyClient* pClient);
-	EXPORT_DLL void OnRun(MyClient* pClient);
-
-	EXPORT_DLL int SendData(MyClient* pClient, MsgHeader* pHeader);
-}
 
 #endif

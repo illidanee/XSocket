@@ -5,6 +5,8 @@ XServer::XServer(int id)
 	_ID(id),
 	_pGlobalEventObj(nullptr),
 	_LastTime(0),
+	_CurTime(0),
+	_TimeDelta(0),
 	_ClientChange(true),
 	_MaxSocketID(0)
 {
@@ -20,12 +22,16 @@ void XServer::Init(XIGlobalEvent* pGlobalEventObj)
 	_pGlobalEventObj = pGlobalEventObj;
 	//设置时间
 	_LastTime = XTimer::GetTimeByMicroseconds();
+	_CurTime = 0;
+	_TimeDelta = 0;
 }
 
 void XServer::Done()
 {
 	_pGlobalEventObj = nullptr;
 	_LastTime = 0;
+	_CurTime = 0;
+	_TimeDelta = 0;
 }
 
 void XServer::Start()
@@ -91,6 +97,9 @@ void XServer::OnRun(XThread* pThread)
 
 	while (pThread->IsRun())
 	{
+		//必须在Continue之前，负责没有客户连接时会累积时间长度delta。
+		TimeDelta();
+
 		//是否有新客户端加入？
 		if (!_AllClientsCache.empty())
 		{
@@ -153,11 +162,19 @@ void XServer::OnRun(XThread* pThread)
 
 		RecvData(fdRead);
 		SendData(fdWrite);
-		
+
 		CheckTime();
 	}
 
 	XInfo("    XReceiveServer<ID=%d>:OnRun() End\n", _ID);
+}
+
+void XServer::TimeDelta()
+{
+	//循环计时。
+	_CurTime = XTimer::GetTimeByMicroseconds();
+	_TimeDelta = _CurTime - _LastTime;
+	_LastTime = _CurTime;
 }
 
 void XServer::RecvData(fd_set& fdSet)
@@ -208,16 +225,11 @@ void XServer::SendData(fd_set& fdSet)
 
 void XServer::CheckTime()
 {
-	//循环计时。
-	time_t curTime = XTimer::GetTimeByMicroseconds();
-	time_t delta = curTime - _LastTime;
-	_LastTime = curTime;
-
 	//计时检测。
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
 	{
 		//心跳检测！
-		if (iter->second->CheckHeartTime(delta))
+		if (iter->second->CheckHeartTime(_TimeDelta))
 		{
 			if (_pGlobalEventObj)
 				_pGlobalEventObj->OnClientLeave(iter->second.get());
