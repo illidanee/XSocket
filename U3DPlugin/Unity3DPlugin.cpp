@@ -75,27 +75,38 @@ MyClient* Open()
 	return pClient;
 }
 
-void Connect(MyClient* pClient, const char* ip, unsigned short port)
+bool Connect(MyClient* pClient, const char* ip, unsigned short port)
 {
-	pClient->Connect(ip, port);
+	if (pClient)
+		return pClient->Connect(ip, port);
+
+	return false;
 }
 
 void Close(MyClient* pClient)
 {
-	pClient->Close();
+	if (pClient)
+		pClient->Close();
 }
 
 bool IsRun(MyClient* pClient)
 {
-	return pClient->IsRun();
+	if (pClient)
+		return pClient->IsRun();
+
+	return false;
 }
 
 void OnRun(MyClient* pClient)
 {
-	pClient->OnRun();
+	if (pClient)
+		pClient->OnRun();
 }
 
 int SendData(MyClient* pClient, MsgHeader* pHeader)
 {
-	return pClient->SendData(pHeader);
+	if (pClient)
+		return pClient->SendData(pHeader);
+
+	return 0;
 }

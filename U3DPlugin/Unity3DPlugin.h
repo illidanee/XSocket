@@ -32,7 +32,7 @@ extern "C"
 	EXPORT_DLL void SetLogPath(const char* pLogPath);
 
 	EXPORT_DLL MyClient* Open();
-	EXPORT_DLL void Connect(MyClient* pClient, const char* ip, unsigned short port);
+	EXPORT_DLL bool Connect(MyClient* pClient, const char* ip, unsigned short port);
 	EXPORT_DLL void Close(MyClient* pClient);
 
 	EXPORT_DLL bool IsRun(MyClient* pClient);

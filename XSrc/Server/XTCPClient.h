@@ -15,7 +15,8 @@ public:
 	~XTCPClient();
 
 	void Open();
-	void Connect(const char* ip, unsigned short port);
+	bool Connect(const char* ip, unsigned short port);
+	void Disconnect();
 	void Close();
 
 	bool IsRun();
@@ -25,6 +26,8 @@ public:
 
 private:
 	XClient* _Client;
+
+	bool _bRun;
 };
 
 #endif

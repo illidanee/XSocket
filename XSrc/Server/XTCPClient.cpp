@@ -2,7 +2,8 @@
 
 XTCPClient::XTCPClient()
 	:
-	_Client(nullptr)
+	_Client(nullptr),
+	_bRun(false)
 {
 }
 
@@ -31,7 +32,7 @@ void XTCPClient::Open()
 	}
 }
 
-void XTCPClient::Connect(const char* ip, unsigned short port)
+bool XTCPClient::Connect(const char* ip, unsigned short port)
 {
 	assert(_Client != nullptr);
 
@@ -47,7 +48,16 @@ void XTCPClient::Connect(const char* ip, unsigned short port)
 	if (SOCKET_ERROR == connect(_Client->GetSocket(), (sockaddr*)&sinServer, sinLen))
 	{
 		printf("Error:connect!\n");
+		return false;
 	}
+
+	_bRun = true;
+	return true;
+}
+
+void XTCPClient::Disconnect()
+{
+	_bRun = false;
 }
 
 void XTCPClient::Close()
@@ -70,50 +80,50 @@ bool XTCPClient::IsRun()
 
 void XTCPClient::OnRun()
 {
-	if (IsRun())
+	OnRunLoopBegin();
+
+	SOCKET _Socket = _Client->GetSocket();
+
+	fd_set fdRead;
+	fd_set fdWrite;
+	FD_ZERO(&fdRead);
+	FD_ZERO(&fdWrite);
+	FD_SET(_Socket, &fdRead);
+	FD_SET(_Socket, &fdWrite);
+
+	timeval tv = { 0, 1 };
+	int ret = select((int)_Socket + 1, &fdRead, &fdWrite, NULL, &tv);
+	if (SOCKET_ERROR == ret)
 	{
-		OnRunLoopBegin();
+		printf("Error:select!\n");
+		Disconnect();
+		return;
+	}
+	else if ( 0 == ret )
+	{
+		return;
+	}
 
-		SOCKET _Socket = _Client->GetSocket();
-
-		fd_set fdRead;
-		fd_set fdWrite;
-		FD_ZERO(&fdRead);
-		FD_ZERO(&fdWrite);
-		FD_SET(_Socket, &fdRead);
-		FD_SET(_Socket, &fdWrite);
-
-		timeval tv = { 0, 1 };
-		int ret = select((int)_Socket + 1, &fdRead, &fdWrite, NULL, &tv);
-		if (SOCKET_ERROR == ret)
+	if (FD_ISSET(_Socket, &fdRead))
+	{
+		int ret = _Client->RecvData();
+		if (ret < 0)
 		{
-			printf("Error:select!\n");
-			Close();
-			return;
-		}
-		else if ( 0 == ret )
-		{
-			return;
-		}
-
-		if (FD_ISSET(_Socket, &fdRead))
-		{
-			int ret = _Client->RecvData();
-			if (ret < 0)
-			{
-				Close();
-			}
-		}
-
-		if (FD_ISSET(_Socket, &fdWrite))
-		{
-			int ret = _Client->SendData();
-			if (ret < 0)
-			{
-				Close();
-			}
+			Disconnect();
 		}
 	}
+
+	if (FD_ISSET(_Socket, &fdWrite))
+	{
+		int ret = _Client->SendData();
+		if (ret < 0)
+		{
+			Disconnect();
+		}
+	}
+
+	if (!_bRun)
+		Close();
 }
 
 int XTCPClient::SendData(MsgHeader* pHeader)
