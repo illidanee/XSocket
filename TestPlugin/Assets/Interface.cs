@@ -8,7 +8,7 @@ using AOT;
 public class Interface : MonoBehaviour {
 
     //声明代理
-    private delegate void OnMsgCallback(IntPtr csObj, byte[] data, int len);
+    private delegate void OnMsgCallback(IntPtr csObj, IntPtr data, int len);
 
     //声明对象
     private GCHandle _SelfHandle;
@@ -45,9 +45,16 @@ public class Interface : MonoBehaviour {
 
     //定义回调函数
     [MonoPInvokeCallback(typeof(OnMsgCallback))]
-    private static void OnRecvMsg(IntPtr csObj, byte[] data, int len)
+    private static void OnRecvMsg(IntPtr csObj, IntPtr data, int len)
     {
-        Debug.Log("OnRecvMsg:" + len);
+        GCHandle h = GCHandle.FromIntPtr(csObj);
+        Interface obj = h.Target as Interface;
+        if (obj)
+        {
+            byte[] str = new byte[len];
+            Marshal.Copy(data, str, 0, len);
+            obj.OnMsg(str);
+        }
     }
 
     //接口函数
@@ -102,6 +109,19 @@ public class Interface : MonoBehaviour {
             return;
 
         OnRun(cppClient);
+    }
+
+    public virtual void OnMsg(byte[] data)
+    {
+
+    }
+
+    public void SendMsg(byte[] data)
+    {
+        if (cppClient == IntPtr.Zero)
+            return;
+
+        SendData(cppClient, data);
     }
 
     // Use this for initialization

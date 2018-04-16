@@ -35,6 +35,9 @@ void MyServer::OnRunLoopBegin()
 void MyServer::OnClientJoin(XClient* pClient)
 {
 	++_ClientNum;
+
+	MsgHeart msg;
+	pClient->SendData(&msg);
 }
 
 void MyServer::OnClientLeave(XClient* pClient)

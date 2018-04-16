@@ -20,4 +20,9 @@ public class TCP : Interface {
     {
         Close();
     }
+
+    public override void OnMsg(byte[] data)
+    {
+
+    }
 }
