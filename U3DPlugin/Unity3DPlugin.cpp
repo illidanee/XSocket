@@ -1,8 +1,21 @@
 #include "Unity3DPlugin.h"
 
+MyClient::MyClient()
+{
+	_pObj = nullptr;
+	_pCallback = nullptr;
+}
+
+void MyClient::Init(void* pObj, OnMsg pCallback)
+{
+	_pObj = pObj;
+	_pCallback = pCallback;
+}
+
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
-
+	if (_pObj && _pCallback)
+		_pCallback(_pObj, (const char*)pMsgHeader, pMsgHeader->_MsgLength);
 }
 
 void MyClient::OnRunLoopBegin()
@@ -68,9 +81,10 @@ void SetLogPath(const char* pLogPath)
 	XLog::SetFile(pLogPath, "w");
 }
 
-MyClient* Open()
+MyClient* Open(void* pObj, OnMsg pCallback)
 {
 	MyClient* pClient = new MyClient();
+	pClient->Init(pObj, pCallback);
 	pClient->Open();
 	return pClient;
 }
