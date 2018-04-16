@@ -44,6 +44,7 @@ extern "C"
 
 	EXPORT_DLL MyClient* Open(void* pObj, OnMsg pCallback);
 	EXPORT_DLL bool Connect(MyClient* pClient, const char* ip, unsigned short port);
+	EXPORT_DLL void Disconnect(MyClient* pClient);
 	EXPORT_DLL void Close(MyClient* pClient);
 
 	EXPORT_DLL bool IsRun(MyClient* pClient);

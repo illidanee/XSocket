@@ -123,7 +123,11 @@ GameObject:
   - component: {fileID: 418304839}
   - component: {fileID: 418304838}
   - component: {fileID: 418304837}
+  - component: {fileID: 418304842}
   - component: {fileID: 418304841}
+  - component: {fileID: 418304845}
+  - component: {fileID: 418304844}
+  - component: {fileID: 418304843}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -201,9 +205,63 @@ MonoBehaviour:
   m_GameObject: {fileID: 418304836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d723c3ffb464aa4b9435d2ec74309f4, type: 3}
+  m_Script: {fileID: 11500000, guid: bcbf4a65c4fd94645b9d90643c47d41e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ip: 192.168.0.99
+  port: 9090
+--- !u!114 &418304842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 418304836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbf4a65c4fd94645b9d90643c47d41e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ip: 192.168.0.99
+  port: 9090
+--- !u!114 &418304843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 418304836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbf4a65c4fd94645b9d90643c47d41e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ip: 192.168.0.99
+  port: 9090
+--- !u!114 &418304844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 418304836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbf4a65c4fd94645b9d90643c47d41e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ip: 192.168.0.99
+  port: 9090
+--- !u!114 &418304845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 418304836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbf4a65c4fd94645b9d90643c47d41e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ip: 192.168.0.99
+  port: 9090
 --- !u!1 &907041972
 GameObject:
   m_ObjectHideFlags: 0

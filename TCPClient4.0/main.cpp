@@ -20,7 +20,7 @@ int main()
 		client.OnRun();
 	}
 
-	//client.Close();
+	client.Close();
 
 	return 0;
 }

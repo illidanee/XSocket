@@ -97,10 +97,20 @@ bool Connect(MyClient* pClient, const char* ip, unsigned short port)
 	return false;
 }
 
+void Disconnect(MyClient* pClient)
+{
+	if (pClient)
+		pClient->Disconnect();
+}
+
 void Close(MyClient* pClient)
 {
 	if (pClient)
+	{
 		pClient->Close();
+		delete pClient;
+		pClient = nullptr;
+	}
 }
 
 bool IsRun(MyClient* pClient)

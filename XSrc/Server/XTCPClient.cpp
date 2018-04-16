@@ -75,7 +75,7 @@ void XTCPClient::Close()
 
 bool XTCPClient::IsRun()
 {
-	return _Client != nullptr;
+	return _bRun;
 }
 
 void XTCPClient::OnRun()
@@ -121,9 +121,6 @@ void XTCPClient::OnRun()
 			Disconnect();
 		}
 	}
-
-	if (!_bRun)
-		Close();
 }
 
 int XTCPClient::SendData(MsgHeader* pHeader)
