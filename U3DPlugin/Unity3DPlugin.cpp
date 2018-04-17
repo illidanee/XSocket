@@ -1,4 +1,4 @@
-#include "Unity3DPlugin.h"
+ï»¿#include "Unity3DPlugin.h"
 
 MyClient::MyClient()
 {
@@ -74,7 +74,7 @@ void MyClient::AddTask(std::function<void()> pTask)
 
 }
 
-//µ¼³ö
+//å¯¼å‡º
 
 void SetLogPath(const char* pLogPath)
 {

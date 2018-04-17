@@ -1,4 +1,4 @@
-#include "XBuffer.h"
+ï»¿#include "XBuffer.h"
 
 XBuffer::XBuffer(int nSize)
 	:
@@ -36,23 +36,23 @@ int XBuffer::Recv(SOCKET socket)
 	int num = _nSize - _nOffset;
 	if (num <= 0)
 	{
-		//½ÓÊÕ»º³åÇøÒÑ¾­Âú¡£
+		//æ¥æ”¶ç¼“å†²åŒºå·²ç»æ»¡ã€‚
 		return 1;
 	}
 
 	int size = recv(socket, _pBuffer + _nOffset, num, 0);
 	if (size == -1)
 	{
-		//Socket´íÎó¡£
+		//Socketé”™è¯¯ã€‚
 		return -1;
 	}
 	else if (size == 0)
 	{
-		//¶Ô¶Ë¶Ï¿ª¡£
+		//å¯¹ç«¯æ–­å¼€ã€‚
 		return -2;
 	}
 
-	//Õı³£½ÓÊÕ¡£
+	//æ­£å¸¸æ¥æ”¶ã€‚
 	_nOffset += size;
 
 	return 0;
@@ -62,23 +62,23 @@ int XBuffer::Send(SOCKET socket)
 {
 	if (_nOffset <= 0)
 	{
-		//·¢ËÍ»º³åÇøÎª¿Õ
+		//å‘é€ç¼“å†²åŒºä¸ºç©º
 		return 1;
 	}
 
 	int size = send(socket, _pBuffer, _nOffset, 0);
 	if (size == -1)
 	{
-		//Socket´íÎó¡£
+		//Socketé”™è¯¯ã€‚
 		return -1;
 	}
 	else if (size == 0)
 	{
-		//¶Ô¶Ë¶Ï¿ª¡£
+		//å¯¹ç«¯æ–­å¼€ã€‚
 		return -2;
 	}
 
-	//Õı³£·¢ËÍ¡£
+	//æ­£å¸¸å‘é€ã€‚
 	_nOffset = 0;
 
 	return 0;
@@ -88,7 +88,7 @@ int XBuffer::Push(MsgHeader* pMsg)
 {
 	if (_nOffset + pMsg->_MsgLength > _nSize)
 	{
-		//·¢ËÍ»º³åÇøÂúÁË¡£
+		//å‘é€ç¼“å†²åŒºæ»¡äº†ã€‚
 		return -1;
 	}
 
@@ -102,14 +102,14 @@ int XBuffer::Pop()
 {
 	if (_nOffset < sizeof(MsgHeader))
 	{
-		//ÏûÏ¢³¤¶È²»¹»ÏûÏ¢Í·¡£
+		//æ¶ˆæ¯é•¿åº¦ä¸å¤Ÿæ¶ˆæ¯å¤´ã€‚
 		return -1;
 	}
 
 	MsgHeader* pMsg = (MsgHeader*)_pBuffer;
 	if (_nOffset < pMsg->_MsgLength)
 	{
-		//ÏûÏ¢³¤¶È²»¹»ÏûÏ¢Ìå¡£
+		//æ¶ˆæ¯é•¿åº¦ä¸å¤Ÿæ¶ˆæ¯ä½“ã€‚
 		return -2;
 	}
 

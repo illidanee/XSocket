@@ -5,6 +5,14 @@ using System;
 using System.Runtime.InteropServices;
 using AOT;
 
+public enum MGS_TYPE
+{
+    MSG_HEADER,
+    MSG_ERROR,
+    MSG_HEART,
+    MSG_BYTESTREAM
+};
+
 public class Interface : MonoBehaviour {
 
     //声明代理

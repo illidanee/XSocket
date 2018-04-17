@@ -1,4 +1,4 @@
-#ifndef __XBUFFER_H__
+ï»¿#ifndef __XBUFFER_H__
 #define __XBUFFER_H__
 
 #include "../XCommon.h"
@@ -21,9 +21,9 @@ public:
 	MsgHeader* Front();
 
 private:
-	int _nSize;						//»º³åÇø´óĞ¡
-	char* _pBuffer;					//»º³åÇø
-	int _nOffset;					//»º³åÇøÎ»ÖÃÆ«ÒÆ
+	int _nSize;						//ç¼“å†²åŒºå¤§å°
+	char* _pBuffer;					//ç¼“å†²åŒº
+	int _nOffset;					//ç¼“å†²åŒºä½ç½®åç§»
 };
 
 #endif

@@ -1,4 +1,4 @@
-#ifndef __UNITY3DPLUGIN_H__
+ï»¿#ifndef __UNITY3DPLUGIN_H__
 #define __UNITY3DPLUGIN_H__
 
 #if _WIN32
@@ -34,8 +34,8 @@ private:
 	virtual void AddTask(std::function<void()> pTask);
 
 private:
-	void* _pObj;				//µ÷ÓÃÕß¶ÔÏó¡£
-	OnMsg _pCallback;			//µ÷ÓÃÕß»Øµ÷º¯Êý
+	void* _pObj;				//è°ƒç”¨è€…å¯¹è±¡ã€‚
+	OnMsg _pCallback;			//è°ƒç”¨è€…å›žè°ƒå‡½æ•°
 };
 
 extern "C"
