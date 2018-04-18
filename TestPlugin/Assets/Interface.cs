@@ -49,7 +49,7 @@ public class Interface : MonoBehaviour {
     private static extern void Close(IntPtr pClient);
 
     [DllImport("U3DPlugin")]
-    private static extern int SendData(IntPtr pClient, byte[] data);
+    private static extern int SendData(IntPtr pClient, IntPtr data, int len);
 
     //定义回调函数
     [MonoPInvokeCallback(typeof(OnMsgCallback))]
@@ -129,7 +129,13 @@ public class Interface : MonoBehaviour {
         if (cppClient == IntPtr.Zero)
             return;
 
-        SendData(cppClient, data);
+        int nSize = data.Length;
+        IntPtr pBuffer = Marshal.AllocHGlobal(nSize);
+        Marshal.Copy(data, 0, pBuffer, data.Length);
+
+        SendData(cppClient, pBuffer, nSize);
+
+        Marshal.FreeHGlobal(pBuffer);
     }
 
     // Use this for initialization

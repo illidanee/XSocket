@@ -36,8 +36,8 @@ void MyServer::OnClientJoin(XClient* pClient)
 {
 	++_ClientNum;
 
-	MsgHeart msg;
-	pClient->SendData(&msg);
+	//MsgHeart msg;
+	//pClient->SendData(&msg);
 }
 
 void MyServer::OnClientLeave(XClient* pClient)
@@ -133,13 +133,13 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			r.ReadArray(bb, 32);
 
 			XSendByteStream s(1024);
-			s.WriteInt8(1);
-			s.WriteInt16(2);
-			s.WriteInt32(3);
-			s.WriteInt64(4);
-			s.WriteFloat(5.6f);
-			s.WriteDouble(7.8);
-			char a[] = "hahah";
+			s.WriteInt8(10);
+			s.WriteInt16(20);
+			s.WriteInt32(30);
+			s.WriteInt64(40);
+			s.WriteFloat(50.60f);
+			s.WriteDouble(70.80);
+			char a[] = "Server";
 			s.WriteArray(a, (int)strlen(a));
 			int b[] = { 1, 3, 5 };
 			s.WriteArray(b, sizeof(b));

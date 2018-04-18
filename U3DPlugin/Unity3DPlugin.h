@@ -12,7 +12,7 @@
 
 extern "C"
 {
-	typedef void(*OnMsg)(void* csObj, const char* data, int len);
+	typedef void(*OnMsg)(void* csObj, MsgHeader* data, int len);
 }
 
 class MyClient : public XTCPClient
@@ -50,7 +50,7 @@ extern "C"
 	EXPORT_DLL bool IsRun(MyClient* pClient);
 	EXPORT_DLL void OnRun(MyClient* pClient);
 
-	EXPORT_DLL int SendData(MyClient* pClient, MsgHeader* pHeader);
+	EXPORT_DLL int SendData(MyClient* pClient, MsgHeader* pHeader, int len);
 }
 
 #endif

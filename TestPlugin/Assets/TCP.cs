@@ -17,6 +17,7 @@ public class TCP : Interface {
         if (IsRun())
             OnRun();
 
+        //测试发送数据
         SendStream s = new SendStream();
         s.WriteType(MGS_TYPE.MSG_BYTESTREAM);
         s.WriteInt8(1);
@@ -30,12 +31,7 @@ public class TCP : Interface {
         s.WriteInt32s(b);
         s.Finish();
 
-        //IntPtr buffer = Marshal.AllocHGlobal(s.Array.Length);
-        //Marshal.Copy(s.Array, 0, buffer, s.Array.Length);
-
         SendMsg(s.Array);
-
-        //Marshal.FreeHGlobal(buffer);
     }
 
     private void OnDestroy()
@@ -45,6 +41,29 @@ public class TCP : Interface {
 
     public override void OnMsg(byte[] data)
     {
+        //测试接收数据
+        RecvStream s = new RecvStream(data);
+        s.ReadLength();
+        s.ReadType();
+        sbyte n1 = s.ReadInt8();
+        Int16 n2 = s.ReadInt16();
+        Int32 n3 = s.ReadInt32();
+        Int64 n4 = s.ReadInt64();
+        float n5 = s.ReadFloat();
+        double n6 = s.ReadDouble();
+        string n7 = s.ReadString();
+        Int32[] n8 = s.ReadInt32s();
 
+        Debug.Log(n1);
+        Debug.Log(n2);
+        Debug.Log(n3);
+        Debug.Log(n4);
+        Debug.Log(n5);
+        Debug.Log(n6);
+        Debug.Log(n7);
+        for (int i = 0; i < n8.Length; ++i)
+        {
+            Debug.Log(n8[i]);
+        }
     }
 }
