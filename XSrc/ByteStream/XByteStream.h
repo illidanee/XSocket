@@ -7,19 +7,19 @@
 class XByteStream
 {
 public:
-	XByteStream(char* pBuffer, size_t nSize, bool bDelete = true);
-	XByteStream(size_t nSize);
+	XByteStream(char* pBuffer, int nSize, bool bDelete = true);
+	XByteStream(int nSize);
 	~XByteStream();
 
 	//Read
 	template <typename T>
 	bool Read(T& num)
 	{
-		size_t len = sizeof(T);
-		if (_nReadOffset + len <= _nSize)
+		int nSize = sizeof(T);
+		if (_nReadOffset + nSize <= _nSize)
 		{
-			memcpy(&num, _pBuffer + _nReadOffset, len);
-			_nReadOffset += len;
+			memcpy(&num, _pBuffer + _nReadOffset, nSize);
+			_nReadOffset += nSize;
 			return true;
 		}
 
@@ -29,10 +29,10 @@ public:
 	template <typename T>
 	bool OnlyRead(T& num)
 	{
-		size_t len = sizeof(int64_t);
-		if (_nReadOffset + len <= _nSize)
+		int nSize = sizeof(T);
+		if (_nReadOffset + nSize <= _nSize)
 		{
-			memcpy(&num, _pBuffer + _nReadOffset, len);
+			memcpy(&num, _pBuffer + _nReadOffset, nSize);
 			//_nReadOffset += len;
 			return true;
 		}
@@ -41,18 +41,18 @@ public:
 	}
 
 	template <typename T>
-	size_t ReadArray(T* pBuffer, size_t nLength)
+	int ReadArray(T* pBuffer, int nSize)
 	{
-		uint64_t nSize;
-		bool ret = OnlyRead(nSize);
-		if (ret && nSize < nLength)
+		int32_t nLength;
+		bool ret = OnlyRead(nLength);
+		if (ret && nLength < nSize)
 		{
-			if (_nReadOffset + sizeof(uint64_t) + nSize <= _nSize)
+			if (_nReadOffset + sizeof(int32_t) + nLength <= _nSize)
 			{
-				_nReadOffset += sizeof(uint64_t);
-				memcpy(pBuffer, _pBuffer + _nReadOffset, nSize);
-				_nReadOffset += nSize;
-				return nSize;
+				_nReadOffset += sizeof(int32_t);
+				memcpy(pBuffer, _pBuffer + _nReadOffset, nLength);
+				_nReadOffset += nLength;
+				return nLength;
 			}
 		}
 
@@ -70,11 +70,11 @@ public:
 	template <typename T>
 	bool Write(T num)
 	{
-		size_t len = sizeof(T);
-		if (_nWriteOffset + len <= _nSize)
+		int nSize = sizeof(T);
+		if (_nWriteOffset + nSize <= _nSize)
 		{
-			memcpy(_pBuffer + _nWriteOffset, &num, len);
-			_nWriteOffset += len;
+			memcpy(_pBuffer + _nWriteOffset, &num, nSize);
+			_nWriteOffset += nSize;
 			return true;
 		}
 
@@ -82,11 +82,11 @@ public:
 	}
 
 	template <typename T>
-	size_t WriteArray(T* pBuffer, size_t nSize)
+	int WriteArray(T* pBuffer, int nSize)
 	{
-		if (_nWriteOffset + sizeof(uint64_t) + nSize <= _nSize)
+		if (_nWriteOffset + sizeof(int32_t) + nSize <= _nSize)
 		{
-			WriteInt64(nSize);
+			WriteInt32(nSize);
 			memcpy(_pBuffer + _nWriteOffset, pBuffer, nSize);
 			_nWriteOffset += nSize;
 			return nSize;
@@ -104,18 +104,18 @@ public:
 
 	char* GetBuffer();
 
-	size_t GetReadOffset();
-	size_t GetWriteOffset();
-	void SetReadOffset(size_t offset);
-	void SetWriteOffset(size_t offset);
+	int GetReadOffset();
+	int GetWriteOffset();
+	void SetReadOffset(int offset);
+	void SetWriteOffset(int offset);
 
 private:
 	char* _pBuffer;
-	size_t _nSize;
+	int _nSize;
 	bool _bDelete;
 
-	size_t _nReadOffset;
-	size_t _nWriteOffset;
+	int _nReadOffset;
+	int _nWriteOffset;
 };
 
 #endif

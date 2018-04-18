@@ -21,8 +21,8 @@ public:
 	MsgHeader* Front();
 
 private:
-	int _nSize;						//缓冲区大小
 	char* _pBuffer;					//缓冲区
+	int _nSize;						//缓冲区大小
 	int _nOffset;					//缓冲区位置偏移
 };
 

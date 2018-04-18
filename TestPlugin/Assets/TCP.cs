@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class TCP : Interface {
@@ -27,7 +29,13 @@ public class TCP : Interface {
         int[] b = { 1, 2, 3, 4, 5 };
         s.WriteInt32s(b);
         s.Finish();
+
+        //IntPtr buffer = Marshal.AllocHGlobal(s.Array.Length);
+        //Marshal.Copy(s.Array, 0, buffer, s.Array.Length);
+
         SendMsg(s.Array);
+
+        //Marshal.FreeHGlobal(buffer);
     }
 
     private void OnDestroy()

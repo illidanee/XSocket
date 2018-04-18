@@ -1,6 +1,6 @@
 ﻿#include "XByteStream.h"
 
-XByteStream::XByteStream(char* pBuffer, size_t nSize, bool bDelete)
+XByteStream::XByteStream(char* pBuffer, int nSize, bool bDelete)
 	:
 	_pBuffer(pBuffer),
 	_nSize(nSize),
@@ -11,7 +11,7 @@ XByteStream::XByteStream(char* pBuffer, size_t nSize, bool bDelete)
 
 }
 
-XByteStream::XByteStream(size_t nSize)
+XByteStream::XByteStream(int nSize)
 	:
 	_pBuffer(nullptr),
 	_nSize(nSize),
@@ -93,22 +93,22 @@ char* XByteStream::GetBuffer()
 	return _pBuffer;
 }
 
-size_t XByteStream::GetReadOffset()
+int XByteStream::GetReadOffset()
 {
 	return _nReadOffset;
 }
 
-size_t XByteStream::GetWriteOffset()
+int XByteStream::GetWriteOffset()
 {
 	return _nWriteOffset;
 }
 
-void XByteStream::SetReadOffset(size_t offset)
+void XByteStream::SetReadOffset(int offset)
 {
 	_nReadOffset = offset;
 }
 
-void XByteStream::SetWriteOffset(size_t offset)
+void XByteStream::SetWriteOffset(int offset)
 {
 	_nWriteOffset = offset;
 }

@@ -140,7 +140,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			s.WriteFloat(5.6f);
 			s.WriteDouble(7.8);
 			char a[] = "hahah";
-			s.WriteArray(a, strlen(a));
+			s.WriteArray(a, (int)strlen(a));
 			int b[] = { 1, 3, 5 };
 			s.WriteArray(b, sizeof(b));
 			s.Finish(MSG_BYTESTREAM);

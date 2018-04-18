@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-public class RecvStream{
+public class RecvStream {
 
     private byte[] _pBuffer;
     private int _nOffset;
@@ -13,9 +13,9 @@ public class RecvStream{
         _pBuffer = data;
     }
 
-    public MGS_TYPE ReadType()
+    public bool CanRead(int n)
     {
-        return (MGS_TYPE)ReadInt32();
+        return _pBuffer.Length - _nOffset >= n;
     }
 
     public int ReadLength()
@@ -23,9 +23,9 @@ public class RecvStream{
         return ReadInt32();
     }
 
-    public bool CanRead(int n)
+    public MGS_TYPE ReadType()
     {
-        return _pBuffer.Length - _nOffset >= n;
+        return (MGS_TYPE)ReadInt32();
     }
 
     public sbyte ReadInt8(sbyte n = 0)
@@ -140,7 +140,7 @@ public class RecvStream{
 
     public string ReadString(string s = "")
     {
-        int nSize = (int)ReadInt64();
+        int nSize = ReadInt32();
         if (CanRead(nSize))
         {
             s = Encoding.UTF8.GetString(_pBuffer, _nOffset, nSize);
@@ -151,7 +151,7 @@ public class RecvStream{
 
     public Int32[] ReadInt32s(Int32[] arr = null)
     {
-        int nSize = (int)ReadInt64() / 4;
+        int nSize = ReadInt32() / 4;
         arr = new Int32[nSize];
         for (int i = 0; i < nSize; ++i)
         {

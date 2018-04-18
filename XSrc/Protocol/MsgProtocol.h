@@ -13,21 +13,22 @@ enum MGS_TYPE
 
 struct MsgHeader
 {
+	int32_t _MsgLength;
+	int32_t _MsgType;
+
 	MsgHeader()
 	{
-		_MsgType = MSG_HEADER;
 		_MsgLength = sizeof(MsgHeader);
+		_MsgType = MSG_HEADER;
 	}
-	int32_t _MsgType;
-	int32_t _MsgLength;
 };
 
 struct MsgError : public MsgHeader
 {
 	MsgError()
 	{
-		_MsgType = MSG_ERROR;
 		_MsgLength = sizeof(MsgError);
+		_MsgType = MSG_ERROR;
 	}
 };
 
@@ -35,8 +36,8 @@ struct MsgHeart : public MsgHeader
 {
 	MsgHeart()
 	{
-		_MsgType = MSG_HEART;
 		_MsgLength = sizeof(MsgHeart);
+		_MsgType = MSG_HEART;
 	}
 };
 

@@ -2,8 +2,8 @@
 
 XBuffer::XBuffer(int nSize)
 	:
-	_nSize(nSize),
 	_pBuffer(nullptr),
+	_nSize(nSize),
 	_nOffset(0)
 {
 	Init();

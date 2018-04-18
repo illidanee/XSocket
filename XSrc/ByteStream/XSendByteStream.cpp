@@ -1,13 +1,13 @@
 ﻿#include "XSendByteStream.h"
 
-XSendByteStream::XSendByteStream(char* pBuffer, size_t nSize, bool bDelete)
+XSendByteStream::XSendByteStream(char* pBuffer, int nSize, bool bDelete)
 	:
 	XByteStream(pBuffer, nSize, bDelete)
 {
 	SetWriteOffset(sizeof(MsgHeader));
 }
 
-XSendByteStream::XSendByteStream(size_t nSize)
+XSendByteStream::XSendByteStream(int nSize)
 	:
 	XByteStream(nSize)
 {
@@ -16,8 +16,8 @@ XSendByteStream::XSendByteStream(size_t nSize)
 
 void XSendByteStream::Finish(MGS_TYPE type)
 {
-	size_t curoffset = GetWriteOffset();
-	SetWriteOffset(0);
+	int curoffset = GetWriteOffset(); 
+	SetWriteOffset(0);	
+	WriteInt32(curoffset);
 	WriteInt32(type);
-	WriteInt32((int32_t)curoffset);
 }

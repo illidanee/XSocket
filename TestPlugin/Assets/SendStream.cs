@@ -3,7 +3,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SendStream{
+public class SendStream {
 
     private List<byte> _Buffer;
 
@@ -20,15 +20,15 @@ public class SendStream{
         _Buffer = new List<byte>(nSize);
     }
 
-    public void WriteType(MGS_TYPE type)
-    {
-        WriteInt32((Int32)type);
-    }
-
     public void Finish()
     {
         Int32 nSize = _Buffer.Count + 4;
-        _Buffer.InsertRange(4, BitConverter.GetBytes(nSize));
+        _Buffer.InsertRange(0, BitConverter.GetBytes(nSize));
+    }
+
+    public void WriteType(MGS_TYPE type)
+    {
+        WriteInt32((Int32)type);
     }
 
     public void WriteInt8(sbyte n)
@@ -84,13 +84,13 @@ public class SendStream{
     public void WriteString(string s)
     {
         byte[] data = Encoding.UTF8.GetBytes(s);
-        WriteInt64(data.Length);
+        WriteInt32(data.Length);
         _Buffer.AddRange(data);
     }
 
     public void WriteInt32s(Int32[] arr)
     {
-        WriteInt64(arr.Length * 4);
+        WriteInt32(arr.Length * 4);
         for (int i = 0; i < arr.Length; ++i)
         {
             WriteInt32(arr[i]);
