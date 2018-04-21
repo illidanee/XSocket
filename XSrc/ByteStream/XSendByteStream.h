@@ -7,7 +7,7 @@
 class XSendByteStream : public XByteStream
 {
 public:
-	XSendByteStream(char* pBuffer, int nSize, bool bDelete = true);
+	XSendByteStream(char* pBuffer, int nSize);
 	XSendByteStream(int nSize);
 
 	void Finish(MGS_TYPE type);

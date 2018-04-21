@@ -55,6 +55,7 @@ void MyServer::OnNetSend(XClient* pClient)
 	++_SendNum;
 }
 
+//这里地方的pMsgHeader地址上的内存不安全。随时可能被释放。如果假如任务系统延迟处理会有危险。
 void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 {
 	++_RecvPackageNum;
@@ -117,16 +118,34 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			XRecvByteStream r(pMsgHeader);
 			int8_t r1;
 			r.ReadInt8(r1);
-			printf("r1 = %d \n", r1);
+			int16_t r2;
+			r.ReadInt16(r2);
+			int32_t r3;
+			r.ReadInt32(r3);
+			int64_t r4;
+			r.ReadInt64(r4);
+			float r5;
+			r.ReadFloat(r5);
+			double r6;
+			r.ReadDouble(r6);
+			char r7[32] = {};
+			r.ReadArray(r7, 32);
+			printf("r1 = %d, r2 = %d, r3 = %d, r4 = %I64d, r5 = %f, r6 = %f, r7 = %s \n", r1, r2, r3, r4, r5, r6, r7);
 
 			XSendByteStream s(1024);
-			s.WriteInt8(7);
+			s.WriteInt8(10);
+			s.WriteInt16(20);
+			s.WriteInt32(30);
+			s.WriteInt64(40);
+			s.WriteFloat(55.66f);
+			s.WriteDouble(77.88);
+			s.WriteArray("Server", strlen("Server"));
 			s.Finish(MSG_BYTESTREAM);
-			pClient->SendStream(&s);
-			//if (pClient->SendData((MsgHeader*)s.GetBuffer()) < 0)
-			//{
-			//	XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
-			//}
+			
+			if (pClient->SendStream(&s) < 0)
+			{
+				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+			}
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);

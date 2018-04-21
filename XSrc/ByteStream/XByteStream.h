@@ -7,7 +7,7 @@
 class XByteStream
 {
 public:
-	XByteStream(char* pBuffer, int nSize, bool bDelete = true);
+	XByteStream(char* pBuffer, int nSize);
 	XByteStream(int nSize);
 	~XByteStream();
 
@@ -112,7 +112,6 @@ public:
 private:
 	char* _pBuffer;
 	int _nSize;
-	bool _bDelete;
 
 	int _nReadOffset;
 	int _nWriteOffset;

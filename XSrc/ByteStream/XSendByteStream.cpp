@@ -1,8 +1,8 @@
 ﻿#include "XSendByteStream.h"
 
-XSendByteStream::XSendByteStream(char* pBuffer, int nSize, bool bDelete)
+XSendByteStream::XSendByteStream(char* pBuffer, int nSize)
 	:
-	XByteStream(pBuffer, nSize, bDelete)
+	XByteStream(pBuffer, nSize)
 {
 	SetWriteOffset(sizeof(MsgHeader));
 }

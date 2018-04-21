@@ -1,21 +1,22 @@
 ﻿#include "XByteStream.h"
 
-XByteStream::XByteStream(char* pBuffer, int nSize, bool bDelete)
+XByteStream::XByteStream(char* pBuffer, int nSize)
 	:
-	_pBuffer(pBuffer),
+	_pBuffer(nullptr),
 	_nSize(nSize),
-	_bDelete(bDelete),
 	_nReadOffset(0),
 	_nWriteOffset(0)
 {
-
+	//此处必须重新申请内存保存栈空间的地址内容，否则如果_pBuffer指向的栈空间被释放则出现数据错误。3天解决。
+	//类引用外部指针必须保证其不被释放，最好自己申请内存空间。
+	_pBuffer = new char[_nSize];
+	memcpy(_pBuffer, pBuffer, nSize);
 }
 
 XByteStream::XByteStream(int nSize)
 	:
 	_pBuffer(nullptr),
 	_nSize(nSize),
-	_bDelete(true),
 	_nReadOffset(0),
 	_nWriteOffset(0)
 {
@@ -24,8 +25,7 @@ XByteStream::XByteStream(int nSize)
 
 XByteStream::~XByteStream()
 {
-	if (_pBuffer && _bDelete)
-		delete[] _pBuffer;
+	delete[] _pBuffer;
 }
 
 bool XByteStream::ReadInt8(int8_t& num)
