@@ -48,8 +48,11 @@ public class Interface : MonoBehaviour {
     [DllImport("U3DPlugin")]
     private static extern void Close(IntPtr pClient);
 
+    //[DllImport("U3DPlugin")]
+    //private static extern int SendData(IntPtr pClient, IntPtr data, int len);
+
     [DllImport("U3DPlugin")]
-    private static extern int SendData(IntPtr pClient, IntPtr data, int len);
+    private static extern int SendStream(IntPtr pClient, IntPtr pStream);
 
     //定义回调函数
     [MonoPInvokeCallback(typeof(OnMsgCallback))]
@@ -59,9 +62,9 @@ public class Interface : MonoBehaviour {
         Interface obj = h.Target as Interface;
         if (obj)
         {
-            byte[] str = new byte[len];
-            Marshal.Copy(data, str, 0, len);
-            obj.OnMsg(str);
+            //byte[] str = new byte[len];
+            //Marshal.Copy(data, str, 0, len);
+            obj.OnMsg(data);
         }
     }
 
@@ -119,23 +122,31 @@ public class Interface : MonoBehaviour {
         OnRun(cppClient);
     }
 
-    public virtual void OnMsg(byte[] data)
+    public virtual void OnMsg(IntPtr data)
     {
 
     }
 
-    public void SendMsg(byte[] data)
+    //public void SendMsg(byte[] data)
+    //{
+    //    if (cppClient == IntPtr.Zero)
+    //        return;
+
+    //    int nSize = data.Length;
+    //    IntPtr pBuffer = Marshal.AllocHGlobal(nSize);
+    //    Marshal.Copy(data, 0, pBuffer, data.Length);
+
+    //    SendData(cppClient, pBuffer, nSize);
+
+    //    Marshal.FreeHGlobal(pBuffer);
+    //}
+
+    public void SendStream(IntPtr pStream)
     {
         if (cppClient == IntPtr.Zero)
             return;
 
-        int nSize = data.Length;
-        IntPtr pBuffer = Marshal.AllocHGlobal(nSize);
-        Marshal.Copy(data, 0, pBuffer, data.Length);
-
-        SendData(cppClient, pBuffer, nSize);
-
-        Marshal.FreeHGlobal(pBuffer);
+        SendStream(cppClient, pStream);
     }
 
     // Use this for initialization

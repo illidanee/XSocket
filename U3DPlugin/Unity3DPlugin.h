@@ -1,14 +1,20 @@
 ﻿#ifndef __UNITY3DPLUGIN_H__
 #define __UNITY3DPLUGIN_H__
 
+#ifndef __DLL_EXPORT__
 #if _WIN32
 #define EXPORT_DLL _declspec(dllexport)
 #else
 #define EXPORT_DLL
 #endif
+#else
+#define EXPORT_DLL
+#endif
+
 
 #include "../XSrc/Server/XTCPClient.h"
 #include "../XSrc/ByteStream/XRecvByteStream.h"
+#include "../XSrc/ByteStream/XSendByteStream.h"
 
 extern "C"
 {
@@ -51,6 +57,31 @@ extern "C"
 	EXPORT_DLL void OnRun(MyClient* pClient);
 
 	EXPORT_DLL int SendData(MyClient* pClient, MsgHeader* pHeader, int len);
+
+	EXPORT_DLL int SendStream(MyClient* pClient, XSendByteStream* pStream);
+
+	//----------------------------------------------------------------------------------------------------------------------------
+	//导出字节流接口 - ReadStream
+	EXPORT_DLL XRecvByteStream* CppRecvStreamCreate(MsgHeader* pMsgHeader);
+	EXPORT_DLL void CppRecvStreamClose(XRecvByteStream* pStream);
+	EXPORT_DLL int8_t CppReadInt8(XRecvByteStream* pStream, int8_t n = 0);
+	EXPORT_DLL int16_t CppReadInt16(XRecvByteStream* pStream, int16_t n = 0);
+	EXPORT_DLL int32_t CppReadInt32(XRecvByteStream* pStream, int32_t n = 0);
+	EXPORT_DLL int64_t CppReadInt64(XRecvByteStream* pStream, int64_t n = 0);
+	EXPORT_DLL float CppReadFloat(XRecvByteStream* pStream, float n = 0.0f);
+	EXPORT_DLL double CppReadDouble(XRecvByteStream* pStream, double n = 0.0);
+	EXPORT_DLL int CppReadString(XRecvByteStream* pStream, const char* pBuffer, int nSize);
+	//导出字节流接口 - WriteStream
+	EXPORT_DLL XSendByteStream* CppSendStreamCreate(int nSize = 128);
+	EXPORT_DLL void CppSendStreamClose(XSendByteStream* pStream);
+	EXPORT_DLL bool CppWriteInt8(XSendByteStream* pStream, int8_t n);
+	EXPORT_DLL bool CppWriteInt16(XSendByteStream* pStream, int16_t n);
+	EXPORT_DLL bool CppWriteInt32(XSendByteStream* pStream, int32_t n);
+	EXPORT_DLL bool CppWriteInt64(XSendByteStream* pStream, int64_t n);
+	EXPORT_DLL bool CppWriteFloat(XSendByteStream* pStream, float n);
+	EXPORT_DLL bool CppWriteDouble(XSendByteStream* pStream, double n);
+	EXPORT_DLL int CppWriteString(XSendByteStream* pStream, const char* pBuffer, int nSize);
+	EXPORT_DLL void CppFinish(XSendByteStream* pStream);
 }
 
 #endif

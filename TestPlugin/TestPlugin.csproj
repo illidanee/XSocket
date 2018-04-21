@@ -222,6 +222,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CppRecvStream.cs" />
+    <Compile Include="Assets\CppSendStream.cs" />
     <Compile Include="Assets\Interface.cs" />
     <Compile Include="Assets\RecvStream.cs" />
     <Compile Include="Assets\SendStream.cs" />

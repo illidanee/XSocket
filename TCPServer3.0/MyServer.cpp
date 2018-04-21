@@ -117,38 +117,16 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			XRecvByteStream r(pMsgHeader);
 			int8_t r1;
 			r.ReadInt8(r1);
-			int16_t r2;
-			r.ReadInt16(r2);
-			int32_t r3;
-			r.ReadInt32(r3);
-			int64_t r4;
-			r.ReadInt64(r4);
-			float r5;
-			r.ReadFloat(r5);
-			double r6;
-			r.ReadDouble(r6);
-			char aa[32] = {};
-			r.ReadArray(aa, 32);
-			int bb[32] = {};
-			r.ReadArray(bb, 32);
+			printf("r1 = %d \n", r1);
 
 			XSendByteStream s(1024);
-			s.WriteInt8(10);
-			s.WriteInt16(20);
-			s.WriteInt32(30);
-			s.WriteInt64(40);
-			s.WriteFloat(50.60f);
-			s.WriteDouble(70.80);
-			char a[] = "Server";
-			s.WriteArray(a, (int)strlen(a));
-			int b[] = { 1, 3, 5 };
-			s.WriteArray(b, sizeof(b));
+			s.WriteInt8(7);
 			s.Finish(MSG_BYTESTREAM);
-
-			if (pClient->SendData((MsgHeader*)s.GetBuffer()) < 0)
-			{
-				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
-			}
+			pClient->SendStream(&s);
+			//if (pClient->SendData((MsgHeader*)s.GetBuffer()) < 0)
+			//{
+			//	XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+			//}
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);

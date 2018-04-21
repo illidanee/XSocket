@@ -5,6 +5,7 @@
 #include "XIGlobalEvent.h"
 #include "XIServerEvent.h"
 #include "../Buffer/XBuffer.h"
+#include "../ByteStream/XByteStream.h"
 
 //客户端信息类
 class XClient : public XObject<1024, XClient>
@@ -17,6 +18,7 @@ public:
 
 	int RecvData();
 	int SendData(MsgHeader* pHeader);
+	int SendStream(XByteStream* pByteStream);
 	int SendData();
 
 	//心跳

@@ -134,3 +134,167 @@ int SendData(MyClient* pClient, MsgHeader* pHeader, int len)
 
 	return 0;
 }
+
+int SendStream(MyClient* pClient, XSendByteStream* pStream)
+{
+	if (pClient)
+		return pClient->SendStream(pStream);
+
+	return 0;
+}
+
+
+//----------------------------------------------------------- XRecvByteStream -----------------------------------------------------------------
+
+
+XRecvByteStream* CppRecvStreamCreate(MsgHeader* pMsgHeader)
+{
+	XRecvByteStream* pStream = new XRecvByteStream(pMsgHeader);
+	return pStream;
+}
+
+void CppRecvStreamClose(XRecvByteStream* pStream)
+{
+	if (pStream)
+	{
+		delete pStream;
+		pStream = nullptr;
+	}
+}
+
+int8_t CppReadInt8(XRecvByteStream* pStream,  int8_t n)
+{
+	if (pStream)
+		pStream->ReadInt8(n);
+
+	return n;
+}
+
+int16_t CppReadInt16(XRecvByteStream* pStream, int16_t n)
+{
+	if (pStream)
+		pStream->ReadInt16(n);
+
+	return n;
+}
+
+int32_t CppReadInt32(XRecvByteStream* pStream, int32_t n)
+{
+	if (pStream)
+		pStream->ReadInt32(n);
+
+	return n;
+}
+
+int64_t CppReadInt64(XRecvByteStream* pStream, int64_t n)
+{
+	if (pStream)
+		pStream->ReadInt64(n);
+
+	return n;
+}
+
+float CppReadFloat(XRecvByteStream* pStream, float n)
+{
+	if (pStream)
+		pStream->ReadFloat(n);
+
+	return n;
+}
+
+double CppReadDouble(XRecvByteStream* pStream, double n)
+{
+	if (pStream)
+		pStream->ReadDouble(n);
+
+	return n;
+}
+
+int CppReadString(XRecvByteStream* pStream, char* pBuffer, int nSize)
+{
+	if (pStream)
+		return pStream->ReadArray(pBuffer, nSize);
+
+	return 0;
+}
+
+
+//----------------------------------------------------------- XSendByteStream -----------------------------------------------------------------
+
+
+XSendByteStream* CppSendStreamCreate(int nSize)
+{
+	XSendByteStream* pStream = new XSendByteStream(nSize);
+	return pStream;
+}
+
+void CppSendStreamClose(XSendByteStream* pStream)
+{
+	if (pStream)
+	{
+		delete pStream;
+		pStream = nullptr;
+	}
+}
+
+bool CppWriteInt8(XSendByteStream* pStream, int8_t n)
+{
+	if (pStream)
+		return pStream->WriteInt8(n);
+
+	return false;
+}
+
+bool CppWriteInt16(XSendByteStream* pStream, int16_t n)
+{
+	if (pStream)
+		return pStream->WriteInt16(n);
+
+	return false;
+}
+
+bool CppWriteInt32(XSendByteStream* pStream, int32_t n)
+{
+	if (pStream)
+		return pStream->WriteInt32(n);
+
+	return false;
+}
+
+bool CppWriteInt64(XSendByteStream* pStream, int64_t n)
+{
+	if (pStream)
+		return pStream->WriteInt64(n);
+
+	return false;
+}
+
+bool CppWriteFloat(XSendByteStream* pStream, float n)
+{
+	if (pStream)
+		return pStream->WriteFloat(n);
+
+	return false;
+}
+
+bool CppWriteDouble(XSendByteStream* pStream, double n)
+{
+	if (pStream)
+		return pStream->WriteDouble(n);
+
+	return false;
+}
+
+int CppWriteString(XSendByteStream* pStream, const char* pBuffer, int nSize)
+{
+	if (pStream)
+		return pStream->WriteArray(pBuffer, nSize);
+
+	return 0;
+}
+
+void CppFinish(XSendByteStream* pStream)
+{
+	if (pStream)
+		return pStream->Finish(MSG_BYTESTREAM);
+}

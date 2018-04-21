@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Text;
-using System.Collections;
-using System.Collections.Generic;
+
+/****************************************************************************************************************
+	Date   :  2018/04/20 9:34
+
+	Author :  smile@illidan.org
+	
+	Brief  :  使用C#封装的接收字节流
+****************************************************************************************************************/
 
 public class RecvStream {
 
-    private byte[] _pBuffer;
-    private int _nOffset;
+    private byte[] _pBuffer;                            //接收缓冲区
+    private int _nOffset;                               //接收偏移位置
 
     public RecvStream(byte[] data)
     {
@@ -72,50 +78,6 @@ public class RecvStream {
         return n;
     }
 
-    public byte ReadUInt8(byte n = 0)
-    {
-        if (CanRead(1))
-        {
-            n = _pBuffer[_nOffset];
-            _nOffset += 1;
-        }
-
-        return n;
-    }
-
-    public UInt16 ReadUInt16(UInt16 n = 0)
-    {
-        if (CanRead(2))
-        {
-            n = BitConverter.ToUInt16(_pBuffer, _nOffset);
-            _nOffset += 2;
-        }
-
-        return n;
-    }
-
-    public UInt32 ReadUInt32(UInt32 n = 0)
-    {
-        if (CanRead(4))
-        {
-            n = BitConverter.ToUInt32(_pBuffer, _nOffset);
-            _nOffset += 4;
-        }
-
-        return n;
-    }
-
-    public UInt64 ReadUInt64(UInt64 n = 0)
-    {
-        if (CanRead(8))
-        {
-            n = BitConverter.ToUInt64(_pBuffer, _nOffset);
-            _nOffset += 8;
-        }
-
-        return n;
-    }
-
     public float ReadFloat(float n = 0.0f)
     {
         if (CanRead(4))
@@ -141,7 +103,7 @@ public class RecvStream {
     public string ReadString(string s = "")
     {
         int nSize = ReadInt32();
-        if (CanRead(nSize))
+        if (nSize > 0 && CanRead(nSize))
         {
             s = Encoding.UTF8.GetString(_pBuffer, _nOffset, nSize);
             _nOffset += nSize;
@@ -151,9 +113,9 @@ public class RecvStream {
 
     public Int32[] ReadInt32s(Int32[] arr = null)
     {
-        int nSize = ReadInt32() / 4;
-        arr = new Int32[nSize];
-        for (int i = 0; i < nSize; ++i)
+        int nLength = ReadInt32() / 4;
+        arr = new Int32[nLength];
+        for (int i = 0; i < nLength; ++i)
         {
             arr[i] = ReadInt32();
         }

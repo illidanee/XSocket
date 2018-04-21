@@ -6,6 +6,7 @@
 #include "XIServerEvent.h"
 #include "XNet.h"
 #include "XClient.h"
+#include "../ByteStream/XSendByteStream.h"
 
 //Client¿‡
 class XTCPClient : public XIGlobalEvent, public XIServerEvent
@@ -23,6 +24,7 @@ public:
 	void OnRun();
 
 	int SendData(MsgHeader* pHeader);
+	int SendStream(XByteStream* pStream);
 
 private:
 	XClient* _Client;

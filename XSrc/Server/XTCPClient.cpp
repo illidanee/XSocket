@@ -127,3 +127,8 @@ int XTCPClient::SendData(MsgHeader* pHeader)
 {
 	return _Client->SendData(pHeader);
 }
+
+int XTCPClient::SendStream(XByteStream* pStream)
+{
+	return _Client->SendStream(pStream);
+}

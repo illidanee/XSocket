@@ -55,6 +55,11 @@ int XClient::SendData(MsgHeader* pHeader)
 	return nRet;
 }
 
+int XClient::SendStream(XByteStream* pByteStream)
+{
+	return SendData((MsgHeader*)pByteStream->GetBuffer());
+}
+
 int XClient::SendData()
 {
 	int nRet = _SendBuffer.Send(_Socket);

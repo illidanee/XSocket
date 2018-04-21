@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Text;
-using System.Collections;
 using System.Collections.Generic;
+
+/****************************************************************************************************************
+	Date   :  2018/04/20 9:42
+	 
+	Author :  smile@illidan.org
+	
+	Brief  :  使用C#封装的发送字节流
+****************************************************************************************************************/
 
 public class SendStream {
 
-    private List<byte> _Buffer;
+    private List<byte> _Buffer;                 //发送缓冲区
 
     public byte[] Array
     {
@@ -15,7 +22,7 @@ public class SendStream {
         }
     }
 
-    public SendStream(int nSize = 128)
+    public SendStream(int nSize = 256)
     {
         _Buffer = new List<byte>(nSize);
     }
@@ -47,26 +54,6 @@ public class SendStream {
     }
 
     public void WriteInt64(Int64 n)
-    {
-        _Buffer.AddRange(BitConverter.GetBytes(n));
-    }
-
-    public void WriteUInt8(byte n)
-    {
-        _Buffer.Add(n);
-    }
-
-    public void WriteUInt16(UInt16 n)
-    {
-        _Buffer.AddRange(BitConverter.GetBytes(n));
-    }
-
-    public void WriteUInt32(UInt32 n)
-    {
-        _Buffer.AddRange(BitConverter.GetBytes(n));
-    }
-
-    public void WriteUInt64(UInt64 n)
     {
         _Buffer.AddRange(BitConverter.GetBytes(n));
     }

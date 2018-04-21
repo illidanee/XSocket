@@ -33,7 +33,7 @@ public:
 		if (_nReadOffset + nSize <= _nSize)
 		{
 			memcpy(&num, _pBuffer + _nReadOffset, nSize);
-			//_nReadOffset += len;
+			//_nReadOffset += nSize;
 			return true;
 		}
 
