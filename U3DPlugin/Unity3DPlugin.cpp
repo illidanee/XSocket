@@ -15,7 +15,7 @@ void MyClient::Init(void* pObj, OnMsg pCallback)
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
 	if (_pObj && _pCallback)
-		_pCallback(_pObj, pMsgHeader, pMsgHeader->_MsgLength);
+		_pCallback(_pObj, pMsgHeader);
 }
 
 void MyClient::OnRunLoopBegin()
@@ -127,15 +127,7 @@ void OnRun(MyClient* pClient)
 		pClient->OnRun();
 }
 
-int SendData(MyClient* pClient, MsgHeader* pHeader, int len)
-{
-	if (pClient)
-		return pClient->SendData(pHeader);
-
-	return 0;
-}
-
-int SendStream(MyClient* pClient, XSendByteStream* pStream)
+int SendStream(MyClient* pClient, XByteStream* pStream)
 {
 	if (pClient)
 		return pClient->SendStream(pStream);

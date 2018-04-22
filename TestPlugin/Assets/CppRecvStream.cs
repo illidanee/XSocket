@@ -136,7 +136,8 @@ public class CppRecvStream
         if (nLength <= 0)
             return s;
 
-        byte[] buffer = new byte[nLength];                              
+        byte[] buffer = new byte[nLength];
+                                
         for (int i = 0; i < nLength; ++i)
         {
             buffer[i] = (byte)CppReadInt8(pCppStream, 0);

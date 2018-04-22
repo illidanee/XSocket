@@ -1,11 +1,11 @@
-#define __DLL_EXPORT__
+#define __NO_DLL_INS__
 #include "../U3DPlugin/Unity3DPlugin.h"
 
 class Obj
 {
 
 public:
-	static void OnMsg(void* pObj, MsgHeader* data, int len)
+	static void OnMsg(void* pObj, MsgHeader* data)
 	{
 		XRecvByteStream* pStream = CppRecvStreamCreate(data);
 		int r1 = CppReadInt8(pStream, 0);

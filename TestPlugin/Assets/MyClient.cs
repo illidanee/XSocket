@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class TCP : Interface {
+public class MyClient : CppTcpClient {
 
 	// Use this for initialization
 	void Start () {
-        Create();
-        Connect();
-	}
+        Init();
+        Open();
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
         if (IsRun())
             OnRun();
+
+        Debug.Log(Connect());
 
         //测试发送数据
         CppSendStream s = new CppSendStream();

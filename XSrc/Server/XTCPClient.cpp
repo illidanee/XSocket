@@ -36,6 +36,10 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 {
 	assert(_Client != nullptr);
 
+	//优化：已经连接的时候，不在连接。此时如果执行connect会返回SOCKET_ERROR。
+	if (_bRun)
+		return true;
+
 	sockaddr_in sinServer = {};
 	sinServer.sin_family = AF_INET;
 #ifdef _WIN32

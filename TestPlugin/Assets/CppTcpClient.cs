@@ -1,9 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using AOT;
+using UnityEngine;
+
+/****************************************************************************************************************
+    Date   : 2018/04/22 10:18
+
+    Author : smile@illidan.org
+
+    Brief  : 封装C++ TCP Client 和 消息
+****************************************************************************************************************/
 
 public enum MGS_TYPE
 {
@@ -13,10 +19,10 @@ public enum MGS_TYPE
     MSG_BYTESTREAM
 };
 
-public class Interface : MonoBehaviour {
+public class CppTcpClient : MonoBehaviour {
 
     //声明代理
-    private delegate void OnMsgCallback(IntPtr csObj, IntPtr data, int len);
+    private delegate void OnMsgCallback(IntPtr csObj, IntPtr pStream);
 
     //声明对象
     private GCHandle _SelfHandle;
@@ -40,46 +46,47 @@ public class Interface : MonoBehaviour {
     private static extern void Disconnect(IntPtr pClient);
 
     [DllImport("U3DPlugin")]
+    private static extern void Close(IntPtr pClient);
+
+    [DllImport("U3DPlugin")]
     private static extern bool IsRun(IntPtr pClient);
 
     [DllImport("U3DPlugin")]
     private static extern void OnRun(IntPtr pClient);
 
     [DllImport("U3DPlugin")]
-    private static extern void Close(IntPtr pClient);
-
-    //[DllImport("U3DPlugin")]
-    //private static extern int SendData(IntPtr pClient, IntPtr data, int len);
-
-    [DllImport("U3DPlugin")]
     private static extern int SendStream(IntPtr pClient, IntPtr pStream);
 
     //定义回调函数
     [MonoPInvokeCallback(typeof(OnMsgCallback))]
-    private static void OnRecvMsg(IntPtr csObj, IntPtr data, int len)
+    private static void OnRecvMsg(IntPtr csObj, IntPtr pStream)
     {
         GCHandle h = GCHandle.FromIntPtr(csObj);
-        Interface obj = h.Target as Interface;
+        CppTcpClient obj = h.Target as CppTcpClient;
         if (obj)
         {
-            //byte[] str = new byte[len];
-            //Marshal.Copy(data, str, 0, len);
-            obj.OnMsg(data);
+            obj.OnMsg(pStream);
         }
     }
 
     //接口函数
-    public void Create()
+    public void Init()
     {
         if (cppClient == IntPtr.Zero)
         {
-            SetLogPath("./Server.log");
+            SetLogPath("./CppTcpClient.log");
             _SelfHandle = GCHandle.Alloc(this);
             _SelfPtr = GCHandle.ToIntPtr(_SelfHandle);
             cppClient = Open(_SelfPtr, OnRecvMsg);
-            
-            //Debug.Log("Client Connect successed!");
         }
+    }
+
+    public void Open()
+    {
+        if (cppClient == IntPtr.Zero)
+            return;
+
+        cppClient = Open(_SelfPtr, OnRecvMsg);
     }
 
     public bool Connect()
@@ -126,20 +133,6 @@ public class Interface : MonoBehaviour {
     {
 
     }
-
-    //public void SendMsg(byte[] data)
-    //{
-    //    if (cppClient == IntPtr.Zero)
-    //        return;
-
-    //    int nSize = data.Length;
-    //    IntPtr pBuffer = Marshal.AllocHGlobal(nSize);
-    //    Marshal.Copy(data, 0, pBuffer, data.Length);
-
-    //    SendData(cppClient, pBuffer, nSize);
-
-    //    Marshal.FreeHGlobal(pBuffer);
-    //}
 
     public void SendStream(IntPtr pStream)
     {

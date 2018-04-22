@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Runtime.InteropServices;
 
 /****************************************************************************************************************
 	Date   :  2018/04/20 10:04
@@ -121,8 +121,10 @@ public class CppSendStream {
             return false;
 
         byte[] buffer = Encoding.UTF8.GetBytes(s);
+
         if (!CppWriteInt32(pCppStream, buffer.Length))
             return false;
+
         for (int i = 0; i < buffer.Length; ++i)
         {
             if (!CppWriteInt8(pCppStream, (sbyte)buffer[i]))

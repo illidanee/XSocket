@@ -1,7 +1,7 @@
 ﻿#ifndef __UNITY3DPLUGIN_H__
 #define __UNITY3DPLUGIN_H__
 
-#ifndef __DLL_EXPORT__
+#ifndef __NO_DLL_INS__
 #if _WIN32
 #define EXPORT_DLL _declspec(dllexport)
 #else
@@ -11,14 +11,13 @@
 #define EXPORT_DLL
 #endif
 
-
 #include "../XSrc/Server/XTCPClient.h"
 #include "../XSrc/ByteStream/XRecvByteStream.h"
 #include "../XSrc/ByteStream/XSendByteStream.h"
 
 extern "C"
 {
-	typedef void(*OnMsg)(void* csObj, MsgHeader* data, int len);
+	typedef void(*OnMsg)(void* csObj, MsgHeader* pMsgHeader);
 }
 
 class MyClient : public XTCPClient
@@ -46,19 +45,19 @@ private:
 
 extern "C"
 {
+	//----------------------------------------------------------------------------------------------------------------------------
+	//导出日志接口 - Log
 	EXPORT_DLL void SetLogPath(const char* pLogPath);
 
+	//----------------------------------------------------------------------------------------------------------------------------
+	//导出客户端接口 - MyClient
 	EXPORT_DLL MyClient* Open(void* pObj, OnMsg pCallback);
 	EXPORT_DLL bool Connect(MyClient* pClient, const char* ip, unsigned short port);
 	EXPORT_DLL void Disconnect(MyClient* pClient);
 	EXPORT_DLL void Close(MyClient* pClient);
-
 	EXPORT_DLL bool IsRun(MyClient* pClient);
 	EXPORT_DLL void OnRun(MyClient* pClient);
-
-	EXPORT_DLL int SendData(MyClient* pClient, MsgHeader* pHeader, int len);
-
-	EXPORT_DLL int SendStream(MyClient* pClient, XSendByteStream* pStream);
+	EXPORT_DLL int SendStream(MyClient* pClient, XByteStream* pStream);
 
 	//----------------------------------------------------------------------------------------------------------------------------
 	//导出字节流接口 - ReadStream
@@ -71,6 +70,8 @@ extern "C"
 	EXPORT_DLL float CppReadFloat(XRecvByteStream* pStream, float n = 0.0f);
 	EXPORT_DLL double CppReadDouble(XRecvByteStream* pStream, double n = 0.0);
 	EXPORT_DLL int CppReadString(XRecvByteStream* pStream, const char* pBuffer, int nSize);
+	
+	//----------------------------------------------------------------------------------------------------------------------------
 	//导出字节流接口 - WriteStream
 	EXPORT_DLL XSendByteStream* CppSendStreamCreate(int nSize = 128);
 	EXPORT_DLL void CppSendStreamClose(XSendByteStream* pStream);
