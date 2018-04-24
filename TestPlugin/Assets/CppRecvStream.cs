@@ -23,32 +23,67 @@ public class CppRecvStream
     }
 
 
-
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern IntPtr CppRecvStreamCreate(IntPtr pMsgHeader);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void CppRecvStreamClose(IntPtr pStream);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern sbyte CppReadInt8(IntPtr pStream, sbyte n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern Int16 CppReadInt16(IntPtr pStream, Int16 n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern Int32 CppReadInt32(IntPtr pStream, Int32 n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern Int64 CppReadInt64(IntPtr pStream, Int64 n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern float CppReadFloat(IntPtr pStream, float n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern double CppReadDouble(IntPtr pStream, double n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern int CppReadString(IntPtr pStream, IntPtr pBuffer, int nSize);
 
 

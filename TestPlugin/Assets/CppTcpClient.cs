@@ -33,28 +33,60 @@ public class CppTcpClient : MonoBehaviour {
     public ushort port = 9090;
 
     //导入插件接口
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void SetLogPath(string logPath);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern IntPtr Open(IntPtr pObj, OnMsgCallback pCallback);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool Connect(IntPtr pClient, string ip, ushort port);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void Disconnect(IntPtr pClient);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void Close(IntPtr pClient);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool IsRun(IntPtr pClient);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void OnRun(IntPtr pClient);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern int SendStream(IntPtr pClient, IntPtr pStream);
 
     //定义回调函数
@@ -74,7 +106,7 @@ public class CppTcpClient : MonoBehaviour {
     {
         if (cppClient == IntPtr.Zero)
         {
-            SetLogPath("./CppTcpClient.log");
+            //SetLogPath("./CppTcpClient.log");
             _SelfHandle = GCHandle.Alloc(this);
             _SelfPtr = GCHandle.ToIntPtr(_SelfHandle);
             cppClient = Open(_SelfPtr, OnRecvMsg);

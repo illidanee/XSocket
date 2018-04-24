@@ -139,7 +139,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			s.WriteInt64(40);
 			s.WriteFloat(55.66f);
 			s.WriteDouble(77.88);
-			s.WriteArray("Server", strlen("Server"));
+			s.WriteArray("Server", (int)strlen("Server"));
 			s.Finish(MSG_BYTESTREAM);
 			
 			if (pClient->SendStream(&s) < 0)

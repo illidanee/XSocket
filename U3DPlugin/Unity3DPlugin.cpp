@@ -1,5 +1,7 @@
 ﻿#include "Unity3DPlugin.h"
 
+//----------------------------------------------------------------------------------------------------------------------------
+//类定义
 MyClient::MyClient()
 {
 	_pObj = nullptr;
@@ -74,13 +76,15 @@ void MyClient::AddTask(std::function<void()> pTask)
 
 }
 
-//导出
-
+//----------------------------------------------------------------------------------------------------------------------------
+//导出日志接口 - Log
 void SetLogPath(const char* pLogPath)
 {
 	XLog::SetFile(pLogPath, "w");
 }
 
+//----------------------------------------------------------------------------------------------------------------------------
+//导出客户端接口 - MyClient
 MyClient* Open(void* pObj, OnMsg pCallback)
 {
 	MyClient* pClient = new MyClient();
@@ -135,10 +139,8 @@ int SendStream(MyClient* pClient, XByteStream* pStream)
 	return 0;
 }
 
-
-//----------------------------------------------------------- XRecvByteStream -----------------------------------------------------------------
-
-
+//----------------------------------------------------------------------------------------------------------------------------
+//导出字节流接口 - ReadStream
 XRecvByteStream* CppRecvStreamCreate(MsgHeader* pMsgHeader)
 {
 	XRecvByteStream* pStream = new XRecvByteStream(pMsgHeader);
@@ -210,10 +212,8 @@ int CppReadString(XRecvByteStream* pStream, char* pBuffer, int nSize)
 	return 0;
 }
 
-
-//----------------------------------------------------------- XSendByteStream -----------------------------------------------------------------
-
-
+//----------------------------------------------------------------------------------------------------------------------------
+//导出字节流接口 - WriteStream
 XSendByteStream* CppSendStreamCreate(int nSize)
 {
 	XSendByteStream* pStream = new XSendByteStream(nSize);

@@ -24,34 +24,74 @@ public class CppSendStream {
 
 
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern IntPtr CppSendStreamCreate(int nSize);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void CppSendStreamClose(IntPtr pStream);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool CppWriteInt8(IntPtr pStream, sbyte n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool CppWriteInt16(IntPtr pStream, Int16 n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool CppWriteInt32(IntPtr pStream, Int32 n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool CppWriteInt64(IntPtr pStream, Int64 n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool CppWriteFloat(IntPtr pStream, float n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern bool CppWriteDouble(IntPtr pStream, double n);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern int CppWriteString(IntPtr pStream, IntPtr pBuffer, int nSize);
 
+#if UNITY_IPHONE && !UNITY_EDITOR
+    [DllImport ("__Internal")]
+#else
     [DllImport("U3DPlugin")]
+#endif
     private static extern void CppFinish(IntPtr pStream);
 
 
