@@ -5,19 +5,21 @@
 MyClient::MyClient()
 {
 	_pObj = nullptr;
-	_pCallback = nullptr;
+	_pMsgCallback = nullptr;
+	_pLeaveCallback = nullptr;
 }
 
-void MyClient::Init(void* pObj, OnMsg pCallback)
+void MyClient::Init(void* pObj, OnMsgCallback pMsgCallback, OnLeaveCallback pLeaveCallback)
 {
 	_pObj = pObj;
-	_pCallback = pCallback;
+	_pMsgCallback = pMsgCallback;
+	_pLeaveCallback = pLeaveCallback;
 }
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
-	if (_pObj && _pCallback)
-		_pCallback(_pObj, pMsgHeader);
+	if (_pObj && _pMsgCallback)
+		_pMsgCallback(_pObj, pMsgHeader);
 }
 
 void MyClient::OnRunLoopBegin()
@@ -29,10 +31,13 @@ void MyClient::OnClientJoin(XClient* pClient)
 {
 
 }
+
 void MyClient::OnClientLeave(XClient* pClient)
 {
-
+	if (_pObj && _pMsgCallback)
+		_pLeaveCallback(_pObj);
 }
+
 void MyClient::OnNetRecv(XClient* pClient)
 {
 
@@ -46,24 +51,6 @@ void MyClient::OnNetSend(XClient* pClient)
 void MyClient::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 {
 	DoMsg(pMsgHeader);
-
-	//XRecvByteStream r(pMsgHeader);
-	//int8_t r1;
-	//r.ReadInt8(r1);
-	//int16_t r2;
-	//r.ReadInt16(r2);
-	//int32_t r3;
-	//r.ReadInt32(r3);
-	//int64_t r4;
-	//r.ReadInt64(r4);
-	//float r5;
-	//r.ReadFloat(r5);
-	//double r6;
-	//r.ReadDouble(r6);
-	//char aa[32] = {};
-	//r.ReadArray(aa, 32);
-	//int bb[32] = {};
-	//r.ReadArray(bb, 32);
 }
 
 void MyClient::OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader)
@@ -85,10 +72,10 @@ void SetLogPath(const char* pLogPath)
 
 //----------------------------------------------------------------------------------------------------------------------------
 //导出客户端接口 - MyClient
-MyClient* Open(void* pObj, OnMsg pCallback)
+MyClient* Open(void* pObj, OnMsgCallback pCallback, OnLeaveCallback pLeaveCallback)
 {
 	MyClient* pClient = new MyClient();
-	pClient->Init(pObj, pCallback);
+	pClient->Init(pObj, pCallback, pLeaveCallback);
 	pClient->Open();
 	return pClient;
 }
@@ -285,8 +272,8 @@ int CppWriteString(XSendByteStream* pStream, const char* pBuffer, int nSize)
 	return 0;
 }
 
-void CppFinish(XSendByteStream* pStream)
+void CppFinish(XSendByteStream* pStream, MGS_TYPE type)
 {
 	if (pStream)
-		return pStream->Finish(MSG_BYTESTREAM);
+		return pStream->Finish(type);
 }

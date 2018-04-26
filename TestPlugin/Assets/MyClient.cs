@@ -6,29 +6,8 @@ public class MyClient : CppTcpClient {
 	// Use this for initialization
 	void Start () {
         Init();
-        Open();
     }
 	
-	// Update is called once per frame
-	void FixedUpdate () {
-        if (IsRun())
-            OnRun();
-
-        Debug.Log(Connect());
-
-        //测试发送数据
-        CppSendStream s = new CppSendStream();
-        s.WriteInt8(1);
-        s.WriteInt16(2);
-        s.WriteInt32(3);
-        s.WriteInt64(4);
-        s.WriteFloat(5.6f);
-        s.WriteDouble(7.8);
-        s.WriteString("Client!");
-        s.Finish();
-        SendStream(s.Obj);
-    }
-
     private void OnDestroy()
     {
         Close();
@@ -53,5 +32,23 @@ public class MyClient : CppTcpClient {
         Debug.Log(n5);
         Debug.Log(n6);
         Debug.Log(n7);
+    }
+
+    public override void OnUpdate()
+    {
+        Open();
+        Connect();
+
+        //测试发送数据
+        CppSendStream s = new CppSendStream();
+        s.WriteInt8(1);
+        s.WriteInt16(2);
+        s.WriteInt32(3);
+        s.WriteInt64(4);
+        s.WriteFloat(5.6f);
+        s.WriteDouble(7.8);
+        s.WriteString("Client!");
+        s.Finish(MGS_TYPE.MSG_BYTESTREAM);
+        SendStream(s.Obj);
     }
 }

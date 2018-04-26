@@ -16,21 +16,26 @@ public enum MGS_TYPE
     MSG_HEADER,
     MSG_ERROR,
     MSG_HEART,
-    MSG_BYTESTREAM
+    MSG_BYTESTREAM,
+    MSG_LOGIN,
+    MSG_LOGIN_RES,
 };
 
 public class CppTcpClient : MonoBehaviour {
 
     //声明代理
     private delegate void OnMsgCallback(IntPtr csObj, IntPtr pStream);
+    private delegate void OnLeaveCallback(IntPtr csObj);
 
     //声明对象
     private GCHandle _SelfHandle;
     private IntPtr _SelfPtr = IntPtr.Zero;
     private IntPtr cppClient = IntPtr.Zero;
 
-    public string ip = "192.168.0.99";
-    public ushort port = 9090;
+    public string _IP = "192.168.0.99";
+    public ushort _PORT = 9090;
+
+    private bool _bClose = false;
 
     //导入插件接口
 #if UNITY_IPHONE && !UNITY_EDITOR
@@ -45,7 +50,7 @@ public class CppTcpClient : MonoBehaviour {
 #else
     [DllImport("U3DPlugin")]
 #endif
-    private static extern IntPtr Open(IntPtr pObj, OnMsgCallback pCallback);
+    private static extern IntPtr Open(IntPtr pObj, OnMsgCallback pMsgCallback, OnLeaveCallback pLeaveCallback);
 
 #if UNITY_IPHONE && !UNITY_EDITOR
     [DllImport ("__Internal")]
@@ -91,7 +96,7 @@ public class CppTcpClient : MonoBehaviour {
 
     //定义回调函数
     [MonoPInvokeCallback(typeof(OnMsgCallback))]
-    private static void OnRecvMsg(IntPtr csObj, IntPtr pStream)
+    private static void OnMsg(IntPtr csObj, IntPtr pStream)
     {
         GCHandle h = GCHandle.FromIntPtr(csObj);
         CppTcpClient obj = h.Target as CppTcpClient;
@@ -101,24 +106,40 @@ public class CppTcpClient : MonoBehaviour {
         }
     }
 
+    [MonoPInvokeCallback(typeof(OnLeaveCallback))]
+    private static void OnLeave(IntPtr csObj)
+    {
+        GCHandle h = GCHandle.FromIntPtr(csObj);
+        CppTcpClient obj = h.Target as CppTcpClient;
+        if (obj)
+        {
+            obj.WaitClose();
+        }
+    }
+
     //接口函数
     public void Init()
     {
-        if (cppClient == IntPtr.Zero)
-        {
-            //SetLogPath("./CppTcpClient.log");
-            _SelfHandle = GCHandle.Alloc(this);
-            _SelfPtr = GCHandle.ToIntPtr(_SelfHandle);
-            cppClient = Open(_SelfPtr, OnRecvMsg);
-        }
+        if (cppClient != IntPtr.Zero)
+            return;
+
+        string path = Application.persistentDataPath + "/" + "CppTcpClient.log";
+        SetLogPath(path);
+        _SelfHandle = GCHandle.Alloc(this);
+        _SelfPtr = GCHandle.ToIntPtr(_SelfHandle);
+
+        //Open();
+        //Connect();
     }
 
     public void Open()
     {
-        if (cppClient == IntPtr.Zero)
+        if (cppClient != IntPtr.Zero)
             return;
 
-        cppClient = Open(_SelfPtr, OnRecvMsg);
+        cppClient = Open(_SelfPtr, OnMsg, OnLeave);
+
+        _bClose = false;
     }
 
     public bool Connect()
@@ -126,7 +147,7 @@ public class CppTcpClient : MonoBehaviour {
         if (cppClient == IntPtr.Zero)
             return false;
 
-        return Connect(cppClient, ip, port);
+        return Connect(cppClient, _IP, _PORT);
     }
 
     public void Disconnect()
@@ -143,7 +164,24 @@ public class CppTcpClient : MonoBehaviour {
             return;
 
         Close(cppClient);
+        cppClient = IntPtr.Zero;
     }
+
+    public void WaitClose()
+    {
+        _bClose = true;
+    }
+
+    public void CheckClose()
+    {
+        if (_bClose)
+        {
+            Close();
+
+            _bClose = false;
+        }
+    }
+
 
     public bool IsRun()
     {
@@ -163,7 +201,7 @@ public class CppTcpClient : MonoBehaviour {
 
     public virtual void OnMsg(IntPtr data)
     {
-
+        // ...
     }
 
     public void SendStream(IntPtr pStream)
@@ -179,10 +217,24 @@ public class CppTcpClient : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
-	}
+	void FixedUpdate ()
+    {
+        // ...
+        if (IsRun())
+            OnRun();
+
+        OnUpdate();
+
+        CheckClose();
+    }
+
+    public virtual void OnUpdate()
+    {
+
+    }
 
     private void OnDestroy()
     {
+        // ...
     }
 }

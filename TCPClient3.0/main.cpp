@@ -56,13 +56,11 @@ void SendThread(int begin, int end)
 	s.WriteArray(b, sizeof(b));
 	s.Finish(MSG_BYTESTREAM);
 
-	MsgHeart msg;
-
 	while (bRun)
 	{
 		for (int i = begin; i < end; ++i)
 		{
-			if (client[i]->SendData((MsgHeart*)s.GetBuffer()) >= 0)
+			if (client[i]->SendStream(&s) >= 0)
 				sendCount++;
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(99));
@@ -115,10 +113,10 @@ int main()
 {
 	XLog::SetFile("./Client.log", "w");
 
-	//XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
-	//XInfo("                                                               C++ Client                                                              \n");
-	//XInfo("                                                                                                        Designed by Org.illidan        \n");
-	//XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
+	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
+	XInfo("                                                               C++ Client                                                              \n");
+	XInfo("                                                                                                        Designed by Org.illidan        \n");
+	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 
 	timer.XInit();
 
@@ -139,7 +137,7 @@ int main()
 	{
 		if (timer.GetTime() > 1.0)
 		{
-			printf("| send Num = %7d  |\n", (int)sendCount);
+			XInfo("| send Num = %7d  |\n", (int)sendCount);
 			sendCount = 0;
 			timer.UpdateTime();
 		}

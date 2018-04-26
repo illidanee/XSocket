@@ -29,7 +29,7 @@ int main()
 		s->WriteInt64(4);
 		s->WriteFloat(5.6f);
 		s->WriteDouble(7.8);
-		s->WriteArray("client", strlen("client"));
+		s->WriteArray("client", (int)strlen("client"));
 		int b[] = { 1, 2, 3, 4, 5 };
 		s->WriteArray(b, sizeof(b));
 		s->Finish(MSG_BYTESTREAM);

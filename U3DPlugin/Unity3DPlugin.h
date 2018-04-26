@@ -15,16 +15,17 @@
 #include "../XSrc/ByteStream/XRecvByteStream.h"
 #include "../XSrc/ByteStream/XSendByteStream.h"
 
-extern "C"
-{
-	typedef void(*OnMsg)(void* csObj, MsgHeader* pMsgHeader);
-}
 
+typedef void(*OnMsgCallback)(void* csObj, MsgHeader* pMsgHeader);
+typedef void(*OnLeaveCallback)(void* csObj);
+
+//----------------------------------------------------------------------------------------------------------------------------
+//类定义
 class MyClient : public XTCPClient
 {
 public:
 	MyClient();
-	void Init(void* pObj, OnMsg pCallback);
+	void Init(void* pObj, OnMsgCallback pMsgCallback, OnLeaveCallback pLeaveCallback);
 	void DoMsg(MsgHeader* pMsgHeader);
 
 private:
@@ -39,8 +40,9 @@ private:
 	virtual void AddTask(std::function<void()> pTask);
 
 private:
-	void* _pObj;				//调用者对象。
-	OnMsg _pCallback;			//调用者回调函数
+	void* _pObj;								//调用者对象。
+	OnMsgCallback _pMsgCallback;				//调用者消息回调函数
+	OnLeaveCallback _pLeaveCallback;			//调用者断开连接回掉函数(服务器断开通知)
 };
 
 extern "C"
@@ -51,7 +53,7 @@ extern "C"
 
 	//----------------------------------------------------------------------------------------------------------------------------
 	//导出客户端接口 - MyClient
-	EXPORT_DLL MyClient* Open(void* pObj, OnMsg pCallback);
+	EXPORT_DLL MyClient* Open(void* pObj, OnMsgCallback pMsgCallback, OnLeaveCallback pLeaveCallback);
 	EXPORT_DLL bool Connect(MyClient* pClient, const char* ip, unsigned short port);
 	EXPORT_DLL void Disconnect(MyClient* pClient);
 	EXPORT_DLL void Close(MyClient* pClient);

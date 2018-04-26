@@ -8,7 +8,9 @@ enum MGS_TYPE
 	MSG_HEADER,
 	MSG_ERROR,
 	MSG_HEART,
-	MSG_BYTESTREAM
+	MSG_BYTESTREAM,
+	MSG_LOGIN,
+	MSG_LOGIN_RES,
 };
 
 struct MsgHeader
@@ -20,24 +22,6 @@ struct MsgHeader
 	{
 		_MsgLength = sizeof(MsgHeader);
 		_MsgType = MSG_HEADER;
-	}
-};
-
-struct MsgError : public MsgHeader
-{
-	MsgError()
-	{
-		_MsgLength = sizeof(MsgError);
-		_MsgType = MSG_ERROR;
-	}
-};
-
-struct MsgHeart : public MsgHeader
-{
-	MsgHeart()
-	{
-		_MsgLength = sizeof(MsgHeart);
-		_MsgType = MSG_HEART;
 	}
 };
 

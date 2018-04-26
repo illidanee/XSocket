@@ -58,61 +58,26 @@ void MyServer::OnNetSend(XClient* pClient)
 //这里地方的pMsgHeader地址上的内存不安全。随时可能被释放。如果假如任务系统延迟处理会有危险。
 void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 {
+	pClient->ResetHeartTime();
+
 	++_RecvPackageNum;
 	++_PackageNum;
 
 	//处理客户端请求
 	switch (pMsgHeader->_MsgType)
 	{
+	case MSG_ERROR:
+	{
+		// ...
+	}
+	break;
 	case MSG_HEART:
 	{
-		pClient->ResetHeartTime();
-
-		//使用任务系统
-		MsgHeart* respond = new MsgHeart();
-		std::function<void()> pTask = [pClient, respond]()
-		{
-			//XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
-			//int num = 0;
-
-			//if (connect)
-			//	num = (int)connect->SearchStudent();
-			//else
-			//{
-			//	printf("Error Conenct Data : -------------------  Task\n");
-			//}
-
-			//printf("------------------- Student = %d    \n", num);
-
-			if (pClient->SendData(respond) < 0)
-			{
-				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
-			}
-
-			//if (connect)
-			//	XMariaDB::GetInstance().PushConnect(connect);
-			//else
-			//{
-			//	printf("Error Conenct Data : ------------------- Task\n");
-			//}
-
-			delete respond;
-		};
-
-		pClient->GetServerObj()->AddTask(pTask);
-
-		////直接发送数据
-		//MsgHeart respond;
-		//if (0 == pClient->SendData(&respond))
-		//{
-		//	XLog("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
-		//}
+		// ...
 	}
 	break;
 	case MSG_BYTESTREAM:
 	{
-		pClient->ResetHeartTime();
-
 		std::function<void()> pTask = [pClient, pMsgHeader]()
 		{
 			XRecvByteStream r(pMsgHeader);
@@ -130,7 +95,8 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			r.ReadDouble(r6);
 			char r7[32] = {};
 			r.ReadArray(r7, 32);
-			printf("r1 = %d, r2 = %d, r3 = %d, r4 = %I64d, r5 = %f, r6 = %f, r7 = %s \n", r1, r2, r3, r4, r5, r6, r7);
+
+			//XInfo("r1 = %d, r2 = %d, r3 = %d, r4 = %I64d, r5 = %f, r6 = %f, r7 = %s \n", r1, r2, r3, r4, r5, r6, r7);
 
 			XSendByteStream s(1024);
 			s.WriteInt8(10);
@@ -142,13 +108,18 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 			s.WriteArray("Server", (int)strlen("Server"));
 			s.Finish(MSG_BYTESTREAM);
 			
-			if (pClient->SendStream(&s) < 0)
+			if (pClient->SendStream(&s) != 0)
 			{
 				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
+	}
+	break;
+	case MSG_LOGIN:
+	{
+
 	}
 	break;
 	default:

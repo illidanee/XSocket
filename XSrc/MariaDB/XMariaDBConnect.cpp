@@ -32,7 +32,7 @@ my_ulonglong XMariaDBConnect::SearchStudent()
 
 void XMariaDBConnect::show_error(MYSQL *mysql)
 {
-	printf("Error(%d) [%s] \"%s\"",
+	XInfo("Error(%d) [%s] \"%s\"",
 		mysql_errno(mysql),
 		mysql_sqlstate(mysql),
 		mysql_error(mysql));

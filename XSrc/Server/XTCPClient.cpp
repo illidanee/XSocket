@@ -23,12 +23,10 @@ void XTCPClient::Open()
 		SOCKET _Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (SOCKET_ERROR == _Socket)
 		{
-			printf("Error:socket!\n");
+			XInfo("Error:socket!\n");
 		}
 
 		_Client = new XClient(_Socket, this, this);
-
-		OnClientJoin(_Client);
 	}
 }
 
@@ -51,9 +49,11 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	int sinLen = sizeof(sockaddr_in);
 	if (SOCKET_ERROR == connect(_Client->GetSocket(), (sockaddr*)&sinServer, sinLen))
 	{
-		printf("Error:connect!\n");
+		XInfo("Error:connect!\n");
 		return false;
 	}
+
+	OnClientJoin(_Client);
 
 	_bRun = true;
 	return true;
@@ -61,6 +61,8 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 
 void XTCPClient::Disconnect()
 {
+	OnClientLeave(_Client);
+
 	_bRun = false;
 }
 
@@ -70,8 +72,6 @@ void XTCPClient::Close()
 
 	if (_Client != nullptr)
 	{
-		OnClientLeave(_Client);
-
 		delete _Client;
 		_Client = nullptr;
 	}
@@ -99,7 +99,7 @@ void XTCPClient::OnRun()
 	int ret = select((int)_Socket + 1, &fdRead, &fdWrite, NULL, &tv);
 	if (SOCKET_ERROR == ret)
 	{
-		printf("Error:select!\n");
+		XInfo("Error:select!\n");
 		Disconnect();
 		return;
 	}

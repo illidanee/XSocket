@@ -92,7 +92,7 @@ public class CppSendStream {
 #else
     [DllImport("U3DPlugin")]
 #endif
-    private static extern void CppFinish(IntPtr pStream);
+    private static extern void CppFinish(IntPtr pStream, MGS_TYPE type);
 
 
 
@@ -190,11 +190,11 @@ public class CppSendStream {
         return true;
     }
 
-    public void Finish()
+    public void Finish(MGS_TYPE type)
     {
         if (pCppStream == IntPtr.Zero)
             return;
 
-        CppFinish(pCppStream);
+        CppFinish(pCppStream, type);
     }
 }
