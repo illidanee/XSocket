@@ -32,6 +32,8 @@ x64/*
 Debug/*
 temp/*
 
+U3DPluginForAndroid/ARM/*
+U3DPluginForAndroid/libs/*
 U3DPluginForAndroid/obj/*
 U3DPluginForAndroid/x64/*
 
