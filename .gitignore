@@ -27,6 +27,7 @@
 *.vspx
 
 .vs/*
+bin/*
 x64/*
 Debug/*
 temp/*
