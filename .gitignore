@@ -26,9 +26,13 @@
 
 *.vspx
 
-/U3DPluginForAndroid/obj/local/arm64-v8a/*
-/U3DPluginForAndroid/obj/local/armeabi/*
-/U3DPluginForAndroid/obj/local/armeabi-v7a/*
-/U3DPluginForAndroid/x64/*
+.vs/*
+x64/*
+Debug/*
+temp/*
+
+U3DPluginForAndroid/obj/*
+U3DPluginForAndroid/x64/*
 
 TestPlugin/Library/*
+TestPlugin/Temp/*
