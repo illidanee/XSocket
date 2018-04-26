@@ -84,7 +84,7 @@ extern "C"
 	EXPORT_DLL bool CppWriteFloat(XSendByteStream* pStream, float n);
 	EXPORT_DLL bool CppWriteDouble(XSendByteStream* pStream, double n);
 	EXPORT_DLL int CppWriteString(XSendByteStream* pStream, const char* pBuffer, int nSize);
-	EXPORT_DLL void CppFinish(XSendByteStream* pStream);
+	EXPORT_DLL void CppFinish(XSendByteStream* pStream, MGS_TYPE type);
 }
 
 #endif
