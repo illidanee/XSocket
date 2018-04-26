@@ -30,3 +30,5 @@
 /U3DPluginForAndroid/obj/local/armeabi/*
 /U3DPluginForAndroid/obj/local/armeabi-v7a/*
 /U3DPluginForAndroid/x64/*
+
+TestPlugin/Library/*
