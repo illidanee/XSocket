@@ -13,14 +13,4 @@
       <UniqueIdentifier>{0bad3932-7aa2-4714-8e25-243000837e13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="jni\Unity3DPlugin.cpp">
-      <Filter>jni</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="jni\Unity3DPlugin.h">
-      <Filter>jni</Filter>
-    </ClInclude>
-  </ItemGroup>
 </Project>

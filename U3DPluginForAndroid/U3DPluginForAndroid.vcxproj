@@ -38,12 +38,6 @@
     <None Include="jni\Android.mk" />
     <None Include="jni\Application.mk" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="jni\Unity3DPlugin.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="jni\Unity3DPlugin.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9e4afb56-6ee2-4cba-b929-74bc287a8d28}</ProjectGuid>
     <Keyword>Android</Keyword>

@@ -18,7 +18,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/.. \
 					$(LOCAL_PATH)/../../XSrc/Thread \
 					$(LOCAL_PATH)/../../XSrc/Timer
 
-LOCAL_SRC_FILES :=	Unity3DPlugin.cpp \
+LOCAL_SRC_FILES :=	../../U3DPlugin/Unity3DPlugin.cpp \
 					../../XSrc/Buffer/XBuffer.cpp \
 					../../XSrc/ByteStream/XByteStream.cpp \
 					../../XSrc/ByteStream/XRecvByteStream.cpp \
