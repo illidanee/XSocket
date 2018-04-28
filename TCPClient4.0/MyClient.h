@@ -1,8 +1,8 @@
 #ifndef __MYCLIENT_H__
 #define __MYCLIENT_H__
 
-#include "../XSrc/Server/XTCPClient.h"
-#include "../XSrc/ByteStream/XRecvByteStream.h"
+#include "../XSrc/XTCPClient.h"
+#include "../XSrc/XRecvByteStream.h"
 
 class MyClient : public XTCPClient
 {

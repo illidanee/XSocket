@@ -1,6 +1,6 @@
 #include "../XSrc/XCommon.h"
 #include "MyClient.h"
-#include "../XSrc/ByteStream/XSendByteStream.h"
+#include "../XSrc/XSendByteStream.h"
 
 int main()
 {

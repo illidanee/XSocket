@@ -1,12 +1,12 @@
 ﻿#ifndef __XSERVER_H__
 #define __XSERVER_H__
 
-#include "../XCommon.h"
+#include "XCommon.h"
 #include "XIGlobalEvent.h"
 #include "XNet.h"
 #include "XServer.h"
 #include "XClient.h"
-#include "../Thread/XThread.h"
+#include "XThread.h"
 #include <vector>
 
 //监听Server类

@@ -1,7 +1,7 @@
 ﻿#ifndef __XMARIADBCONNECT_H__
 #define __XMARIADBCONNECT_H__
 
-#include "../XCommon.h"
+#include "XCommon.h"
 #include <functional>
 #include <mysql.h>
 

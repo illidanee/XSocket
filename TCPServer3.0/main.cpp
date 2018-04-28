@@ -1,5 +1,5 @@
 ﻿#include "../XSrc/XCommon.h"
-#include "../XSrc/Signal/XSignal.h"
+#include "../XSrc/XSignal.h"
 #include "MyServer.h"
 
 #ifndef _WIN32

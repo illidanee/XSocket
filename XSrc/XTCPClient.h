@@ -1,12 +1,12 @@
 #ifndef __CLIENT_H__
 #define __CLIENT_H__
 
-#include "../XCommon.h"
+#include "XCommon.h"
 #include "XIGlobalEvent.h"
 #include "XIServerEvent.h"
 #include "XNet.h"
 #include "XClient.h"
-#include "../ByteStream/XSendByteStream.h"
+#include "XSendByteStream.h"
 
 //Client¿‡
 class XTCPClient : public XIGlobalEvent, public XIServerEvent

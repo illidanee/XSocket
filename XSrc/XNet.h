@@ -1,7 +1,7 @@
 ﻿#ifndef __XNET_H__
 #define __XNET_H__
 
-#include "../XCommon.h"
+#include "XCommon.h"
 
 class XNet
 {

@@ -1,7 +1,7 @@
 ﻿#ifndef __XSENDBYTESTREAM_H__
 #define __XSENDBYTESTREAM_H__
 
-#include "../XCommon.h"
+#include "XCommon.h"
 #include "XByteStream.h"
 
 class XSendByteStream : public XByteStream

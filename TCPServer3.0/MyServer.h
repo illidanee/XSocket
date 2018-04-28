@@ -2,9 +2,10 @@
 #define __MYSERVER_H__
 
 #include "../XSrc/XCommon.h"
-#include "../XSrc/Server/XTCPServer.h"
-#include "../XSrc/ByteStream/XRecvByteStream.h"
-#include "../XSrc/ByteStream/XSendByteStream.h"
+#include "../XSrc/XTCPServer.h"
+#include "../XSrc/XRecvByteStream.h"
+#include "../XSrc/XSendByteStream.h"
+#include "../XSrc/XMariaDB.h"
 #include <atomic>
 #include <functional>
 

@@ -1,7 +1,5 @@
 ﻿#include "MyServer.h"
 
-#include "../XSrc/MariaDB/XMariaDB.h"
-
 MyServer::MyServer()
 {
 	//初始化其他

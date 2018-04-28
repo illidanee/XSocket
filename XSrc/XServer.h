@@ -1,13 +1,13 @@
 ﻿#ifndef __XRECEIVESERVER_H__
 #define __XRECEIVESERVER_H__
 
-#include "../XCommon.h"
+#include "XCommon.h"
 #include "XIGlobalEvent.h"
 #include "XIServerEvent.h"
 
 #include "XClient.h"
-#include "../Task/XTaskServer.h"
-#include "../Thread/XThread.h"
+#include "XTaskServer.h"
+#include "XThread.h"
 #include <map>
 
 class XServer : public XIServerEvent, public XObject<_SERVER_SIZE_, XServer>

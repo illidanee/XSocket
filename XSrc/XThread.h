@@ -1,7 +1,7 @@
 ﻿#ifndef __XTHREAD_H__
 #define __XTHREAD_H__
 
-#include "../Signal/XSignal.h"
+#include "XSignal.h"
 #include <functional>
 #include <mutex>
 #include <thread>

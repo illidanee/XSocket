@@ -11,9 +11,9 @@
 #define EXPORT_DLL
 #endif
 
-#include "../XSrc/Server/XTCPClient.h"
-#include "../XSrc/ByteStream/XRecvByteStream.h"
-#include "../XSrc/ByteStream/XSendByteStream.h"
+#include "../XSrc/XTCPClient.h"
+#include "../XSrc/XRecvByteStream.h"
+#include "../XSrc/XSendByteStream.h"
 
 
 typedef void(*OnMsgCallback)(void* csObj, MsgHeader* pMsgHeader);

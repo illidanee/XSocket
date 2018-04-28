@@ -10,19 +10,19 @@
 #define _MARIADB_CONNECT_NUM_ 1000				//数据库连接池数
 
 //内存池
-#include "./Memory/XMemory.h"
+#include "XMemory.h"
 
 //对象池
-#include "./Object/XObject.h"
+#include "XObject.h"
 
 //日志
-#include "./Log/XLog.h"
+#include "XLog.h"
 
 //计时器
-#include "./Timer/XTimer.h"
+#include "XTimer.h"
 
 //协议头
-#include "./Protocol/MsgProtocol.h"
+#include "MsgProtocol.h"
 
 //Socket相关
 #ifdef _WIN32
