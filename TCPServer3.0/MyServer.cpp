@@ -281,6 +281,69 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 		pClient->GetServerObj()->AddTask(pTask);
 	}
 	break;
+	case MSG_FEEDBACK:
+	{
+		//持久化消息，防止消息被释放后再任务线程使用。
+		char* pBuffer = new char[pMsgHeader->_MsgLength];
+		memcpy(pBuffer, pMsgHeader, pMsgHeader->_MsgLength);
+
+		std::function<void()> pTask = [pClient, pBuffer]()
+		{
+			XSendByteStream s(1024);
+			int ret = 0;
+
+			//获取客户端发送的数据
+			XRecvByteStream r((MsgHeader*)pBuffer);
+
+			int32_t type = MSG_ERROR;
+			r.ReadInt32(type);
+
+			char pUserName[64] = {};
+			r.ReadArray(pUserName, 64);
+			char pPassword[64] = {};
+			r.ReadArray(pPassword, 64);
+			char pContent[1024] = {};
+			r.ReadArray(pContent, 1024);
+
+			//获取数据库连接
+			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
+			if (!connect)
+			{
+				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_LOGIN_RES);
+				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
+			}
+
+			//插入数据库
+			int num = (int)connect->InsertFeedbackByUserName(pUserName, pContent);
+			if (num != 1)
+			{
+				printf("****** Error: SearchStudentBySchoolAndStudentID() \n");
+				ret = -2;
+				s.WriteInt32(ret);
+				s.Finish(MSG_LOGIN_RES);
+				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
+			}
+
+			s.WriteInt32(ret);
+			s.Finish(MSG_LOGIN_RES);
+			pClient->SendStream(&s);
+
+			delete[] pBuffer;
+			return;
+		};
+
+		pClient->GetServerObj()->AddTask(pTask);
+	}
+	break;
 	default:
 	{
 		XInfo("Warn： default Msg。");
