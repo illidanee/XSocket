@@ -63,7 +63,7 @@ private:
 #ifdef _DEBUG
 #define XInfo(...) XLog::Info(__VA_ARGS__)
 #else
-#define XInfo(...) XLog::Info(__VA_ARGS__)
+#define XInfo(...) //XLog::Info(__VA_ARGS__)
 #endif
 #endif
 

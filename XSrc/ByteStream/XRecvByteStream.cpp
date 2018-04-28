@@ -4,5 +4,5 @@ XRecvByteStream::XRecvByteStream(MsgHeader* pMsgHeader)
 	:
 	XByteStream((char*)pMsgHeader, pMsgHeader->_MsgLength)
 {
-	SetReadOffset(sizeof(MsgHeader));
+	SetReadOffset(sizeof(pMsgHeader->_MsgLength));
 }
