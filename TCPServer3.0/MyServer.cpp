@@ -147,18 +147,18 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			char pSchool[64] = {};
 			r.ReadArray(pSchool, 64);
 
-			char pSubject[64] = {};
-			r.ReadArray(pSubject, 64);
 			char pMajor[64] = {};
 			r.ReadArray(pMajor, 64);
-
 			char pStudentID[64] = {};
 			r.ReadArray(pStudentID, 64);
-			char pUserName[64] = {};
-			r.ReadArray(pUserName, 64);
 
+			char pName[64] = {};
+			r.ReadArray(pName, 64);
 			char pPhoneNumber[64] = {};
 			r.ReadArray(pPhoneNumber, 64);
+
+			char pUserName[64] = {};
+			r.ReadArray(pUserName, 64);
 			char pPassword[64] = {};
 			r.ReadArray(pPassword, 64);
 
@@ -196,7 +196,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			}
 
 			//更新数据库
-			num = connect->UpdateStudentBySchoolAndStudentID(pDevicel, pSchool, pSubject, pMajor, pStudentID, pUserName, pPhoneNumber, pPassword, pDeviceName, pDeviceType);
+			num = connect->UpdateStudentBySchoolAndStudentID(pDevicel, pSchool, pMajor, pStudentID, pName, pPhoneNumber, pUserName, pPassword, pDeviceName, pDeviceType);
 			if (num != 1)
 			{	
 				ret = -3;

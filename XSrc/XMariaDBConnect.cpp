@@ -37,17 +37,18 @@ int XMariaDBConnect::SearchStudentBySchoolAndStudentID(const char* pSchool, cons
 	return (int)num;
 }
 
-int XMariaDBConnect::UpdateStudentBySchoolAndStudentID(const char* pDevicel, const char* pSchool,
-	const char* pSubject, const char* pMajor,
-	const char* pStudentID, const char* pUserName,
-	const char* pPhoneNumber, const char* pPassword,
+int XMariaDBConnect::UpdateStudentBySchoolAndStudentID(
+	const char* pDevicel, const char* pSchool,
+	const char* pMajor, const char* pStudentID, 
+	const char* pName, const char* pPhoneNumber, 
+	const char* pUserName, const char* pPassword,
 	const char* pDeviceName, const char* pDeviceType)
 {
 	char query[256] = {};
 	sprintf(query, "update Students \
-					set Device = '%s', Subject = '%s', Major = '%s', UserName = '%s', PhoneNumber = '%s', Password = '%s', DeviceName = '%s', DeviceType = '%s' \
+					set Device = '%s', Major = '%s', Name = '%s', PhoneNumber = '%s', UserName = '%s', Password = '%s', DeviceName = '%s', DeviceType = '%s' \
 					where School = '%s' and StudentID = '%s'", 
-					pDevicel, pSubject, pMajor, pUserName, pPhoneNumber, pPassword, pDeviceName, pDeviceType, pSchool, pStudentID);
+					pDevicel, pMajor, pName, pPhoneNumber, pUserName, pPassword, pDeviceName, pDeviceType, pSchool, pStudentID);
 
 	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
 	{
@@ -80,6 +81,22 @@ int XMariaDBConnect::SearchStudentByUserNameAndPassword(const char* pDevicel, co
 	my_ulonglong num = mysql_num_rows(ret);
 
 	mysql_free_result(ret);
+
+	return (int)num;
+}
+
+int XMariaDBConnect::InsertFeedbackByUserName(const char* pUserName, const char* pContent)
+{
+	char query[256] = {};
+	sprintf(query, "insert into Feedbacks values('%s', '%s')", pUserName, pContent);
+
+	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
+	{
+		show_error(_pConnect);
+		return -1;
+	}
+
+	my_ulonglong num = mysql_affected_rows(_pConnect);
 
 	return (int)num;
 }
