@@ -76,9 +76,13 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	case MSG_BYTESTREAM:
 	{
-		std::function<void()> pTask = [pClient, pMsgHeader]()
+		//持久化消息，防止消息被释放后再任务线程使用。
+		char* pBuffer = new char[pMsgHeader->_MsgLength];
+		memcpy(pBuffer, pMsgHeader, pMsgHeader->_MsgLength);
+
+		std::function<void()> pTask = [pClient, pBuffer]()
 		{
-			XRecvByteStream r(pMsgHeader);
+			XRecvByteStream r((MsgHeader*)pBuffer);
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -114,6 +118,8 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			{
 				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
+
+			delete[] pBuffer;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
@@ -121,13 +127,17 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	case MSG_ENROLL:
 	{
-		std::function<void()> pTask = [pClient, pMsgHeader]()
+		//持久化消息，防止消息被释放后再任务线程使用。
+		char* pBuffer = new char[pMsgHeader->_MsgLength];
+		memcpy(pBuffer, pMsgHeader, pMsgHeader->_MsgLength);
+
+		std::function<void()> pTask = [pClient, pBuffer]()
 		{
 			XSendByteStream s(1024);
 			int ret = 0;
 
 			//获取客户端发送的数据
-			XRecvByteStream r(pMsgHeader);
+			XRecvByteStream r((MsgHeader*)pBuffer);
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -166,6 +176,9 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
 			}
 			
 			//查询数据库
@@ -177,6 +190,9 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
 			}
 
 			//更新数据库
@@ -187,11 +203,16 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
 			}
 
 			s.WriteInt32(ret);
 			s.Finish(MSG_ENROLL_RES);
 			pClient->SendStream(&s);
+
+			delete[] pBuffer;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
@@ -199,13 +220,17 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	case MSG_LOGIN:
 	{
-		std::function<void()> pTask = [pClient, pMsgHeader]()
+		//持久化消息，防止消息被释放后再任务线程使用。
+		char* pBuffer = new char[pMsgHeader->_MsgLength];
+		memcpy(pBuffer, pMsgHeader, pMsgHeader->_MsgLength);
+
+		std::function<void()> pTask = [pClient, pBuffer]()
 		{
 			XSendByteStream s(1024);
 			int ret = 0;
 
 			//获取客户端发送的数据
-			XRecvByteStream r(pMsgHeader);
+			XRecvByteStream r((MsgHeader*)pBuffer);
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -226,6 +251,9 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.WriteInt32(ret);
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
 			}
 
 			//查询数据库
@@ -237,11 +265,17 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.WriteInt32(ret);
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
+
+				delete[] pBuffer;
+				return;
 			}
 
 			s.WriteInt32(ret);
 			s.Finish(MSG_LOGIN_RES);
 			pClient->SendStream(&s);
+
+			delete[] pBuffer;
+			return;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);

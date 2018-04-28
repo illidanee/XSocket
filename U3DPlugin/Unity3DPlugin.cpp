@@ -27,33 +27,33 @@ void MyClient::OnRunLoopBegin()
 
 }
 
-void MyClient::OnClientJoin(XClient* pClient)
+void MyClient::OnClientJoin(std::shared_ptr<XClient> pClient)
 {
 
 }
 
-void MyClient::OnClientLeave(XClient* pClient)
+void MyClient::OnClientLeave(std::shared_ptr<XClient> pClient)
 {
 	if (_pObj && _pMsgCallback)
 		_pLeaveCallback(_pObj);
 }
 
-void MyClient::OnNetRecv(XClient* pClient)
+void MyClient::OnNetRecv(std::shared_ptr<XClient> pClient)
 {
 
 }
 
-void MyClient::OnNetSend(XClient* pClient)
+void MyClient::OnNetSend(std::shared_ptr<XClient> pClient)
 {
 
 }
 
-void MyClient::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	DoMsg(pMsgHeader);
 }
 
-void MyClient::OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 
 }
