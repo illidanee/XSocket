@@ -108,7 +108,7 @@ void XServer::OnRun(XThread* pThread)
 			{
 				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
 				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientJoin(iter->second.get());
+					_pGlobalEventObj->OnClientJoin(iter->second);
 			}
 			_AllClientsCache.clear();
 
@@ -188,7 +188,7 @@ void XServer::RecvData(fd_set& fdSet)
 			if (ret != 0)			//不等于0，ret为1说明接收缓冲区满了，主动断开连接。
 			{
 				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientLeave(iter->second.get());
+					_pGlobalEventObj->OnClientLeave(iter->second);
 
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
@@ -211,7 +211,7 @@ void XServer::SendData(fd_set& fdSet)
 			if (ret < 0)			//小于0，ret为1时说明发送缓冲区为空，不应该断开。
 			{
 				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientLeave(iter->second.get());
+					_pGlobalEventObj->OnClientLeave(iter->second);
 
 				iter = _AllClients.erase(iter);
 				_ClientChange = true;
@@ -232,7 +232,7 @@ void XServer::CheckTime()
 		if (iter->second->CheckHeartTime(_TimeDelta))
 		{
 			if (_pGlobalEventObj)
-				_pGlobalEventObj->OnClientLeave(iter->second.get());
+				_pGlobalEventObj->OnClientLeave(iter->second);
 
 			iter = _AllClients.erase(iter);
 			_ClientChange = true;

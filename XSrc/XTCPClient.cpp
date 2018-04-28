@@ -53,7 +53,7 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 		return false;
 	}
 
-	OnClientJoin(_Client);
+	OnClientJoin(_Client->GetSharedPrt());
 
 	_bRun = true;
 	return true;
@@ -61,7 +61,7 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 
 void XTCPClient::Disconnect()
 {
-	OnClientLeave(_Client);
+	OnClientLeave(_Client->GetSharedPrt());
 
 	_bRun = false;
 }

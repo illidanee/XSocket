@@ -30,12 +30,12 @@ int XClient::RecvData()
 		return  nRet;
 
 	if (_pGlobalObj)
-		_pGlobalObj->OnNetRecv(this);
+		_pGlobalObj->OnNetRecv(shared_from_this());
 
 	while (_RecvBuffer.HasMsg())
 	{
 		if (_pGlobalObj)
-			_pGlobalObj->OnNetMsgRecv(this, _RecvBuffer.Front());
+			_pGlobalObj->OnNetMsgRecv(shared_from_this(), _RecvBuffer.Front());
 
 		_RecvBuffer.Pop();
 	}
@@ -50,7 +50,7 @@ int XClient::SendData(MsgHeader* pHeader)
 		return nRet;
 
 	if (_pGlobalObj)
-		_pGlobalObj->OnNetMsgDone(this, pHeader);
+		_pGlobalObj->OnNetMsgDone(shared_from_this(), pHeader);
 
 	return nRet;
 }
@@ -68,7 +68,7 @@ int XClient::SendData()
 
 	//发送了数据
 	if (_pGlobalObj)
-		_pGlobalObj->OnNetSend(this);
+		_pGlobalObj->OnNetSend(shared_from_this());
 
 	ResetSendTime();
 
@@ -115,4 +115,9 @@ XIGlobalEvent* XClient::GetGlobalObj()
 XIServerEvent* XClient::GetServerObj()
 {
 	return _pServerObj;
+}
+
+std::shared_ptr<XClient> XClient::GetSharedPrt()
+{
+	return shared_from_this();
 }

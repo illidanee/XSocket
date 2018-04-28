@@ -9,12 +9,12 @@ class XIGlobalEvent
 {
 public:
 	virtual void OnRunLoopBegin() = 0;
-	virtual void OnClientJoin(XClient* pClient) = 0;
-	virtual void OnClientLeave(XClient* pClient) = 0;
-	virtual void OnNetRecv(XClient* pClient) = 0;
-	virtual void OnNetSend(XClient* pClient) = 0;
-	virtual void OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader) = 0;
-	virtual void OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader) = 0;
+	virtual void OnClientJoin(std::shared_ptr<XClient> pClient) = 0;
+	virtual void OnClientLeave(std::shared_ptr<XClient> pClient) = 0;
+	virtual void OnNetRecv(std::shared_ptr<XClient> pClient) = 0;
+	virtual void OnNetSend(std::shared_ptr<XClient> pClient) = 0;
+	virtual void OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader) = 0;
+	virtual void OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader) = 0;
 };
 
 #endif

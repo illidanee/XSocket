@@ -30,7 +30,7 @@ void MyServer::OnRunLoopBegin()
 	}
 }
 
-void MyServer::OnClientJoin(XClient* pClient)
+void MyServer::OnClientJoin(std::shared_ptr<XClient> pClient)
 {
 	++_ClientNum;
 
@@ -38,23 +38,23 @@ void MyServer::OnClientJoin(XClient* pClient)
 	//pClient->SendData(&msg);
 }
 
-void MyServer::OnClientLeave(XClient* pClient)
+void MyServer::OnClientLeave(std::shared_ptr<XClient> pClient)
 {
 	--_ClientNum;
 }
 
-void MyServer::OnNetRecv(XClient* pClient)
+void MyServer::OnNetRecv(std::shared_ptr<XClient> pClient)
 {
 	++_RecvNum;
 }
 
-void MyServer::OnNetSend(XClient* pClient)
+void MyServer::OnNetSend(std::shared_ptr<XClient> pClient)
 {
 	++_SendNum;
 }
 
 //这里地方的pMsgHeader地址上的内存不安全。随时可能被释放。如果假如任务系统延迟处理会有危险。
-void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
+void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	pClient->ResetHeartTime();
 
@@ -254,7 +254,7 @@ void MyServer::OnNetMsgRecv(XClient* pClient, MsgHeader* pMsgHeader)
 	}
 }
 
-void MyServer::OnNetMsgDone(XClient* pClient, MsgHeader* pMsgHeader)
+void MyServer::OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	++_DonePackageNum;
 	--_PackageNum;
