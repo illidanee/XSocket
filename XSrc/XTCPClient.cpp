@@ -26,7 +26,7 @@ void XTCPClient::Open()
 			XInfo("Error:socket!\n");
 		}
 
-		_Client = new XClient(_Socket, this, this);
+		_Client.reset(new XClient(_Socket, this, this));
 	}
 }
 
@@ -72,7 +72,7 @@ void XTCPClient::Close()
 
 	if (_Client != nullptr)
 	{
-		delete _Client;
+		_Client.reset();
 		_Client = nullptr;
 	}
 }

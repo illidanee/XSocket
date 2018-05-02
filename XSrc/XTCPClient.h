@@ -27,7 +27,7 @@ public:
 	int SendStream(XByteStream* pStream);
 
 private:
-	XClient* _Client;
+	std::shared_ptr<XClient> _Client;
 
 	bool _bRun;
 };

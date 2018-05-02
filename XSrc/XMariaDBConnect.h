@@ -11,6 +11,9 @@ public:
 	XMariaDBConnect();
 	~XMariaDBConnect();
 
+	void Ping();
+
+	int SearchStudentByUserName(const char* pUserName);
 	int SearchStudentBySchoolAndStudentID(const char* pSchool, const char* pStudentID);
 	int UpdateStudentBySchoolAndStudentID(
 		const char* pDevicel, const char* pSchool,
@@ -19,6 +22,7 @@ public:
 		const char* pUserName, const char* pPassword,
 		const char* pDeviceName, const char* pDeviceType);
 	int SearchStudentByUserNameAndPassword(const char* pDevicel, const char* pUserName, const char* pPassword);
+	int SearchInfoByUserName(const char* pUserName, char* pSchool, char* pMajor, char* pStudentID, char* pName, char* pPhoneNumber);
 	int InsertFeedbackByUserName(const char* pUserName, const char* pContent);
 
 private:

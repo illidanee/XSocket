@@ -20,6 +20,7 @@ XMariaDBConnect* XMariaDB::GetConnect()
 
 	XMariaDBConnect* connect = _Connects.back();
 	_Connects.pop_back();
+	connect->Ping();			//检测断线重连。
 	return connect;
 }
 

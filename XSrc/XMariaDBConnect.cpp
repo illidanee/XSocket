@@ -13,6 +13,35 @@ XMariaDBConnect::~XMariaDBConnect()
 	Done();
 }
 
+void XMariaDBConnect::Ping()
+{
+	mysql_ping(_pConnect); //启用断线重连。
+}
+
+int XMariaDBConnect::SearchStudentByUserName(const char* pUserName)
+{
+	char query[1024] = {};
+	sprintf(query, "select * from Students where UserName = '%s'", pUserName);
+	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
+	{
+		show_error(_pConnect);
+		return -1;
+	}
+
+	MYSQL_RES* ret = mysql_store_result(_pConnect);
+	if (ret == NULL)
+	{
+		show_error(_pConnect);
+		return -2;
+	}
+
+	my_ulonglong num = mysql_num_rows(ret);
+
+	mysql_free_result(ret);
+
+	return (int)num;
+}
+
 int XMariaDBConnect::SearchStudentBySchoolAndStudentID(const char* pSchool, const char* pStudentID)
 {
 	char query[1024] = {};
@@ -85,6 +114,41 @@ int XMariaDBConnect::SearchStudentByUserNameAndPassword(const char* pDevicel, co
 	return (int)num;
 }
 
+int XMariaDBConnect::SearchInfoByUserName(const char* pUserName, char* pSchool, char* pMajor, char* pStudentID, char* pName, char* pPhoneNumber)
+{
+	char query[1024] = {};
+	sprintf(query, "select School, Major, StudentID, Name, PhoneNumber from Students where UserName = '%s'", pUserName);
+	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
+	{
+		show_error(_pConnect);
+		return -1;
+	}
+
+	MYSQL_RES* ret = mysql_store_result(_pConnect);
+	if (ret == NULL)
+	{
+		show_error(_pConnect);
+		return -2;
+	}
+
+	my_ulonglong num = mysql_num_rows(ret);
+	if (num != 1)
+	{
+		return (int)num;
+	}
+
+	MYSQL_ROW row = mysql_fetch_row(ret);
+	strcpy(pSchool, row[0]);
+	strcpy(pMajor, row[1]);
+	strcpy(pStudentID, row[2]);
+	strcpy(pName, row[3]);
+	strcpy(pPhoneNumber, row[4]);
+
+	mysql_free_result(ret);
+
+	return (int)num;
+}
+
 int XMariaDBConnect::InsertFeedbackByUserName(const char* pUserName, const char* pContent)
 {
 	char query[1024] = {};
@@ -114,6 +178,8 @@ void XMariaDBConnect::show_error(MYSQL *mysql)
 void XMariaDBConnect::Init()
 {
 	_pConnect = mysql_init(nullptr);
+	char value = 1;
+	mysql_options(_pConnect, MYSQL_OPT_RECONNECT, &value);		//启用断线重连。
 	if (!mysql_real_connect(_pConnect, "192.168.0.90", "aoyi", "yang", "aoyi", 0, "/var/run/mysqld/mysqld.sock", 0))
 		show_error(_pConnect);
 }
