@@ -85,7 +85,7 @@ public class CppSendStream {
 #else
     [DllImport("U3DPlugin")]
 #endif
-    private static extern int CppWriteString(IntPtr pStream, IntPtr pBuffer, int nSize);
+    private static extern int CppWriteArray(IntPtr pStream, IntPtr pBuffer, int nSize);
 
 #if UNITY_IPHONE && !UNITY_EDITOR
     [DllImport ("__Internal")]
@@ -155,6 +155,29 @@ public class CppSendStream {
         return CppWriteDouble(pCppStream, n);
     }
 
+    public bool WriteBytes(byte[] arr)
+    {
+        if (pCppStream == IntPtr.Zero)
+            return false;
+
+        if (!CppWriteInt32(pCppStream, arr.Length))
+            return false;
+
+        //IntPtr pArr = Marshal.AllocHGlobal(arr.Length);
+
+        //Marshal.Copy(arr, 0, pArr, arr.Length);
+        //CppWriteArray(pCppStream, pArr, arr.Length);
+
+        //Marshal.FreeHGlobal(pArr);
+
+        for (int i = 0; i < arr.Length; ++i)
+        {
+            CppWriteInt8(pCppStream, (sbyte)arr[i]);
+        }
+
+        return true;
+    }
+
     public bool WriteString(string s)
     {
         if (pCppStream == IntPtr.Zero)
@@ -168,22 +191,6 @@ public class CppSendStream {
         for (int i = 0; i < buffer.Length; ++i)
         {
             if (!CppWriteInt8(pCppStream, (sbyte)buffer[i]))
-                return false;
-        }
-
-        return true;
-    }
-
-    public bool WriteInt32s(Int32[] arr)
-    {
-        if (pCppStream == IntPtr.Zero)
-            return false;
-
-        if (!CppWriteInt32(pCppStream, arr.Length * 4))
-            return false;
-        for (int i = 0; i < arr.Length; ++i)
-        {
-            if (!CppWriteInt32(pCppStream, arr[i]))
                 return false;
         }
 

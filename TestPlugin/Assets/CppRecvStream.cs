@@ -84,7 +84,7 @@ public class CppRecvStream
 #else
     [DllImport("U3DPlugin")]
 #endif
-    private static extern int CppReadString(IntPtr pStream, IntPtr pBuffer, int nSize);
+    private static extern int CppReadArray(IntPtr pStream, IntPtr pBuffer, int nSize);
 
 
 
@@ -162,6 +162,30 @@ public class CppRecvStream
         return CppReadDouble(pCppStream, n);
     }
 
+    public byte[] ReadBytes(byte[] arr = null)
+    {
+        if (pCppStream == IntPtr.Zero)
+            return arr;
+
+        int length = ReadInt32();
+
+        //IntPtr pArr = Marshal.AllocHGlobal(length);
+
+        //CppReadArray(pCppStream, pArr, length);
+        //arr = new byte[length];
+        //Marshal.Copy(pArr, arr, 0, length);
+
+        //Marshal.FreeHGlobal(pArr);
+
+        arr = new byte[length];
+        for (int i = 0; i < length; ++i)
+        {
+            sbyte sb = 0;
+            arr[i] = (byte)CppReadInt8(pCppStream, sb);
+        }
+
+        return arr;
+    }
     public string ReadString(string s = "")
     {
         if (pCppStream == IntPtr.Zero)
@@ -172,7 +196,7 @@ public class CppRecvStream
             return s;
 
         byte[] buffer = new byte[nLength];
-                                
+
         for (int i = 0; i < nLength; ++i)
         {
             buffer[i] = (byte)CppReadInt8(pCppStream, 0);
@@ -181,17 +205,5 @@ public class CppRecvStream
         s = Encoding.UTF8.GetString(buffer, 0, nLength);
 
         return s;
-    }
-
-    public Int32[] ReadInt32s(Int32[] arr = null)
-    {
-        int len = ReadInt32() / 4;
-        arr = new Int32[len];
-        for (int i = 0; i < len; ++i)
-        {
-            arr[i] = ReadInt32();
-        }
-
-        return arr;
     }
 }

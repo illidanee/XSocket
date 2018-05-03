@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using UnityEngine;
 
 public class MyClient : CppTcpClient {
@@ -20,7 +21,7 @@ public class MyClient : CppTcpClient {
         MGS_TYPE type = r.ReadType();
         switch (type)
         {
-            case MGS_TYPE.MSG_LOGIN_RES:
+            case MGS_TYPE.MSG_BYTESTREAM:
                 {
                     sbyte n1 = r.ReadInt8();
                     Int16 n2 = r.ReadInt16();
@@ -29,6 +30,7 @@ public class MyClient : CppTcpClient {
                     float n5 = r.ReadFloat();
                     double n6 = r.ReadDouble();
                     string n7 = r.ReadString();
+                    byte[] arr = r.ReadBytes();
 
                     Debug.Log(n1);
                     Debug.Log(n2);
@@ -37,6 +39,7 @@ public class MyClient : CppTcpClient {
                     Debug.Log(n5);
                     Debug.Log(n6);
                     Debug.Log(n7);
+                    Debug.Log(Encoding.UTF8.GetString(arr));
                 }
                 break;
         }
@@ -57,6 +60,10 @@ public class MyClient : CppTcpClient {
         s.WriteFloat(5.6f);
         s.WriteDouble(7.8);
         s.WriteString("Client!");
+
+        byte[] bs = Encoding.UTF8.GetBytes("你好");
+        s.WriteBytes(bs);
+
         s.Finish(MGS_TYPE.MSG_BYTESTREAM);
         SendStream(s.Obj);
     }

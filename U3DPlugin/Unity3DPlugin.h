@@ -71,7 +71,7 @@ extern "C"
 	EXPORT_DLL int64_t CppReadInt64(XRecvByteStream* pStream, int64_t n = 0);
 	EXPORT_DLL float CppReadFloat(XRecvByteStream* pStream, float n = 0.0f);
 	EXPORT_DLL double CppReadDouble(XRecvByteStream* pStream, double n = 0.0);
-	EXPORT_DLL int CppReadString(XRecvByteStream* pStream, char* pBuffer, int nSize);
+	EXPORT_DLL int CppReadArray(XRecvByteStream* pStream, char* pBuffer, int nSize);
 	
 	//----------------------------------------------------------------------------------------------------------------------------
 	//导出字节流接口 - WriteStream
@@ -83,7 +83,7 @@ extern "C"
 	EXPORT_DLL bool CppWriteInt64(XSendByteStream* pStream, int64_t n);
 	EXPORT_DLL bool CppWriteFloat(XSendByteStream* pStream, float n);
 	EXPORT_DLL bool CppWriteDouble(XSendByteStream* pStream, double n);
-	EXPORT_DLL int CppWriteString(XSendByteStream* pStream, const char* pBuffer, int nSize);
+	EXPORT_DLL int CppWriteArray(XSendByteStream* pStream, const char* pBuffer, int nSize);
 	EXPORT_DLL void CppFinish(XSendByteStream* pStream, MGS_TYPE type);
 }
 

@@ -101,6 +101,8 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			r.ReadDouble(r6);
 			char r7[32] = {};
 			r.ReadArray(r7, 32);
+			char r8[32] = {};
+			int len = r.ReadArray(r8, 32);
 
 			//XInfo("r1 = %d, r2 = %d, r3 = %d, r4 = %I64d, r5 = %f, r6 = %f, r7 = %s \n", r1, r2, r3, r4, r5, r6, r7);
 
@@ -112,6 +114,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			s.WriteFloat(55.66f);
 			s.WriteDouble(77.88);
 			s.WriteArray("Server", (int)strlen("Server"));
+			s.WriteArray(r8, len);
 			s.Finish(MSG_BYTESTREAM);
 			
 			if (pClient->SendStream(&s) != 0)

@@ -191,7 +191,7 @@ double CppReadDouble(XRecvByteStream* pStream, double n)
 	return n;
 }
 
-int CppReadString(XRecvByteStream* pStream, char* pBuffer, int nSize)
+int CppReadArray(XRecvByteStream* pStream, char* pBuffer, int nSize)
 {
 	if (pStream)
 		return pStream->ReadArray(pBuffer, nSize);
@@ -264,7 +264,7 @@ bool CppWriteDouble(XSendByteStream* pStream, double n)
 	return false;
 }
 
-int CppWriteString(XSendByteStream* pStream, const char* pBuffer, int nSize)
+int CppWriteArray(XSendByteStream* pStream, const char* pBuffer, int nSize)
 {
 	if (pStream)
 		return pStream->WriteArray(pBuffer, nSize);
