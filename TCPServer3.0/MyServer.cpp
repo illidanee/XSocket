@@ -139,6 +139,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 
 			//获取客户端发送的数据
 			XRecvByteStream r((MsgHeader*)pBuffer);
+			delete[] pBuffer;
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -178,12 +179,12 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			
 			//查询是否已经注册
-			int num = (int)connect->SearchStudentByUserName(pUserName);
+			int num = connect->SearchStudentByUserName(pUserName);
 			if (num < 0)
 			{
 				printf("****** Error: SearchStudentByUserName() \n");
@@ -192,7 +193,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num > 0)
@@ -203,12 +204,12 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
 			//查询是否存在信息
-			num = (int)connect->SearchStudentBySchoolAndStudentID(pSchool, pStudentID);
+			num = connect->SearchStudentBySchoolAndStudentID(pSchool, pStudentID);
 			if (num < 0)
 			{
 				printf("****** Error: SearchStudentBySchoolAndStudentID() \n");
@@ -217,7 +218,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num == 0)
@@ -228,7 +229,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num > 1)
@@ -239,7 +240,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -261,7 +262,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			s.Finish(MSG_ENROLL_RES);
 			pClient->SendStream(&s);
 
-			delete[] pBuffer;
+			//delete[] pBuffer;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
@@ -280,6 +281,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 
 			//获取客户端发送的数据
 			XRecvByteStream r((MsgHeader*)pBuffer);
+			delete[] pBuffer;
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -301,12 +303,12 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
 			//查询数据库
-			int num = (int)connect->SearchStudentByUserNameAndPassword(pDevicel, pUserName, pPassword);
+			int num = connect->SearchStudentByUserNameAndPassword(pUserName, pPassword);
 			if (num < 0)
 			{
 				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
@@ -315,7 +317,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num == 0)
@@ -326,7 +328,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num > 1)
@@ -337,7 +339,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -345,8 +347,24 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			s.Finish(MSG_LOGIN_RES);
 			pClient->SendStream(&s);
 
-			delete[] pBuffer;
-			return;
+			//查询推送消息 - 只处理成功情况。
+			int msgID1 = 0;
+			int num1 = connect->SearchMsgIDByUserName(pUserName, msgID1);
+			int msgID2 = 0;
+			char pMsg[2048] = {};
+			int num2 = connect->SearchMsg(msgID2, pMsg);
+			if (num1 == 1 && num2 == 1)
+			{
+				if (msgID1 < msgID2)
+				{
+					XSendByteStream sMsg(1024);
+					sMsg.WriteArray(pMsg, strlen(pMsg));
+					sMsg.Finish(MSG_BROADCAST_RES);
+					pClient->SendStream(&sMsg);
+				}
+			}
+
+			//delete[] pBuffer;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
@@ -365,6 +383,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 
 			//获取客户端发送的数据
 			XRecvByteStream r((MsgHeader*)pBuffer);
+			delete[] pBuffer;
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -384,7 +403,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -403,7 +422,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num == 0)
@@ -414,7 +433,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num > 1)
@@ -425,7 +444,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -438,8 +457,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			s.Finish(MSG_SELFINFO_RES);
 			pClient->SendStream(&s);
 
-			delete[] pBuffer;
-			return;
+			//delete[] pBuffer;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
@@ -458,6 +476,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 
 			//获取客户端发送的数据
 			XRecvByteStream r((MsgHeader*)pBuffer);
+			delete[] pBuffer;
 
 			int32_t type = MSG_ERROR;
 			r.ReadInt32(type);
@@ -479,7 +498,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_FEEDBACK_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -493,7 +512,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_FEEDBACK_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 			else if (num == 0)
@@ -504,7 +523,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				s.Finish(MSG_FEEDBACK_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -512,11 +531,212 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			s.Finish(MSG_FEEDBACK_RES);
 			pClient->SendStream(&s);
 
-			delete[] pBuffer;
-			return;
+			//delete[] pBuffer;
 		};
 
 		pClient->GetServerObj()->AddTask(pTask);
+	}
+	break;
+	case MSG_MODIFYPASSWORD:
+	{
+		//持久化消息，防止消息被释放后再任务线程使用。
+		char* pBuffer = new char[pMsgHeader->_MsgLength];
+		memcpy(pBuffer, pMsgHeader, pMsgHeader->_MsgLength);
+
+		std::function<void()> pTask = [pClient, pBuffer]()
+		{
+			XSendByteStream s(1024);
+			int ret = 0;
+
+			//获取客户端发送的数据
+			XRecvByteStream r((MsgHeader*)pBuffer);
+			delete[] pBuffer;
+
+			int32_t type = MSG_ERROR;
+			r.ReadInt32(type);
+
+			char pUserName[64] = {};
+			r.ReadArray(pUserName, 64);
+			char pPassword[64] = {};
+			r.ReadArray(pPassword, 64);
+			char pNewPasswrod[64] = {};
+			r.ReadArray(pNewPasswrod, 64);
+
+			//获取数据库连接
+			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
+			if (!connect)
+			{
+				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPASSWORD_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+
+			//查询数据库
+			int num = (int)connect->SearchStudentByUserNameAndPassword(pUserName, pPassword);
+			if (num < 0)
+			{
+				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPASSWORD_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+			else if (num == 0)
+			{
+				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				ret = -2;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPASSWORD_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+			else if (num > 1)
+			{
+				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				ret = -3;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPASSWORD_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+
+			//更新数据库
+			num = connect->UpdatePassword(pUserName, pPassword, pNewPasswrod);
+			if (num != 1)
+			{
+				printf("****** Error: UpdatePassword() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPASSWORD_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+
+			s.WriteInt32(ret);
+			s.Finish(MSG_MODIFYPASSWORD_RES);
+			pClient->SendStream(&s);
+
+			//delete[] pBuffer;
+		};
+
+		pClient->GetServerObj()->AddTask(pTask);
+	}
+	break;
+	case MSG_MODIFYPHONENUMBER:
+	{
+		//持久化消息，防止消息被释放后再任务线程使用。
+		char* pBuffer = new char[pMsgHeader->_MsgLength];
+		memcpy(pBuffer, pMsgHeader, pMsgHeader->_MsgLength);
+
+		std::function<void()> pTask = [pClient, pBuffer]()
+		{
+			XSendByteStream s(1024);
+			int ret = 0;
+
+			//获取客户端发送的数据
+			XRecvByteStream r((MsgHeader*)pBuffer);
+			delete[] pBuffer;
+
+			int32_t type = MSG_ERROR;
+			r.ReadInt32(type);
+
+			char pUserName[64] = {};
+			r.ReadArray(pUserName, 64);
+			char pPassword[64] = {};
+			r.ReadArray(pPassword, 64);
+			char pNewPhoneNumber[64] = {};
+			r.ReadArray(pNewPhoneNumber, 64);
+
+			//获取数据库连接
+			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
+			if (!connect)
+			{
+				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPHONENUMBER_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+
+			//查询数据库
+			int num = (int)connect->SearchStudentByUserNameAndPassword(pUserName, pPassword);
+			if (num < 0)
+			{
+				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPHONENUMBER_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+			else if (num == 0)
+			{
+				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				ret = -2;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPHONENUMBER_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+			else if (num > 1)
+			{
+				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				ret = -3;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPHONENUMBER_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+
+			//更新数据库
+			num = connect->UpdatePhoneNumber(pUserName, pPassword, pNewPhoneNumber);
+			if (num != 1)
+			{
+				printf("****** Error: UpdatePassword() \n");
+				ret = -1;
+				s.WriteInt32(ret);
+				s.Finish(MSG_MODIFYPHONENUMBER_RES);
+				pClient->SendStream(&s);
+
+				//delete[] pBuffer;
+				return;
+			}
+
+			s.WriteInt32(ret);
+			s.Finish(MSG_MODIFYPHONENUMBER_RES);
+			pClient->SendStream(&s);
+
+			//delete[] pBuffer;
+		};
+
+		pClient->GetServerObj()->AddTask(pTask);
+	}
+	break;
+	case MSG_BROADCAST:
+	{
 	}
 	break;
 	default:

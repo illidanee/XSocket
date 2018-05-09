@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2018-05-04 17:46:28
+Date: 2018-05-09 10:04:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,15 +20,19 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `Feedbacks`;
 CREATE TABLE `Feedbacks` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `UserName` varchar(64) NOT NULL,
-  `Content` varchar(1024) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `Content` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of Feedbacks
 -- ----------------------------
-INSERT INTO `Feedbacks` VALUES ('你好', '哈哈啊');
-INSERT INTO `Feedbacks` VALUES ('你好', '哈哈啊');
-INSERT INTO `Feedbacks` VALUES ('你好', '哈哈啊');
-INSERT INTO `Feedbacks` VALUES ('你好', '哈哈啊');
-INSERT INTO `Feedbacks` VALUES ('你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('13', '你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('14', '你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('15', '你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('16', '你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('17', '你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('18', '你好', '哈哈啊');
+INSERT INTO `Feedbacks` VALUES ('19', '你好11', '哈哈啊');
