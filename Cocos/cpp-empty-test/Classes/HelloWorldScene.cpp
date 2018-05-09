@@ -63,15 +63,6 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(sprite);
     
-	//------------------------------------
-
-	XLog::SetFile("./Client.log", "w");
-
-	this->Open();
-	this->Connect("192.168.0.99", 9090);
-
-	scheduleUpdate();
-
     return true;
 }
 
@@ -82,88 +73,4 @@ void HelloWorld::menuCloseCallback(Ref* sender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
-}
-
-void HelloWorld::update(float dt)
-{
-	if (this->IsRun())
-		this->OnRun();
-
-	//²âÊÔ·¢ËÍÊý¾Ý
-	XSendByteStream s(1024);
-	s.WriteInt8(1);
-	s.WriteInt16(2);
-	s.WriteInt32(3);
-	s.WriteInt64(4);
-	s.WriteFloat(5.6f);
-	s.WriteDouble(7.8);
-	char b[] = { 'a', 'b', 'c', 'd', 'e' };
-	s.WriteArray(b, sizeof(b));
-	s.WriteArray("client", (int)strlen("client"));
-	s.Finish(MSG_BYTESTREAM);
-
-	this->SendStream(&s);
-}
-
-void HelloWorld::DoMsg(MsgHeader* pMsgHeader)
-{
-	XRecvByteStream r(pMsgHeader);
-
-	int32_t type = MSG_ERROR;
-	r.ReadInt32(type);
-
-	int8_t r1;
-	r.ReadInt8(r1);
-	int16_t r2;
-	r.ReadInt16(r2);
-	int32_t r3;
-	r.ReadInt32(r3);
-	int64_t r4;
-	r.ReadInt64(r4);
-	float r5;
-	r.ReadFloat(r5);
-	double r6;
-	r.ReadDouble(r6);
-	char r7[32] = {};
-	r.ReadArray(r7, 32);
-	char r8[32] = {};
-	r.ReadArray(r8, 32);
-}
-
-void HelloWorld::OnRunLoopBegin()
-{
-
-}
-
-void HelloWorld::OnClientJoin(std::shared_ptr<XClient> pClient)
-{
-
-}
-void HelloWorld::OnClientLeave(std::shared_ptr<XClient> pClient)
-{
-
-}
-void HelloWorld::OnNetRecv(std::shared_ptr<XClient> pClient)
-{
-
-}
-
-void HelloWorld::OnNetSend(std::shared_ptr<XClient> pClient)
-{
-
-}
-
-void HelloWorld::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
-{
-	DoMsg(pMsgHeader);
-}
-
-void HelloWorld::OnNetMsgDone(std::shared_ptr<XClient>, MsgHeader* pMsgHeader)
-{
-
-}
-
-void HelloWorld::AddTask(std::function<void()> pTask)
-{
-
 }

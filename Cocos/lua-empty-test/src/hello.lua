@@ -44,9 +44,16 @@ local function main()
     cclog("result is " .. myadd(1, 1))
 
     ---------------
+    local function callback(str)
+        cclog("--- CppTestCallback" ..str)   
+    end
 
-    cclog("--- res = %d", CppAdd(1, 2))
+    cclog("--- CppAdd = %d", CppAdd(1, 2))
 
+    local str = CppSayHi("Li lei.")
+    cclog("--- CppSayHi" .. str)
+
+    CppTestCallback("Han meimei.", callback);
 
     -- every frame
     local function tick()

@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "scripting/lua-bindings/manual/CCLuaEngine.h"
+#include "scripting/lua-bindings/manual/LuaBasicConversions.h"
 
 int Add(lua_State* L);
 
