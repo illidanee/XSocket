@@ -138,7 +138,7 @@ int XMariaDBConnect::SearchMsgIDByUserName(const char* pUserName, int& msgID)
 	}
 
 	MYSQL_ROW row = mysql_fetch_row(ret);
-	msgID = (int)row[0];
+	msgID = atoi(row[0]);
 
 	mysql_free_result(ret);
 
@@ -169,6 +169,7 @@ int XMariaDBConnect::SearchMsg(int& id, char* pMsg)
 	}
 
 	MYSQL_ROW row = mysql_fetch_row(ret);
+	id = atoi(row[0]);
 	strcpy(pMsg, row[1]);
 
 	mysql_free_result(ret);
