@@ -357,10 +357,14 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			{
 				if (msgID1 < msgID2)
 				{
-					XSendByteStream sMsg(1024);
-					sMsg.WriteArray(pMsg, strlen(pMsg));
-					sMsg.Finish(MSG_BROADCAST_RES);
-					pClient->SendStream(&sMsg);
+					num = connect->UpdateMsgIDByUserName(pUserName, msgID2);
+					if (num == 1)
+					{
+						XSendByteStream sMsg(1024);
+						sMsg.WriteArray(pMsg, strlen(pMsg));
+						sMsg.Finish(MSG_BROADCAST_RES);
+						pClient->SendStream(&sMsg);
+					}
 				}
 			}
 

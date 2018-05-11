@@ -177,6 +177,22 @@ int XMariaDBConnect::SearchMsg(int& id, char* pMsg)
 	return (int)num;
 }
 
+int XMariaDBConnect::UpdateMsgIDByUserName(const char* pUserName, int msgID)
+{
+	char query[1024] = {};
+	sprintf(query, "update Students set MsgID = %d	where UserName = '%s'", msgID, pUserName);
+
+	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
+	{
+		show_error(_pConnect);
+		return -1;
+	}
+
+	my_ulonglong num = mysql_affected_rows(_pConnect);
+
+	return (int)num;
+}
+
 int XMariaDBConnect::SearchInfoByUserName(const char* pUserName, char* pSchool, char* pMajor, char* pStudentID, char* pName, char* pPhoneNumber)
 {
 	char query[1024] = {};
