@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2018-05-17 17:15:58
+Date: 2018-05-18 14:12:46
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -30,40 +30,41 @@ CREATE TABLE `Students` (
   `Password` varchar(64) DEFAULT '',
   `DeviceName` varchar(64) DEFAULT '',
   `DeviceType` varchar(64) DEFAULT '',
-  `MsgID` bigint(20) DEFAULT NULL,
+  `MsgID` bigint(20) unsigned NOT NULL DEFAULT 0,
   UNIQUE KEY `SearchByStudentInfo` (`School`,`StudentID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of Students
 -- ----------------------------
-INSERT INTO `Students` VALUES ('dafe763dc7bc7121b3f83399aff2fe67acb568ed', 'aoyi', '11', '000', '11', '1352254685', '110', '130', 'DESKTOP-N8F2QEI', 'Desktop', '36');
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '001', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '002', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '003', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '004', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '005', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '006', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '007', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '008', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '009', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '010', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '011', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '012', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '013', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '014', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '015', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '016', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '017', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '018', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '019', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '020', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '021', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '022', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '023', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '024', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '025', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '026', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '027', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '028', null, '', '', '', '', '', null);
-INSERT INTO `Students` VALUES ('0', 'aoyi', '', '029', null, '', '', '', '', '', null);
+INSERT INTO `Students` VALUES ('0fff5d25f1f4e0f3a5d9698ebb8e9ed8', '奥医科技', '-', '000', '张亮', '99999999999', '999', '999', '<unknown>', 'Handheld', '36');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '001', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '002', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '003', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '004', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '005', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '006', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '007', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '008', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '009', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '010', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '011', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '012', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '013', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '014', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '015', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '016', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '017', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '018', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '019', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '020', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '021', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '022', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '023', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '024', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '025', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '026', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '027', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '028', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('0', '奥医科技', '-', '029', null, '', '', '', '', '', '0');
+INSERT INTO `Students` VALUES ('dafe763dc7bc7121b3f83399aff2fe67acb568ed', '奥医科技', '-', '100', '11', '1352254685', '110', '130', 'DESKTOP-N8F2QEI', 'Desktop', '0');

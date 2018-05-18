@@ -148,7 +148,7 @@ int XMariaDBConnect::SearchMsgIDByUserName(const char* pUserName, int& msgID)
 int XMariaDBConnect::SearchMsg(int& id, char* pMsg)
 {
 	char query[1024] = {};
-	sprintf(query, "select ID, Content from Feedbacks order by ID desc limit 1");
+	sprintf(query, "select ID, Msg from Msgs order by ID desc limit 1");
 	if (mysql_real_query(_pConnect, query, (unsigned long)strlen(query)))
 	{
 		show_error(_pConnect);
