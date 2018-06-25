@@ -75,6 +75,11 @@ int XClient::SendData()
 	return 0;
 }
 
+bool XClient::HasMsg()
+{
+	return _SendBuffer.HasMsg();
+}
+
 void XClient::ResetHeartTime()
 {
 	_HeartTime = 0;

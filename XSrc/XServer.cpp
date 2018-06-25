@@ -149,11 +149,27 @@ void XServer::OnRun(XThread* pThread)
 			memcpy(&fdRead, &_fdSetCache, sizeof(fd_set));
 		}
 
-		memcpy(&fdWrite, &fdRead, sizeof(fd_set));
+		//检测是否有数据向客户端发送。
+		bool bHasCanWriteClient = false;
+		FD_ZERO(&fdWrite);
+		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+		{
+			if (iter->second->HasMsg())
+			{
+				FD_SET(iter->first, &fdWrite);
+				bHasCanWriteClient = true;
+			}
+		}
+		//memcpy(&fdWrite, &fdRead, sizeof(fd_set));
 
 		//设置1毫秒间隔，可以提高客户端连接select效率。
 		timeval tv = { 0, 1 };						//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
-		int ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, NULL, &tv);
+		int ret;
+		if (bHasCanWriteClient)
+			ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, nullptr, &tv);
+		else
+			ret = select((int)_MaxSocketID + 1, &fdRead, nullptr, nullptr, &tv);
+
 		if (SOCKET_ERROR == ret)
 		{
 			XInfo("Error:Select!\n");

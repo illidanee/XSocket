@@ -21,6 +21,8 @@ public:
 	int SendStream(XByteStream* pByteStream);
 	int SendData();
 
+	bool HasMsg();
+
 	//心跳
 	void ResetHeartTime();
 	bool CheckHeartTime(time_t t);
