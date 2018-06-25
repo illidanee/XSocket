@@ -117,7 +117,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 
 			if (pClient->SendStream(&s) != 0)
 			{
-				XInfo("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
+				XError("<Client=%d Send Buffer Full!!!\n", (int)pClient->GetSocket());
 			}
 
 			delete[] pBuffer;
@@ -745,7 +745,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	default:
 	{
-		XInfo("Warn： default Msg。");
+		XWarn("default Msg。");
 	}
 	}
 }

@@ -23,7 +23,7 @@ void XTCPClient::Open()
 		SOCKET _Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		if (SOCKET_ERROR == _Socket)
 		{
-			XInfo("Error:socket!\n");
+			XError("socket!\n");
 		}
 
 		_Client.reset(new XClient(_Socket, this, this));
@@ -49,7 +49,7 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	int sinLen = sizeof(sockaddr_in);
 	if (SOCKET_ERROR == connect(_Client->GetSocket(), (sockaddr*)&sinServer, sinLen))
 	{
-		XInfo("Error:connect!\n");
+		XError("connect!\n");
 		return false;
 	}
 
@@ -99,7 +99,7 @@ void XTCPClient::OnRun()
 	int ret = select((int)_Socket + 1, &fdRead, &fdWrite, NULL, &tv);
 	if (SOCKET_ERROR == ret)
 	{
-		XInfo("Error:select!\n");
+		XError("select!\n");
 		Disconnect();
 		return;
 	}

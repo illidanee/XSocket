@@ -172,7 +172,7 @@ void XServer::OnRun(XThread* pThread)
 
 		if (SOCKET_ERROR == ret)
 		{
-			XInfo("Error:Select!\n");
+			XError("Select!\n");
 			pThread->Exit();
 		}
 

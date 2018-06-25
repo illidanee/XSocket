@@ -14,11 +14,11 @@ XNet::XNet()
 	int iRet = WSAStartup(wsaVersion, &wsaData);
 	if (iRet)
 	{
-		XInfo("Error:WSAStartup!\n");
+		XError("WSAStartup!\n");
 	}
 	else
 	{
-		XInfo("OK:WSAStartup!\n");
+		XInfo("WSAStartup!\n");
 	}
 #endif
 }
@@ -30,11 +30,11 @@ XNet::~XNet()
 	int iRet = WSACleanup();
 	if (SOCKET_ERROR == iRet)
 	{
-		XInfo("Error:WSACleanup!\n");
+		XError("WSACleanup!\n");
 	}
 	else
 	{
-		XInfo("OK:WSACleanup!\n");
+		XInfo("WSACleanup!\n");
 	}
 #endif
 }

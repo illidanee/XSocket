@@ -278,7 +278,7 @@ int XMariaDBConnect::UpdatePhoneNumber(const char* pUserName, const char* pPassw
 
 void XMariaDBConnect::show_error(MYSQL *mysql)
 {
-	XInfo("Error(%d) [%s] \"%s\"",
+	XError("(%d) [%s] \"%s\"",
 		mysql_errno(mysql),
 		mysql_sqlstate(mysql),
 		mysql_error(mysql));

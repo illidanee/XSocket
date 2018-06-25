@@ -8,32 +8,66 @@
 #include <list>
 #include <functional>
 #include <thread>
+#include <chrono>
+#include <ctime>
 
 class XLog
 {
 public:
-	static XLog& GetInstance();
-	
+	static XLog& GetInstance();									//log必须使用类型，因为构造函数被私有。
+
 	static void SetFile(const char* pFile, const char* pMode);
 
 	template <typename... Args>
-	static void Info(Args... args)
+	static void Info(const char* pFormat, Args... args)
 	{
-		//输出到终端
-		printf(args...);
+		Echo("Info", pFormat, args...);
+	}
 
+	template <typename... Args>
+	static void Warn(const char* pFormat, Args... args)
+	{
+		Echo("Warn", pFormat, args...);
+	}
+	
+	template <typename... Args>
+	static void Error(const char* pFormat, Args... args)
+	{
+		Echo("Error", pFormat, args...);
+	}
+
+	template <typename... Args>
+	static void Echo(const char* type, const char* pFormat, Args... args)
+	{
 		//输出到文件
-		XLog& log = GetInstance();
+		XLog& log = GetInstance();								//log必须使用类型，因为构造函数被私有。
 
 		//log 必须使用引用。否则会阻塞住。
-		log.AddTask([&log, args...]() {
-			fprintf(log._File, args...);
+		log.AddTask([&log, type, pFormat, args...]() {				//log必须使用类型，因为构造函数被私有。
+
+			//计算当前时间
+			std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
+			time_t tt = std::chrono::system_clock::to_time_t(t);
+			std::tm* ttt = std::localtime(&tt);
+
+			//输出到终端
+			printf("%-8s", type);
+			printf("[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+			printf(pFormat, args...);
+
+			//输出到文件
+			fprintf(log._File, "%-8s", type);
+			fprintf(log._File, "[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+			fprintf(log._File, pFormat, args...);
 			fflush(log._File);
 		});
 	}
 
 private:
+	//私有化构造析构函数。
 	XLog();
+	XLog(const XLog& that);
+	XLog& operator=(const XLog& that);
 	~XLog();
 
 	void Start();
@@ -60,11 +94,25 @@ private:
 
 //调试宏
 #ifndef XInfo
-#ifdef _DEBUG
 #define XInfo(...) XLog::Info(__VA_ARGS__)
+#endif
+
+#ifndef XWarn
+#define XWarn(...) XLog::Warn(__VA_ARGS__)
+#endif
+
+#ifndef XError
+#define XError(...) XLog::Error(__VA_ARGS__)
+#endif
+
+#ifndef XDebug
+#ifdef _DEBUG
+#define XDebug(...) XLog::XDebug(__VA_ARGS__)
 #else
-#define XInfo(...) //XLog::Info(__VA_ARGS__)
+#define XDebug(...)
 #endif
 #endif
+
+
 
 #endif

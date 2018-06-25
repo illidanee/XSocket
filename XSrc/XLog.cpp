@@ -2,8 +2,8 @@
 
 XLog& XLog::GetInstance()
 {
-	static XLog log;
-	return log;
+	static XLog ins;
+	return ins;
 }
 
 void XLog::SetFile(const char* pFile, const char* pMode)
@@ -29,6 +29,17 @@ XLog::XLog()
 	_WakeNum(0)
 {
 	Start();
+}
+
+XLog::XLog(const XLog& that)
+{
+	//禁止
+}
+
+XLog& XLog::operator=(const XLog& that)
+{
+	//禁止
+	return *this;
 }
 
 XLog::~XLog()
@@ -68,9 +79,8 @@ void XLog::Stop()
 		if (--_WaitNum < 0)
 		{
 			_CV.wait(lock, [this]()->bool {
-				return _WakeNum > 0;
+				return _WakeNum-- > 0;
 			});
-			--_WakeNum;
 		}
 	}
 }
