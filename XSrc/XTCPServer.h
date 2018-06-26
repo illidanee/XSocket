@@ -16,7 +16,7 @@ public:
 	XTCPServer();
 	~XTCPServer();
 
-	int Start();
+	int Start(const char* ip, short port, int lqn);
 	int Stop();
 
 private:

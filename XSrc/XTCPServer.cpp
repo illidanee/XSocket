@@ -10,7 +10,7 @@ XTCPServer::~XTCPServer()
 {
 }
 
-int XTCPServer::Start()
+int XTCPServer::Start(const char* ip, short port, int lqn)
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
 
@@ -19,8 +19,8 @@ int XTCPServer::Start()
 
 	//初始化服务器
 	Open();
-	Bind(NULL, 9090);
-	Listen(1000);
+	Bind(ip, port);
+	Listen(lqn);
 
 	//开启服务线程
 	for (int i = 0; i < _SERVER_SIZE_; ++i)

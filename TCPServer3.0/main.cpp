@@ -6,10 +6,39 @@
 #include <signal.h>
 #endif
 
-int main()
+const char* ReadStrArgs(int argc, char* args[], int index, const char* def)
 {
-	XLog::SetFile("./Server.log", "w");
+	if (index >= argc)
+		XError("参数错误");
 
+	return args[1];
+}
+
+int ReadIntArgs(int argc, char* args[], int index, int def)
+{
+	if (index >= argc)
+		XError("参数错误");
+
+	return atoi(args[1]);
+}
+
+int main(int argc, char* args[])
+{
+	//参数信息
+	if (argc < 4)
+	{
+		return 0;
+	}
+
+	const char* ip = ReadStrArgs(argc, args, 1, "Any");
+	short port = ReadIntArgs(argc, args, 2, 9090);
+	int lqn = ReadIntArgs(argc, args, 3, 999);
+
+	if (strcmp(ip, "Any") == 0)
+		ip = nullptr;
+
+	//日志信息
+	XLog::SetFile("./Server.log", "w");
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 	XInfo("                                                               C++ Server                                                              \n");
 	XInfo("                                                                                                        Designed by Org.illidan        \n");
@@ -30,7 +59,7 @@ int main()
 	MyServer* server = new MyServer;
 
 	//开启服务器
-	server->Start();
+	server->Start(ip, port, lqn);
 
 	while (true)
 	{

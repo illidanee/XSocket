@@ -51,12 +51,12 @@ public:
 			std::tm* ttt = std::localtime(&tt);
 
 			//输出到终端
-			printf("%-8s", type);
+			printf("=>%-8s", type);
 			printf("[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 			printf(pFormat, args...);
 
 			//输出到文件
-			fprintf(log._File, "%-8s", type);
+			fprintf(log._File, "=>%-8s", type);
 			fprintf(log._File, "[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 			fprintf(log._File, pFormat, args...);
 			fflush(log._File);
