@@ -49,6 +49,7 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	int sinLen = sizeof(sockaddr_in);
 	if (SOCKET_ERROR == connect(_Client->GetSocket(), (sockaddr*)&sinServer, sinLen))
 	{
+		int no = WSAGetLastError();
 		XError("connect!\n");
 		return false;
 	}

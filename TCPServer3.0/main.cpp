@@ -11,7 +11,7 @@ const char* ReadStrArgs(int argc, char* args[], int index, const char* def)
 	if (index >= argc)
 		XError("参数错误");
 
-	return args[1];
+	return args[index];
 }
 
 int ReadIntArgs(int argc, char* args[], int index, int def)
@@ -19,7 +19,7 @@ int ReadIntArgs(int argc, char* args[], int index, int def)
 	if (index >= argc)
 		XError("参数错误");
 
-	return atoi(args[1]);
+	return atoi(args[index]);
 }
 
 int main(int argc, char* args[])
