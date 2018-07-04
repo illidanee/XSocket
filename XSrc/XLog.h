@@ -11,6 +11,13 @@
 #include <chrono>
 #include <ctime>
 
+enum XLogType
+{
+	Info,
+	Warn,
+	Error
+};
+
 class XLog
 {
 public:
@@ -21,23 +28,23 @@ public:
 	template <typename... Args>
 	static void Info(const char* pFormat, Args... args)
 	{
-		Echo("Info", pFormat, args...);
+		Echo(XLogType::Info, pFormat, args...);
 	}
 
 	template <typename... Args>
 	static void Warn(const char* pFormat, Args... args)
 	{
-		Echo("Warn", pFormat, args...);
+		Echo(XLogType::Warn, pFormat, args...);
 	}
 	
 	template <typename... Args>
 	static void Error(const char* pFormat, Args... args)
 	{
-		Echo("Error", pFormat, args...);
+		Echo(XLogType::Error, pFormat, args...);
 	}
 
 	template <typename... Args>
-	static void Echo(const char* type, const char* pFormat, Args... args)
+	static void Echo(XLogType type, const char* pFormat, Args... args)
 	{
 		//输出到文件
 		XLog& log = GetInstance();								//log必须使用类型，因为构造函数被私有。
@@ -49,17 +56,52 @@ public:
 			std::chrono::time_point<std::chrono::system_clock> t = std::chrono::system_clock::now();
 			time_t tt = std::chrono::system_clock::to_time_t(t);
 			std::tm* ttt = std::localtime(&tt);
+			
+			switch (type)
+			{
+			case XLogType::Info:
+			{
+				//输出到终端
+				printf("=>%-6s|%s| ", "Info", "   ");
+				printf("[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				printf(pFormat, args...);
 
-			//输出到终端
-			printf("=>%-8s", type);
-			printf("[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-			printf(pFormat, args...);
+				//输出到文件
+				fprintf(log._File, "=>%-6s|%s| ", "Info", "   ");
+				fprintf(log._File, "[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				fprintf(log._File, pFormat, args...);
+				fflush(log._File);
+				break;
+			}
+			case XLogType::Warn:
+			{
+				//输出到终端
+				printf("=>%-6s|%s| ", "Warn", " ! ");
+				printf("[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				printf(pFormat, args...);
 
-			//输出到文件
-			fprintf(log._File, "=>%-8s", type);
-			fprintf(log._File, "[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-			fprintf(log._File, pFormat, args...);
-			fflush(log._File);
+				//输出到文件
+				fprintf(log._File, "=>%-6s|%s| ", "Warn", " ! ");
+				fprintf(log._File, "[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				fprintf(log._File, pFormat, args...);
+				fflush(log._File);
+				break;
+			}
+			case XLogType::Error:
+			{
+				//输出到终端
+				printf("=>%-6s|%s| ", "Error", " X ");
+				printf("[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				printf(pFormat, args...);
+
+				//输出到文件
+				fprintf(log._File, "=>%-6s|%s| ", "Error", " X ");
+				fprintf(log._File, "[%04d-%02d-%02d_%02d:%02d:%02d] ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				fprintf(log._File, pFormat, args...);
+				fflush(log._File);
+				break;
+			}
+			}
 		});
 	}
 
