@@ -3,7 +3,7 @@
 
 #include "XCommon.h"
 
-class XBuffer
+class XBuffer : public XObject<20480, XBuffer>
 {
 public:
 	XBuffer(int nSize);
@@ -17,7 +17,8 @@ public:
 
 	int Push(MsgHeader* pMsg);
 	int Pop();
-	bool HasMsg();
+	bool HasMsg();					//缓冲中有一条完整消息数据。
+	bool HasData();					//缓冲区中有数据。
 	MsgHeader* Front();
 
 private:

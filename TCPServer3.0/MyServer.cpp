@@ -71,6 +71,8 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	case MSG_HEART:
 	{
+		OnNetSend(pClient);
+		OnNetMsgDone(pClient, pMsgHeader);
 		// ...
 	}
 	break;
@@ -361,7 +363,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 					if (num == 1)
 					{
 						XSendByteStream sMsg(1024);
-						sMsg.WriteArray(pMsg, strlen(pMsg));
+						sMsg.WriteArray(pMsg, (int)strlen(pMsg));
 						sMsg.Finish(MSG_BROADCAST_RES);
 						pClient->SendStream(&sMsg);
 					}
@@ -453,11 +455,11 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 			}
 
 			s.WriteInt32(ret);
-			s.WriteArray(pSchool, strlen(pSchool));
-			s.WriteArray(pMajor, strlen(pMajor));
-			s.WriteArray(pStudentID, strlen(pStudentID));
-			s.WriteArray(pName, strlen(pName));
-			s.WriteArray(pPhoneNumber, strlen(pPhoneNumber));
+			s.WriteArray(pSchool, (int)strlen(pSchool));
+			s.WriteArray(pMajor, (int)strlen(pMajor));
+			s.WriteArray(pStudentID, (int)strlen(pStudentID));
+			s.WriteArray(pName, (int)strlen(pName));
+			s.WriteArray(pPhoneNumber, (int)strlen(pPhoneNumber));
 			s.Finish(MSG_SELFINFO_RES);
 			pClient->SendStream(&s);
 

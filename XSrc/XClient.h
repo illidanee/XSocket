@@ -8,7 +8,7 @@
 #include "XByteStream.h"
 
 //客户端信息类
-class XClient : public XObject<1024, XClient>, public std::enable_shared_from_this<XClient>
+class XClient : public XObject<10240, XClient>, public std::enable_shared_from_this<XClient>
 {
 public:
 	XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj);
@@ -22,6 +22,7 @@ public:
 	int SendData();
 
 	bool HasMsg();
+	bool HasData();
 
 	//心跳
 	void ResetHeartTime();

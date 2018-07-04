@@ -72,14 +72,13 @@ int XBuffer::Send(SOCKET socket)
 		//Socket错误。
 		return -1;
 	}
-	else if (size == 0)
-	{
-		//对端断开。
-		return -2;
-	}
 
 	//正常发送。
-	_nOffset = 0;
+	_nOffset -= size;
+	if (_nOffset > 0)
+	{
+		memcpy(_pBuffer + size, _pBuffer, _nOffset);
+	}
 
 	return 0;
 }
@@ -131,6 +130,11 @@ bool XBuffer::HasMsg()
 			return true;
 	}
 	return false;
+}
+
+bool XBuffer::HasData()
+{
+	return _nOffset > 0;
 }
 
 MsgHeader* XBuffer::Front()

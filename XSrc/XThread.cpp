@@ -54,6 +54,12 @@ bool XThread::IsRun()
 	return _Run == true;
 }
 
+void XThread::Sleep(time_t dt)
+{
+	std::chrono::microseconds t(dt);
+	std::this_thread::sleep_for(t);
+}
+
 void XThread::OnWork()
 {
 	if (_pBegin)
@@ -64,6 +70,8 @@ void XThread::OnWork()
 
 	if (_pEnd)
 		_pEnd(this);
+
+	_Run = false;
 
 	_Signal.Wake();
 }

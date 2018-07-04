@@ -1,4 +1,5 @@
 ﻿#include "../XSrc/XCommon.h"
+#include "../XSrc/XConfig.h"
 #include "../XSrc/XSignal.h"
 #include "MyServer.h"
 
@@ -6,62 +7,44 @@
 #include <signal.h>
 #endif
 
-const char* ReadStrArgs(int argc, char* args[], int index, const char* def)
-{
-	if (index >= argc)
-		XError("参数错误");
-
-	return args[index];
-}
-
-int ReadIntArgs(int argc, char* args[], int index, int def)
-{
-	if (index >= argc)
-		XError("参数错误");
-
-	return atoi(args[index]);
-}
-
 int main(int argc, char* args[])
 {
-	////参数信息
-	//if (argc < 4)
-	//{
-	//	return 0;
-	//}
 
-	//const char* ip = ReadStrArgs(argc, args, 1, "Any");
-	//short port = ReadIntArgs(argc, args, 2, 9090);
-	//int lqn = ReadIntArgs(argc, args, 3, 999);
-
-	//if (strcmp(ip, "Any") == 0)
-	//	ip = nullptr;
+//关闭中断信号，禁止中断服务器进程。
+#ifndef _WIN32
+	signal(SIGPIPE, SIG_IGN);
+#endif
 
 	//日志信息
-	XLog::GetInstance();
-	XLog::SetFile("./Server.log", "w");
-	
+	XLog::SetFileName("./server.log", "w");
+
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 	XInfo("                                                               C++ Server                                                              \n");
 	XInfo("                                                                                                        Designed by Org.illidan        \n");
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 
-//去除中断信号关闭服务器。
-#ifndef _WIN32
-	//sigset_t signal_mask;
-	//sigemptyset(&signal_mask);
-	//sigaddset(&signal_mask, SIGPIPE);
-	//if (pthread_sigmask(SIG_BLOCK, &signal_mask, NULL) == -1)
-	//	perror("SIGPIPE");
-	signal(SIGPIPE, SIG_IGN);
-#endif
+	//解析参数。
+	XConfig::Instance().Init(argc, args);
+
+	const char* ip = XConfig::Instance().GetStringArg("ip", nullptr);
+	short port = XConfig::Instance().GetIntArg("port", 9090);
+	int lqn = XConfig::Instance().GetIntArg("lqn", 1000);
+
+	XInfo("Configure Infos: \n");
+	XInfo("         %8s    =    %-16s\n", "IP", ip);
+	XInfo("         %8s    =    %-16d\n", "Port", port);
+	XInfo("         %8s    =    %-16d\n", "Lqn", lqn);
+
+	if (ip && strcmp("Any", ip) == 0)
+	{
+		ip = nullptr;
+	}
 
 	//创建服务器
-	//int nSize = sizeof(MyServer);
 	MyServer* server = new MyServer;
 
 	//开启服务器
-	server->Start(nullptr, 9090, 1000);
+	server->Start(ip, port, lqn);
 
 	while (true)
 	{

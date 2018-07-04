@@ -154,7 +154,7 @@ void XServer::OnRun(XThread* pThread)
 		FD_ZERO(&fdWrite);
 		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 		{
-			if (iter->second->HasMsg())
+			if (iter->second->HasData())
 			{
 				FD_SET(iter->first, &fdWrite);
 				bHasCanWriteClient = true;

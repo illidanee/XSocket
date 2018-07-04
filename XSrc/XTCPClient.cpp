@@ -93,11 +93,22 @@ void XTCPClient::OnRun()
 	fd_set fdWrite;
 	FD_ZERO(&fdRead);
 	FD_ZERO(&fdWrite);
-	FD_SET(_Socket, &fdRead);
-	FD_SET(_Socket, &fdWrite);
 
-	timeval tv = { 0, 1 };
-	int ret = select((int)_Socket + 1, &fdRead, &fdWrite, NULL, &tv);
+	FD_SET(_Socket, &fdRead);
+	
+	timeval tv = { 0, 0 };
+
+	int ret = 0;
+	if (_Client->HasData())
+	{
+		FD_SET(_Socket, &fdWrite);
+		ret = select((int)_Socket + 1, &fdRead, &fdWrite, nullptr, &tv);
+	}
+	else
+	{
+		ret = select((int)_Socket + 1, &fdRead, nullptr, nullptr, &tv);
+	}
+	
 	if (SOCKET_ERROR == ret)
 	{
 		XError("select!\n");

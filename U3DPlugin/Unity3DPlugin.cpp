@@ -67,7 +67,7 @@ void MyClient::AddTask(std::function<void()> pTask)
 //导出日志接口 - Log
 void SetLogPath(const char* pLogPath)
 {
-	XLog::SetFile(pLogPath, "w");
+	XLog::SetFileName(pLogPath, "w");
 }
 
 //----------------------------------------------------------------------------------------------------------------------------

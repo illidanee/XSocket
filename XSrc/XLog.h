@@ -1,6 +1,8 @@
 ﻿#ifndef __XLOG_H__
 #define __XLOG_H__
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <assert.h>
 #include <stdio.h>
 #include <mutex>
@@ -23,7 +25,7 @@ class XLog
 public:
 	static XLog& GetInstance();									//log必须使用类型，因为构造函数被私有。
 
-	static void SetFile(const char* pFile, const char* pMode);
+	static void SetFileName(const char* pFileName, const char* pMode);
 
 	template <typename... Args>
 	static void Info(const char* pFormat, Args... args)
@@ -62,11 +64,11 @@ public:
 			case XLogType::Info:
 			{
 				//输出到终端
-				printf("=>%-6s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Info", "   ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				printf("=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Info", "   ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 				printf(pFormat, args...);
 
 				//输出到文件
-				fprintf(log._File, "=>%-6s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Info", "   ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				fprintf(log._File, "=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Info", "   ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 				fprintf(log._File, pFormat, args...);
 				fflush(log._File);
 				break;
@@ -74,11 +76,11 @@ public:
 			case XLogType::Warn:
 			{
 				//输出到终端
-				printf("=>%-6s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Warn", " ! ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				printf("=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Warn", " ! ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 				printf(pFormat, args...);
 
 				//输出到文件
-				fprintf(log._File, "=>%-6s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Warn", " ! ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				fprintf(log._File, "=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Warn", " ! ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 				fprintf(log._File, pFormat, args...);
 				fflush(log._File);
 				break;
@@ -86,11 +88,11 @@ public:
 			case XLogType::Error:
 			{
 				//输出到终端
-				printf("=>%-6s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Error", " X ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				printf("=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Error", " X ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 				printf(pFormat, args...);
 
 				//输出到文件
-				fprintf(log._File, "=>%-6s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Error", " X ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
+				fprintf(log._File, "=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Error", " X ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
 				fprintf(log._File, pFormat, args...);
 				fflush(log._File);
 				break;

@@ -4,7 +4,7 @@
 
 int main()
 {
-	XLog::SetFile("./Client.log", "w");
+	XLog::SetFileName("./client.log", "w");
 
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 	XInfo("                                                               C++ Client                                                              \n");
@@ -14,7 +14,7 @@ int main()
 
 	MyClient client;
 	client.Open();
-	client.Connect("39.106.153.251", 9090);
+	client.Connect("192.168.0.99", 9090);
 
 	while (client.IsRun())
 	{

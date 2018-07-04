@@ -1,150 +1,195 @@
+#include "../XSrc/XCommon.h"
+#include "../XSrc/XTimer.h"
+#include "../XSrc/XSendByteStream.h"
+#include "../XSrc/XThread.h"
+#include "MyClient.h"
+#include <vector>
 #include <iostream>
 #include <thread>
 #include <atomic>
 #include <chrono>
-#include "MyClient.h"
-#include "../XSrc/Timer/XTimer.h"
-#include "../XSrc/ByteStream/XSendByteStream.h"
 
-XTimer timer;
-
-const int cCount = 4;
-const int tCount = 1;
-bool bRun = true;
-MyClient* client[cCount];
+const int g_tCount = 1;
+const int g_cCount = 8000;
 
 std::atomic_int readyCount = 0;
+std::atomic_int connectCount = 0;
 std::atomic_int sendCount = 0;
 
-void CmdThread()
+void CmdThread(XThread* pThread)
 {
-	while (true)
+	while (pThread->IsRun())
 	{
 		char buffer[32] = {};
 		scanf("%s", buffer);
 		if (0 == strcmp(buffer, "Exit"))
 		{
-			bRun = false;
+			pThread->Exit();
 			break;
 		}
 	}
 }
 
-void RecvThread(int begin, int end)
-{
-	while (bRun)
-	{
-		for (int i = begin; i < end; ++i)
-		{
-			client[i]->OnRun();
-		}
-	}
-}
-
-void SendThread(int begin, int end)
-{
-	XSendByteStream s(1024);
-	s.WriteInt8(1);
-	s.WriteInt16(2);
-	s.WriteInt32(3);
-	s.WriteInt64(4);
-	s.WriteFloat(5.6f);
-	s.WriteDouble(7.8);
-	char a[] = "hahah";
-	s.WriteArray(a, strlen(a));
-	int b[] = { 1, 3, 5 };
-	s.WriteArray(b, sizeof(b));
-	s.Finish(MSG_BYTESTREAM);
-
-	while (bRun)
-	{
-		for (int i = begin; i < end; ++i)
-		{
-			if (client[i]->SendStream(&s) >= 0)
-				sendCount++;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(99));
-	}
-
-	return;
-}
-
-void ClientThread(int id)
+void ClientThread(XThread* pThread, int id)
 {
 	//分段
-	int begin = id * cCount / tCount;
-	int end = begin + cCount / tCount;
+	std::vector<MyClient*> clients(g_cCount);
 
 	//创建客户端
-	for (int i = begin; i < end; ++i)
+	for (int i = 0; i < g_cCount; ++i)
 	{
-		client[i] = new MyClient();
+		if (!pThread->IsRun())
+			break;
+
+		clients[i] = new MyClient();
+
+		pThread->Sleep(0);
 	}
 
 	//连接服务器
-	for (int i = begin; i < end; ++i)
+	for (int i = 0; i < g_cCount; ++i)
 	{
-		client[i]->Open();
-		client[i]->Connect("192.168.0.99", 9090);
+		if (!pThread->IsRun())
+			break;
+		
+		clients[i]->Open();
+		clients[i]->Connect("192.168.0.99", 9090);
+		connectCount++;
+
+		pThread->Sleep(0);
 	}
 
 	//使用原子计数器优化线程等待。
 	readyCount++;
-	while (readyCount < tCount)
+	while (readyCount < g_tCount)
 	{
-		std::this_thread::sleep_for(std::chrono::microseconds(1000));
+		pThread->Sleep(0);
 	}
 
-	//开启数据接收线程
-	std::thread rRecv = std::thread(RecvThread, begin, end);
-	rRecv.detach();
+	MsgHeart heart;
+	heart.no = 123;
+	strcpy(heart.name, "LiLei");
+	strcpy(heart.pwd, "HanMeiMei");
 
-	//开始发送数据
-	SendThread(begin, end);
+	std::chrono::time_point<std::chrono::system_clock> t0 = std::chrono::system_clock::now();
+	std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();
+	time_t tt = 0;
 
-	for (int i = begin; i < end; ++i)
+	while (pThread->IsRun())
 	{
-		client[i]->Close();
-		delete client[i];
+		for (int i = 0; i < g_msgCount; ++i)
+		{
+			for (int i = 0; i < g_cCount; ++i)
+			{
+				if (clients[i]->IsRun())
+				{
+					if (clients[i]->Send(&heart))
+						sendCount++;
+				}
+			}
+		}
+
+		for (int i = 0; i < g_cCount; ++i)
+		{
+			if (clients[i]->IsRun())
+			{
+				clients[i]->OnRun();
+			}
+		}
+
+		t1 = std::chrono::system_clock::now();
+		std::chrono::microseconds dt = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0);
+		t0 = t1;
+
+		tt += dt.count();
+
+		if (tt > 1000000)
+		{
+			for (int i = 0; i < g_cCount; ++i)
+			{
+				if (clients[i]->IsRun())
+				{
+					clients[i]->ResetCount();
+				}
+			}
+
+			tt -= 1000000;
+		}
+
+		pThread->Sleep(1);  //999防止发送数据过快，写满缓冲区造成无法继续发送数据。
+	}
+
+	for (int i = 0; i < g_cCount; ++i)
+	{
+		clients[i]->Disconnect();
+		clients[i]->Close();
+		delete clients[i];
 	}
 }
 
 int main()
 {
-	XLog::SetFile("./Client.log", "w");
+	XLog::SetFileName("./client.log", "w");
 
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 	XInfo("                                                               C++ Client                                                              \n");
 	XInfo("                                                                                                        Designed by Org.illidan        \n");
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 
-	timer.XInit();
-
 	//启动命令线程
-	std::thread cmdThread(CmdThread);
-	cmdThread.detach();
+	XThread cmdThread;
+	cmdThread.Start(
+		nullptr, 
+		[](XThread* pThread) {
+			CmdThread(pThread);
+		},
+		nullptr);
 
 	//启动客户端线程
-	std::thread clientThread[tCount];
-	for (int i = 0; i < tCount; ++i)
+	std::vector<XThread*> clientThreads;
+	for (int i = 0; i < g_tCount; ++i)
 	{
-		clientThread[i] = std::thread(ClientThread, i);
-		clientThread[i].detach();
+		XThread* pThread = new XThread();
+		pThread->Start(
+			nullptr,
+			[i](XThread* pThread) {
+				ClientThread(pThread, i);
+			},
+			nullptr);
+
+		clientThreads.push_back(pThread);
 	}
 
-	//打印信息
-	while (bRun)
+	//打印统计信息
+	std::chrono::time_point<std::chrono::system_clock> t0 = std::chrono::system_clock::now();
+	std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();
+	time_t tt = 0;
+
+	while (cmdThread.IsRun())
 	{
-		if (timer.GetTime() > 1.0)
+		t1 = std::chrono::system_clock::now();
+		std::chrono::microseconds dt = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0);
+		t0 = t1;
+
+		tt += dt.count();
+
+		if (tt > 1000000)
 		{
 			XInfo("| send Num = %7d  |\n", (int)sendCount);
 			sendCount = 0;
-			timer.UpdateTime();
+
+			tt -= 1000000;
 		}
 
-		std::this_thread::sleep_for(std::chrono::microseconds(1));
+		cmdThread.Sleep(1);
 	}
 
-	timer.XDone();
+	//停止客户端线程
+	for (int i = 0; i < g_tCount; ++i)
+	{
+		clientThreads[i]->Stop();
+		delete clientThreads[i];
+	}
+
 	return 0;
 }

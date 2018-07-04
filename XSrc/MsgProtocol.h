@@ -39,4 +39,17 @@ struct MsgHeader
 	}
 };
 
+struct MsgHeart : public MsgHeader
+{
+	MsgHeart()
+	{
+		_MsgLength = sizeof(MsgHeart);
+		_MsgType = MSG_HEART;
+	}
+	int no;
+	char name[16];
+	char pwd[16];
+	char other[56];
+};
+
 #endif

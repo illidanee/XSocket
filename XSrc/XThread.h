@@ -17,6 +17,9 @@ public:
 	void Exit();
 
 	bool IsRun();
+
+	void Sleep(time_t dt);
+
 private:
 	void OnWork();
 
