@@ -1,4 +1,5 @@
 ﻿#include "../XSrc/XCommon.h"
+#include "../XSrc/XConfig.h"
 #include "../XSrc/XSignal.h"
 #include "MyServer.h"
 
@@ -24,18 +25,11 @@ int ReadIntArgs(int argc, char* args[], int index, int def)
 
 int main(int argc, char* args[])
 {
-	////参数信息
-	//if (argc < 4)
-	//{
-	//	return 0;
-	//}
-
-	//const char* ip = ReadStrArgs(argc, args, 1, "Any");
-	//short port = ReadIntArgs(argc, args, 2, 9090);
-	//int lqn = ReadIntArgs(argc, args, 3, 999);
-
-	//if (strcmp(ip, "Any") == 0)
-	//	ip = nullptr;
+	//解析参数。
+	XConfig::Instance().Init(argc, args);
+	const char* ip = XConfig::Instance().GetStringArg("ip", nullptr);
+	short port = XConfig::Instance().GetIntArg("port", 9090);
+	int lqn = XConfig::Instance().GetIntArg("lqn", 1000);
 
 	//日志信息
 	XLog::GetInstance();
@@ -61,7 +55,7 @@ int main(int argc, char* args[])
 	MyServer* server = new MyServer;
 
 	//开启服务器
-	server->Start(nullptr, 9090, 1000);
+	server->Start(ip, port, lqn);
 
 	while (true)
 	{
