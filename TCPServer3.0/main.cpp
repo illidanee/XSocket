@@ -24,21 +24,23 @@ int ReadIntArgs(int argc, char* args[], int index, int def)
 
 int main(int argc, char* args[])
 {
-	//参数信息
-	if (argc < 4)
-	{
-		return 0;
-	}
+	////参数信息
+	//if (argc < 4)
+	//{
+	//	return 0;
+	//}
 
-	const char* ip = ReadStrArgs(argc, args, 1, "Any");
-	short port = ReadIntArgs(argc, args, 2, 9090);
-	int lqn = ReadIntArgs(argc, args, 3, 999);
+	//const char* ip = ReadStrArgs(argc, args, 1, "Any");
+	//short port = ReadIntArgs(argc, args, 2, 9090);
+	//int lqn = ReadIntArgs(argc, args, 3, 999);
 
-	if (strcmp(ip, "Any") == 0)
-		ip = nullptr;
+	//if (strcmp(ip, "Any") == 0)
+	//	ip = nullptr;
 
 	//日志信息
+	XLog::GetInstance();
 	XLog::SetFile("./Server.log", "w");
+	
 	XInfo("---------------------------------------------------------------------------------------------------------------------------------------\n");
 	XInfo("                                                               C++ Server                                                              \n");
 	XInfo("                                                                                                        Designed by Org.illidan        \n");
@@ -59,7 +61,7 @@ int main(int argc, char* args[])
 	MyServer* server = new MyServer;
 
 	//开启服务器
-	server->Start(ip, port, lqn);
+	server->Start(nullptr, 9090, 1000);
 
 	while (true)
 	{

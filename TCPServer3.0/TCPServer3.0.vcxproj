@@ -73,15 +73,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)/bin/$(Configuration)/$(Platform)/</OutDir>
     <IntDir>$(SolutionDir)/temp/$(Configuration)/$(Platform)/$(ProjectName)/</IntDir>
-    <IncludePath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\XSocket\SLog;C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\XSocket\x64\Debug;C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)/bin/$(Configuration)/$(Platform)/</OutDir>
     <IntDir>$(SolutionDir)/temp/$(Configuration)/$(Platform)/$(ProjectName)/</IntDir>
-    <IncludePath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\XSocket\SLog;C:\Program Files\MariaDB\MariaDB Connector C 64-bit\include;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\XSocket\x64\Debug;C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -109,7 +109,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libmariadb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmariadb.lib;SLog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,7 +124,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libmariadb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmariadb.lib;SLog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

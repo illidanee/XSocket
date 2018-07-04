@@ -25,9 +25,6 @@
     <ClCompile Include="..\XSrc\XClient.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
-    <ClCompile Include="..\XSrc\XLog.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
     <ClCompile Include="..\XSrc\XMariaDB.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
@@ -76,6 +73,9 @@
     <ClCompile Include="..\XSrc\XTimer.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
+    <ClCompile Include="..\XSrc\XLog.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyServer.h">
@@ -100,9 +100,6 @@
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XIServerEvent.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XLog.h">
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XMariaDB.h">
@@ -157,6 +154,9 @@
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XTimer.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XLog.h">
       <Filter>XSrc</Filter>
     </ClInclude>
   </ItemGroup>
