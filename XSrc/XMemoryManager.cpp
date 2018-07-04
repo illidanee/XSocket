@@ -19,10 +19,9 @@ XMemoryManager::XMemoryManager()
 	InitMemoryPools(256 + 1, 512, &_MemoryPool512);
 	InitMemoryPools(512 + 1, 1024, &_MemoryPool1024);
 	InitMemoryPools(1024 + 1, 10240, &_MemoryPool10240);
-	//InitMemoryPools(16384 + 1, 32768, &_MemoryPool32768);
 }
 
-XMemoryManager::XMemoryManager(const XMemoryManager& that)
+XMemoryManager::XMemoryManager(const XMemoryManager&)
 {
 
 }
@@ -32,7 +31,7 @@ XMemoryManager::~XMemoryManager()
 
 }
 
-XMemoryManager& XMemoryManager::operator=(const XMemoryManager& that)
+XMemoryManager& XMemoryManager::operator=(const XMemoryManager&)
 {
 
 	return *this;
@@ -61,7 +60,7 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 		pMemoryBlock->_pNext = nullptr;
 		pMemoryBlock->_nRef = 1;
 
-		XPrint("--------------------------------------------- AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XInfo(" - - - - - - - - - - - - - - - - - - - AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		return (char*)pMemoryBlock + sizeof(XMemoryBlock);
 	}
@@ -78,7 +77,7 @@ void XMemoryManager::FreeMemory(void* pMem)
 	}
 	else
 	{
-		XPrint("--------------------------------------------- FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		XInfo(" - - - - - - - - - - - - - - - - - - - FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		//没有内存池可以使用。
 		free(pMemoryBlock);

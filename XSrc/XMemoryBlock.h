@@ -1,14 +1,7 @@
 ﻿#ifndef __XMEMORYBLOCK_H__
 #define __XMEMORYBLOCK_H__
 
-#ifndef XPrint
-#include <stdio.h>
-#ifdef _DEBUG
-#define XPrint(...) printf(__VA_ARGS__)
-#else
-#define XPrint(...) printf(__VA_ARGS__)
-#endif
-#endif
+#include "XLog.h"
 
 class XMemoryPool;
 

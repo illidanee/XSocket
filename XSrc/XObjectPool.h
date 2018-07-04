@@ -4,14 +4,7 @@
 #include <assert.h>
 #include <mutex>
 
-#ifndef XPrint
-#include <stdio.h>
-#ifdef _DEBUG
-#define XPrint(...) printf(__VA_ARGS__)
-#else
-#define XPrint(...) printf(__VA_ARGS__)
-#endif
-#endif
+#include "XLog.h"
 
 template <size_t nCount, typename Type>
 class XObjectPool
@@ -54,7 +47,7 @@ public:
 	{
 		assert(nullptr == _pBuffer);
 
-		XPrint("XObjectPool Init : _nCount = %d, _nSize = %d \n", (int)_nCount, (int)_nSize);
+		//XInfo(" - - - - - - - - - - - - - - - - - - - XObjectPool Init : _nCount = %d, _nSize = %d \n", (int)_nCount, (int)_nSize);
 
 		std::lock_guard<std::mutex> lock(_mutex);
 
@@ -118,7 +111,7 @@ public:
 			pObjectBlock->_pNext = nullptr;
 			pObjectBlock->_nRef = 1;
 
-			XPrint("AllocObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
+			XInfo(" - - - - - - - - - - - - - - - - - - - AllocObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
 		}
 		else
 		{
@@ -141,7 +134,7 @@ public:
 		std::lock_guard<std::mutex> lock(_mutex);
 		if (-1 == pObjectBlock->_nID)
 		{
-			XPrint("FreeObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
+			XInfo(" - - - - - - - - - - - - - - - - - - - FreeObjectMemory : Addr = %p, ID = %d, Size = %d \n", pObjectBlock, (int)pObjectBlock->_nID, (int)pObjectBlock->_nSize);
 			//使用系统申请的内存块。
 			delete[] pObjectBlock;
 		}

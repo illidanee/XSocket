@@ -10,7 +10,7 @@
 #include "XThread.h"
 #include <map>
 
-class XServer : public XIServerEvent, public XObject<_SERVER_SIZE_, XServer>
+class XServer : public XIServerEvent
 {
 public:
 	XServer(int id);
@@ -48,6 +48,7 @@ private:
 	time_t _CurTime;												//本次循环服务器时间
 	time_t _TimeDelta;												//每次循环服务器时间间隔
 
+	//此集合占用大量的内存,使对象大小变大。
 	fd_set _fdSetCache;												//fd_set 缓存
 	bool _ClientChange;												//是否客户端变化
 	SOCKET _MaxSocketID;											//客户端最大Socket
