@@ -14,7 +14,7 @@ private:
 	XTMemoryPool<20480, 64>		_MemoryPool64;
 	XTMemoryPool<10240, 128>	_MemoryPool128;
 	XTMemoryPool<8, 256>		_MemoryPool256;
-	XTMemoryPool<8, 512>		_MemoryPool512;
+	XTMemoryPool<20480, 512>		_MemoryPool512;
 	XTMemoryPool<8, 1024>		_MemoryPool1024;
 	XTMemoryPool<20480, 10240>	_MemoryPool10240;
 
