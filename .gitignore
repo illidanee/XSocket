@@ -39,3 +39,5 @@ U3DPluginForAndroid/x64/*
 
 TestPlugin/Library/*
 TestPlugin/Temp/*
+
+*.log__*

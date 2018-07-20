@@ -11,7 +11,7 @@
 class XClient : public XObject<10240, XClient>, public std::enable_shared_from_this<XClient>
 {
 public:
-	XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj);
+	XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj, int nHeartTime = _XCLIENT_HEART_TIME_, int nSendTime = _XCLIENT_SEND_TIME_, int nRecvBufferSize = _XCLIENT_RECV_BUFFER_SIZE_, int nSendBufferSize = _XCLIENT_SEND_BUFFER_SIZE_);
 	~XClient();
 
 	SOCKET GetSocket() { return _Socket; }
@@ -44,12 +44,13 @@ private:
 	XIGlobalEvent* _pGlobalObj;					//全局对象
 	XIServerEvent* _pServerObj;					//服务对象
 
+	time_t _CurHeartTime;						//心跳计时器
+	time_t _HeartTime;							//心跳总时间
+	time_t _CurSendTime;						//发送计时器
+	time_t _SendTime;							//发送总时间
+
 	XBuffer _RecvBuffer;						//接收缓冲区对象
 	XBuffer _SendBuffer;						//发送缓冲区对象
-
-private:
-	time_t	_HeartTime;							//心跳计时器
-	time_t	_SendTime;							//定时发送数据计时器
 };
 
 

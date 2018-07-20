@@ -44,7 +44,8 @@ XMariaDB::~XMariaDB()
 
 void XMariaDB::Init()
 {
-	for (int i = 0; i < _MARIADB_CONNECT_NUM_; ++i)
+	int nMariaDBConnectNumber = XConfig::Instance().GetIntArg("DBCN", _XMARIADB_CONNECT_NUM_);
+	for (int i = 0; i < nMariaDBConnectNumber; ++i)
 	{
 		XMariaDBConnect* pConnect = new XMariaDBConnect();
 		_Connects.push_back(pConnect);

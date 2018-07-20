@@ -163,7 +163,7 @@ void XServer::OnRun(XThread* pThread)
 		//memcpy(&fdWrite, &fdRead, sizeof(fd_set));
 
 		//设置1毫秒间隔，可以提高客户端连接select效率。
-		timeval tv = { 0, 1 };						//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
+		timeval tv = { 0, 0 };						//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
 		int ret;
 		if (bHasCanWriteClient)
 			ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, nullptr, &tv);

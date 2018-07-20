@@ -10,7 +10,7 @@
 #include <chrono>
 
 const int g_tCount = 1;
-const int g_cCount = 8000;
+const int g_cCount = 10000;
 
 std::atomic_int readyCount = 0;
 std::atomic_int connectCount = 0;
@@ -53,7 +53,7 @@ void ClientThread(XThread* pThread, int id)
 			break;
 		
 		clients[i]->Open();
-		clients[i]->Connect("192.168.0.99", 9090);
+		clients[i]->Connect("192.168.0.99", 9091);
 		connectCount++;
 
 		pThread->Sleep(0);

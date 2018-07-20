@@ -1,7 +1,9 @@
 ﻿#ifndef __XLOG_H__
 #define __XLOG_H__
 
-#define _CRT_SECURE_NO_WARNINGS
+#ifdef _WIN32
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <assert.h>
 #include <stdio.h>

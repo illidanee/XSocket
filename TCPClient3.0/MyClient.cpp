@@ -1,7 +1,7 @@
 #include "MyClient.h"
 
 time_t g_time = 1000;
-time_t g_msgCount = 100;
+time_t g_msgCount = 50;
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {

@@ -2,7 +2,15 @@
 
 XTCPServer::XTCPServer()
 	:
-	_Socket(INVALID_SOCKET)
+	_Socket(INVALID_SOCKET),
+	_IP(_IP_),
+	_Port(_PORT_),
+	_LQN(_LQN_),
+	_ServerThreadSize(_XSERVER_THREAD_SIZE_),
+	_ClientHeartTime(_XCLIENT_HEART_TIME_),
+	_ClientSendTime(_XCLIENT_SEND_TIME_),
+	_ClientRecvBufferSize(_XCLIENT_RECV_BUFFER_SIZE_),
+	_ClientSendBufferSize(_XCLIENT_SEND_BUFFER_SIZE_)
 {
 }
 
@@ -10,7 +18,38 @@ XTCPServer::~XTCPServer()
 {
 }
 
-int XTCPServer::Start(const char* ip, short port, int lqn)
+int XTCPServer::Init()
+{
+	//获取服务器配置
+	_IP = XConfig::Instance().GetStringArg("IP", _IP_);
+	_Port = XConfig::Instance().GetIntArg("Port", _PORT_);
+	_LQN = XConfig::Instance().GetIntArg("LQN", _LQN_);
+
+	_ServerThreadSize = XConfig::Instance().GetIntArg("ServerThreadSize", _XSERVER_THREAD_SIZE_);
+	_ClientHeartTime = XConfig::Instance().GetIntArg("ClientHeartTime", _XCLIENT_HEART_TIME_);
+	_ClientSendTime = XConfig::Instance().GetIntArg("ClientSendTime", _XCLIENT_SEND_TIME_);
+	_ClientRecvBufferSize = XConfig::Instance().GetIntArg("ClientRecvBufferSize", _XCLIENT_RECV_BUFFER_SIZE_);
+	_ClientSendBufferSize = XConfig::Instance().GetIntArg("ClientSendBufferSize", _XCLIENT_SEND_BUFFER_SIZE_);
+
+	XInfo("    Server Configure Infos: \n");
+	XInfo("        %32s = %-32s\n", "IP", _IP);
+	XInfo("        %32s = %-32d\n", "Port", _Port);
+	XInfo("        %32s = %-32d\n", "Lqn", _LQN);
+	XInfo("        %32s = %-32d\n", "ServerThreadSize", _ServerThreadSize);
+	XInfo("        %32s = %-32d\n", "ClientHeartTime", _ClientHeartTime);
+	XInfo("        %32s = %-32d\n", "ClientSendTime", _ClientSendTime);
+	XInfo("        %32s = %-32d\n", "ClientRecvBufferSize", _ClientRecvBufferSize);
+	XInfo("        %32s = %-32d\n", "ClientSendBufferSize", _ClientSendBufferSize);
+
+	if (_IP && strcmp("Any", _IP) == 0)
+	{
+		_IP = nullptr;
+	}
+
+	return 0;
+}
+
+int XTCPServer::Start()
 {
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
 
@@ -19,11 +58,11 @@ int XTCPServer::Start(const char* ip, short port, int lqn)
 
 	//初始化服务器
 	Open();
-	Bind(ip, port);
-	Listen(lqn);
+	Bind(_IP, _Port);
+	Listen(_LQN);
 
 	//开启服务线程
-	for (int i = 0; i < _SERVER_SIZE_; ++i)
+	for (int i = 0; i < _ServerThreadSize; ++i)
 	{
 		//1-不使用对象池。
 		//std::shared_ptr<XReceiveServer> pServer = std::make_shared<XReceiveServer>();
@@ -191,7 +230,7 @@ void XTCPServer::Accept()
 				pLessServer = pServer;
 			}
 		}
-		std::shared_ptr<XClient> pClient(new XClient(client, this, pLessServer.get()));
+		std::shared_ptr<XClient> pClient(new XClient(client, this, pLessServer.get(), _ClientHeartTime, _ClientSendTime, _ClientRecvBufferSize, _ClientSendBufferSize));
 		pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
 	}
 }

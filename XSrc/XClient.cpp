@@ -1,14 +1,16 @@
 ﻿#include "XClient.h"
 
-XClient::XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj)
+XClient::XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj, int nHeartTime, int nSendTime, int nRecvBufferSize, int nSendBufferSize)
 	:
 	_Socket(client),
 	_pGlobalObj(pGlobalObj),
 	_pServerObj(pServerObj),
-	_RecvBuffer(_RECV_BUFFER_SIZE_),
-	_SendBuffer(_SEND_BUFFER_SIZE_),
-	_HeartTime(0),
-	_SendTime(0)
+	_CurHeartTime(0),
+	_HeartTime(nHeartTime),
+	_CurSendTime(0),
+	_SendTime(nSendTime),
+	_RecvBuffer(nRecvBufferSize),
+	_SendBuffer(nSendBufferSize)
 {
 }
 
@@ -87,13 +89,13 @@ bool XClient::HasData()
 
 void XClient::ResetHeartTime()
 {
-	_HeartTime = 0;
+	_CurHeartTime = 0;
 }
 
 bool XClient::CheckHeartTime(time_t t)
 {
-	_HeartTime += t;
-	if (_HeartTime >= _XCLIENT_HEART_TIME_)
+	_CurHeartTime += t;
+	if (_CurHeartTime >= _XCLIENT_HEART_TIME_)
 	{
 		//XInfo("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
 		return true;
@@ -104,13 +106,13 @@ bool XClient::CheckHeartTime(time_t t)
 
 void XClient::ResetSendTime()
 {
-	_SendTime = 0;
+	_CurSendTime = 0;
 }
 
 void XClient::CheckSendTime(time_t t)
 {
-	_SendTime += t;
-	if (_SendTime >= _XCLIENT_SEND_TIME_)
+	_CurSendTime += t;
+	if (_CurSendTime >= _XCLIENT_SEND_TIME_)
 	{
 		//XInfo("CheckSendTime! \n");
 		SendData();

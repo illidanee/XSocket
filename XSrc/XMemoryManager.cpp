@@ -60,7 +60,7 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 		pMemoryBlock->_pNext = nullptr;
 		pMemoryBlock->_nRef = 1;
 
-		XInfo(" - - - - - - - - - - - - - - - - - - - AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		//XInfo(" - - - - - - - - - - - - - - - - - - - AllocMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		return (char*)pMemoryBlock + sizeof(XMemoryBlock);
 	}
@@ -77,7 +77,7 @@ void XMemoryManager::FreeMemory(void* pMem)
 	}
 	else
 	{
-		XInfo(" - - - - - - - - - - - - - - - - - - - FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
+		//XInfo(" - - - - - - - - - - - - - - - - - - - FreeMemory : Addr = %p, ID = %d, Size = %d \n", pMemoryBlock, (int)pMemoryBlock->_nID, (int)pMemoryBlock->_nSize);
 
 		//没有内存池可以使用。
 		free(pMemoryBlock);

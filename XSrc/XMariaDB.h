@@ -2,6 +2,7 @@
 #define __XMARIADB_H__
 
 #include "XMariaDBConnect.h"
+#include "XConfig.h"
 
 #include <list>
 
