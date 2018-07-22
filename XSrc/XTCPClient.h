@@ -15,7 +15,7 @@ public:
 	XTCPClient();
 	~XTCPClient();
 
-	void Open();
+	bool Open();
 	bool Connect(const char* ip, unsigned short port);
 	void Disconnect();
 	void Close();

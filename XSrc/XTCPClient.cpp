@@ -12,22 +12,22 @@ XTCPClient::~XTCPClient()
 
 }
 
-void XTCPClient::Open()
+bool XTCPClient::Open()
 {
 	XNet::Go();
 
 	assert(_Client == nullptr);
 
-	if (_Client == nullptr)
+	SOCKET _Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (SOCKET_ERROR == _Socket)
 	{
-		SOCKET _Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-		if (SOCKET_ERROR == _Socket)
-		{
-			XError("socket!\n");
-		}
-
-		_Client.reset(new XClient(_Socket, this, this));
+		XError("socket!\n");
+		return false;
 	}
+
+	_Client.reset(new XClient(_Socket, this, this));
+
+	return true;
 }
 
 bool XTCPClient::Connect(const char* ip, unsigned short port)

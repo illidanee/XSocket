@@ -52,9 +52,8 @@ void ClientThread(XThread* pThread, int id)
 		if (!pThread->IsRun())
 			break;
 		
-		clients[i]->Open();
-		clients[i]->Connect("192.168.0.99", 9091);
-		connectCount++;
+		if (clients[i]->Open() && clients[i]->Connect("192.168.0.99", 9091))
+			connectCount++;
 
 		pThread->Sleep(0);
 	}
