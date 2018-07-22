@@ -70,11 +70,13 @@ bool MyClient::Send(MsgHeader* pMsgHeader)
 {
 	if (_nCount > 0)
 	{
+		((MsgHeart*)pMsgHeader)->no = _MsgID;
 		if (0 == SendData(pMsgHeader))
 		{
 			_nCount--;
+			_MsgID++;
 			return true;
-		}	
+		}
 	}
 
 	return false;

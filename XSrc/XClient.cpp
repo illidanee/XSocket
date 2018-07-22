@@ -10,7 +10,8 @@ XClient::XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServe
 	_CurSendTime(0),
 	_SendTime(nSendTime),
 	_RecvBuffer(nRecvBufferSize),
-	_SendBuffer(nSendBufferSize)
+	_SendBuffer(nSendBufferSize),
+	_CurMsgID(0)
 {
 }
 

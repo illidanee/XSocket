@@ -51,6 +51,9 @@ private:
 
 	XBuffer _RecvBuffer;						//接收缓冲区对象
 	XBuffer _SendBuffer;						//发送缓冲区对象
+
+public:
+	int _CurMsgID;								//当前消息ID
 };
 
 

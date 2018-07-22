@@ -15,6 +15,7 @@ public:
 	{
 		_curTime = 0;
 		_nCount = g_msgCount;
+		_MsgID = 0;
 	}
 	void DoMsg(MsgHeader* pMsgHeader);
 
@@ -34,6 +35,7 @@ private:
 
 	time_t _curTime;
 	time_t _nCount;
+	int _MsgID;
 };
 
 #endif

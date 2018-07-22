@@ -71,6 +71,12 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	case MSG_HEART:
 	{
+		if (pClient->_CurMsgID != ((MsgHeart*)pMsgHeader)->no)
+		{
+			XWarn("************** Msg ID is not match。\n");
+		}
+		pClient->_CurMsgID++;
+
 		OnNetSend(pClient);
 		OnNetMsgDone(pClient, pMsgHeader);
 		// ...

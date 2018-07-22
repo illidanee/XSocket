@@ -22,6 +22,16 @@ void XConfig::Init(int argc, char* args[])
 	}
 }
 
+bool XConfig::HasKey(const char* key)
+{
+	std::map<std::string, std::string>::iterator it = _Args.find(key);
+	if (it != _Args.end())
+	{
+		return true;
+	}
+	return false;
+}
+
 const char* XConfig::GetStringArg(const char* key, const char* def)
 {
 	std::map<std::string, std::string>::iterator it = _Args.find(key);

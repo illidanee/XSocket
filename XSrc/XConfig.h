@@ -28,6 +28,7 @@ public:
 
 	void Init(int argc, char* args[]);
 
+	bool HasKey(const char* key);
 	const char* GetStringArg(const char* key, const char* def);
 	int GetIntArg(const char* key, int def);
 
