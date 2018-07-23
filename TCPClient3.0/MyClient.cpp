@@ -70,7 +70,7 @@ bool MyClient::Send(MsgHeader* pMsgHeader)
 {
 	if (_nCount > 0)
 	{
-		((MsgHeart*)pMsgHeader)->no = _MsgID;
+		((MsgHeart*)pMsgHeader)->_ID = _MsgID;
 		if (0 == SendData(pMsgHeader))
 		{
 			_nCount--;

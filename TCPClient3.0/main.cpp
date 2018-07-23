@@ -66,9 +66,9 @@ void ClientThread(XThread* pThread, int id)
 	}
 
 	MsgHeart heart;
-	heart.no = 123;
-	strcpy(heart.name, "LiLei");
-	strcpy(heart.pwd, "HanMeiMei");
+	heart._ID = 123;
+	strcpy(heart._Name, "LiLei");
+	strcpy(heart._Pwd, "HanMeiMei");
 
 	std::chrono::time_point<std::chrono::system_clock> t0 = std::chrono::system_clock::now();
 	std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();

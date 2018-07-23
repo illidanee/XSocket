@@ -31,6 +31,9 @@ public:
 	virtual void OnNetSend(std::shared_ptr<XClient> pClient);
 	virtual void OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
 	virtual void OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
+
+public:
+	bool _CheckMsgID;
 };
 
 #endif

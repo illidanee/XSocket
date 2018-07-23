@@ -10,6 +10,7 @@ MyServer::MyServer()
 	_RecvPackageNum = 0;
 	_DonePackageNum = 0;
 	_PackageNum = 0;
+	_CheckMsgID = false;
 }
 
 MyServer::~MyServer()
@@ -71,7 +72,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 	break;
 	case MSG_HEART:
 	{
-		if (pClient->_CurMsgID != ((MsgHeart*)pMsgHeader)->no)
+		if (pClient->_CurMsgID != ((MsgHeart*)pMsgHeader)->_ID)
 		{
 			XWarn("************** Msg ID is not match。\n");
 		}

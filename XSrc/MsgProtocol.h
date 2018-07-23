@@ -46,10 +46,10 @@ struct MsgHeart : public MsgHeader
 		_MsgLength = sizeof(MsgHeart);
 		_MsgType = MSG_HEART;
 	}
-	int no;
-	char name[16];
-	char pwd[16];
-	char other[56];
+	int _ID;
+	char _Name[16];
+	char _Pwd[16];
+	char _Other[56];
 };
 
 #endif
