@@ -2,66 +2,16 @@
 
 MyServer::MyServer()
 {
-	//初始化其他
-	_Timer.XInit();
-	_ClientNum = 0;
-	_RecvNum = 0;
-	_SendNum = 0;
-	_RecvPackageNum = 0;
-	_DonePackageNum = 0;
-	_PackageNum = 0;
-	_CheckMsgID = false;
+
 }
 
 MyServer::~MyServer()
 {
-	_Timer.XDone();
+
 }
 
-void MyServer::OnRunLoopBegin()
+void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
-	if (_Timer.GetTime() > 1.0)
-	{
-		XInfo("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
-		_RecvNum = 0;
-		_SendNum = 0;
-		_RecvPackageNum = 0;
-		_DonePackageNum = 0;
-		_Timer.UpdateTime();
-	}
-}
-
-void MyServer::OnClientJoin(std::shared_ptr<XClient> pClient)
-{
-	++_ClientNum;
-
-	//MsgHeart msg;
-	//pClient->SendData(&msg);
-}
-
-void MyServer::OnClientLeave(std::shared_ptr<XClient> pClient)
-{
-	--_ClientNum;
-}
-
-void MyServer::OnNetRecv(std::shared_ptr<XClient> pClient)
-{
-	++_RecvNum;
-}
-
-void MyServer::OnNetSend(std::shared_ptr<XClient> pClient)
-{
-	++_SendNum;
-}
-
-//这里地方的pMsgHeader地址上的内存不安全。随时可能被释放。如果假如任务系统延迟处理会有危险。
-void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
-{
-	pClient->ResetHeartTime();
-
-	++_RecvPackageNum;
-	++_PackageNum;
-
 	//处理客户端请求
 	switch (pMsgHeader->_MsgType)
 	{
@@ -191,7 +141,7 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 				//delete[] pBuffer;
 				return;
 			}
-			
+
 			//查询是否已经注册
 			int num = connect->SearchStudentByUserName(pUserName);
 			if (num < 0)
@@ -757,10 +707,4 @@ void MyServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHea
 		XWarn("default Msg。");
 	}
 	}
-}
-
-void MyServer::OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
-{
-	++_DonePackageNum;
-	--_PackageNum;
 }

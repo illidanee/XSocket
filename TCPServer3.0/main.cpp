@@ -1,6 +1,5 @@
 ﻿#include "../XSrc/XCommon.h"
 #include "../XSrc/XConfig.h"
-#include "../XSrc/XSignal.h"
 #include "MyServer.h"
 
 #ifndef _WIN32
@@ -49,5 +48,7 @@ int main(int argc, char* args[])
 		}
 	}
 
+	//销毁服务器
+	server->Done();
 	return 0;
 }

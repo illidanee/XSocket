@@ -46,6 +46,22 @@ int XTCPServer::Init()
 		_IP = nullptr;
 	}
 
+	//初始化其他
+	_Timer.XInit();
+	_ClientNum = 0;
+	_RecvNum = 0;
+	_SendNum = 0;
+	_RecvPackageNum = 0;
+	_DonePackageNum = 0;
+	_PackageNum = 0;
+
+	return 0;
+}
+
+int XTCPServer::Done()
+{
+	_Timer.XDone();
+
 	return 0;
 }
 
@@ -107,6 +123,64 @@ int XTCPServer::Stop()
 
 	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() End \n");
 	return 0;
+}
+
+void XTCPServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+{
+
+}
+
+void XTCPServer::OnRunLoopBegin()
+{
+	if (_Timer.GetTime() > 1.0)
+	{
+		XInfo("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
+		_RecvNum = 0;
+		_SendNum = 0;
+		_RecvPackageNum = 0;
+		_DonePackageNum = 0;
+		_Timer.UpdateTime();
+	}
+}
+
+void XTCPServer::OnClientJoin(std::shared_ptr<XClient> pClient)
+{
+	++_ClientNum;
+
+	//MsgHeart msg;
+	//pClient->SendData(&msg);
+}
+
+void XTCPServer::OnClientLeave(std::shared_ptr<XClient> pClient)
+{
+	--_ClientNum;
+}
+
+void XTCPServer::OnNetRecv(std::shared_ptr<XClient> pClient)
+{
+	++_RecvNum;
+}
+
+void XTCPServer::OnNetSend(std::shared_ptr<XClient> pClient)
+{
+	++_SendNum;
+}
+
+//这里地方的pMsgHeader地址上的内存不安全。随时可能被释放。如果假如任务系统延迟处理会有危险。
+void XTCPServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+{
+	pClient->ResetHeartTime();
+
+	++_RecvPackageNum;
+	++_PackageNum;
+
+	OnMsg(pClient, pMsgHeader);
+}
+
+void XTCPServer::OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+{
+	++_DonePackageNum;
+	--_PackageNum;
 }
 
 void XTCPServer::Open()
@@ -222,16 +296,30 @@ void XTCPServer::Accept()
 	}
 	else
 	{
-		std::shared_ptr<XServer> pLessServer = _AllServers[0];
-		for (auto pServer : _AllServers)
+		if (_ClientNum >= FD_SETSIZE)
 		{
-			if (pLessServer->GetClientNum() > pServer->GetClientNum())
-			{
-				pLessServer = pServer;
-			}
+			const char* pAddr = inet_ntoa(sinClient.sin_addr);
+			XWarn("Kill ip : %s \n", pAddr);
+
+#ifdef _WIN32
+			closesocket(client);
+#else
+			close(client);
+#endif	
 		}
-		std::shared_ptr<XClient> pClient(new XClient(client, this, pLessServer.get(), _ClientHeartTime, _ClientSendTime, _ClientRecvBufferSize, _ClientSendBufferSize));
-		pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
+		else
+		{
+			std::shared_ptr<XServer> pLessServer = _AllServers[0];
+			for (auto pServer : _AllServers)
+			{
+				if (pLessServer->GetClientNum() > pServer->GetClientNum())
+				{
+					pLessServer = pServer;
+				}
+			}
+			std::shared_ptr<XClient> pClient(new XClient(client, this, pLessServer.get(), _ClientHeartTime, _ClientSendTime, _ClientRecvBufferSize, _ClientSendBufferSize));
+			pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
+		}
 	}
 }
 
