@@ -5,6 +5,17 @@
 
 #define _MAX_MEMORY_POOL_SIZE_ 10240
 
+/****************************************************************************************************************
+	Date   : 2018/07/23 11:01
+	 
+	Author : smile@illidan.org
+	
+	Brief  : 内存池中尽量不使用日志打印任务，防止隐式递归打印造成Crash。 
+					日志打印时，需要使用Stl的队列，在队列中添加元素会有new操作。
+					如果这个new的内存在内存池中不足，就会造成隐式递归。
+					本程序中XLog中使用的是80内存，所以需要保证128大小的内存池有足够多。
+****************************************************************************************************************/
+
 class XMemoryManager
 {
 private:
@@ -12,10 +23,10 @@ private:
 	XTMemoryPool<1024, 16>		_MemoryPool16;
 	XTMemoryPool<10240, 32>		_MemoryPool32;
 	XTMemoryPool<20480, 64>		_MemoryPool64;
-	XTMemoryPool<10240, 128>	_MemoryPool128;
+	XTMemoryPool<40960, 128>	_MemoryPool128;
 	XTMemoryPool<8, 256>		_MemoryPool256;
-	XTMemoryPool<20480, 512>		_MemoryPool512;
-	XTMemoryPool<8, 1024>		_MemoryPool1024;
+	XTMemoryPool<8, 512>		_MemoryPool512;
+	XTMemoryPool<2, 1024>		_MemoryPool1024;
 	XTMemoryPool<20480, 10240>	_MemoryPool10240;
 
 	XMemoryPool* _AllMemoryPools[_MAX_MEMORY_POOL_SIZE_ + 1];

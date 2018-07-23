@@ -291,7 +291,7 @@ void XMariaDBConnect::Init()
 	_pConnect = mysql_init(nullptr);
 	char value = 1;
 	mysql_options(_pConnect, MYSQL_OPT_RECONNECT, &value);		//启用断线重连。
-	if (!mysql_real_connect(_pConnect, "192.168.0.90", "aoyi", "yang", "aoyi", 0, "/var/run/mysqld/mysqld.sock", 0))
+	if (!mysql_real_connect(_pConnect, "127.0.0.1", "aoyi", "yang", "aoyi", 0, "/var/run/mysqld/mysqld.sock", 0))
 		show_error(_pConnect);
 }
 
