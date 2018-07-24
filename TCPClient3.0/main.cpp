@@ -9,8 +9,10 @@
 #include <atomic>
 #include <chrono>
 
+//当前客户端数量：8000收发稳定。9000有波动。
+
 const int g_tCount = 1;
-const int g_cCount = 15;
+const int g_cCount = 9000;
 
 std::atomic_int readyCount = 0;
 std::atomic_int connectCount = 0;
