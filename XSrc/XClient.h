@@ -24,6 +24,8 @@ public:
 	bool HasMsg();
 	bool HasData();
 
+	void DoData();
+
 	//心跳
 	void ResetHeartTime();
 	bool CheckHeartTime(time_t t);

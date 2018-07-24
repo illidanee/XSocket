@@ -35,14 +35,6 @@ int XClient::RecvData()
 	if (_pGlobalObj)
 		_pGlobalObj->OnNetRecv(shared_from_this());
 
-	while (_RecvBuffer.HasMsg())
-	{
-		if (_pGlobalObj)
-			_pGlobalObj->OnNetMsgRecv(shared_from_this(), _RecvBuffer.Front());
-
-		_RecvBuffer.Pop();
-	}
-
 	return nRet;
 }
 
@@ -86,6 +78,17 @@ bool XClient::HasMsg()
 bool XClient::HasData()
 {
 	return _SendBuffer.HasData();
+}
+
+void XClient::DoData()
+{
+	while (_RecvBuffer.HasMsg())
+	{
+		if (_pGlobalObj)
+			_pGlobalObj->OnNetMsgRecv(shared_from_this(), _RecvBuffer.Front());
+
+		_RecvBuffer.Pop();
+	}
 }
 
 void XClient::ResetHeartTime()

@@ -12,7 +12,7 @@
 //当前客户端数量：8000收发稳定。9000有波动。
 
 const int g_tCount = 1;
-const int g_cCount = 9000;
+const int g_cCount = 8000;
 
 std::atomic_int readyCount = 0;
 std::atomic_int connectCount = 0;
@@ -45,7 +45,7 @@ void ClientThread(XThread* pThread, int id)
 
 		clients[i] = new MyClient();
 
-		pThread->Sleep(0);
+		XThread::Sleep(0);
 	}
 
 	//连接服务器
@@ -57,14 +57,14 @@ void ClientThread(XThread* pThread, int id)
 		if (clients[i]->Open() && clients[i]->Connect("127.0.0.1", 9091))
 			connectCount++;
 
-		pThread->Sleep(0);
+		XThread::Sleep(0);
 	}
 
 	//使用原子计数器优化线程等待。
 	readyCount++;
 	while (readyCount < g_tCount)
 	{
-		pThread->Sleep(0);
+		XThread::Sleep(1);
 	}
 
 	MsgHeart heart;
@@ -117,7 +117,7 @@ void ClientThread(XThread* pThread, int id)
 			tt -= 1000000;
 		}
 
-		pThread->Sleep(1);  //999防止发送数据过快，写满缓冲区造成无法继续发送数据。
+		XThread::Sleep(1);  //999防止发送数据过快，写满缓冲区造成无法继续发送数据。
 	}
 
 	for (int i = 0; i < g_cCount; ++i)

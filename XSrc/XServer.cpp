@@ -1,13 +1,20 @@
 ﻿#include "XServer.h"
 
-XServer::XServer(int id)
+
+
+void XServer::AddTask(std::function<void()> pTask)
+{
+	_TaskServer.AddTask(pTask);
+}
+
+XServer::XServer()
 	:
-	_ID(id),
 	_pGlobalEventObj(nullptr),
-	_LastTime(0),
-	_CurTime(0),
-	_TimeDelta(0),
-	_ClientChange(true),
+	_ID(0),
+	_LastFrameTime(0),
+	_CurFrameTime(0),
+	_FrameTimeDelta(0),
+	_ClientChange(false),
 	_MaxSocketID(0)
 {
 }
@@ -16,22 +23,44 @@ XServer::~XServer()
 {
 }
 
-void XServer::Init(XIGlobalEvent* pGlobalEventObj)
+void XServer::Init(XIGlobalEvent* pGlobalEventObj, int id)
 {
-	//设置对象
+	//设置全局事件对象
 	_pGlobalEventObj = pGlobalEventObj;
+	//设置服务线程ID
+	_ID = id;
+
 	//设置时间
-	_LastTime = XTimer::GetTimeByMicroseconds();
-	_CurTime = 0;
-	_TimeDelta = 0;
+	_LastFrameTime = XTimer::GetTimeByMicroseconds();
+	_CurFrameTime = 0;
+	_FrameTimeDelta = 0;
+
+	//其他
+	FD_ZERO(&_FdRead);
+	FD_ZERO(&_FdWrite);
+	FD_ZERO(&_FdSetCache);
+	_ClientChange = false;
+	_MaxSocketID = 0;
 }
 
 void XServer::Done()
 {
-	_pGlobalEventObj = nullptr;
-	_LastTime = 0;
-	_CurTime = 0;
-	_TimeDelta = 0;
+	////设置全局事件对象
+	//_pGlobalEventObj = nullptr;
+	////设置服务线程ID
+	//_ID = 0;
+
+	////设置时间
+	//_LastFrameTime = XTimer::GetTimeByMicroseconds();
+	//_CurFrameTime = 0;
+	//_FrameTimeDelta = 0;
+
+	////其他
+	//FD_ZERO(&_FdRead);
+	//FD_ZERO(&_FdWrite);
+	//FD_ZERO(&_FdSetCache);
+	//_ClientChange = false;
+	//_MaxSocketID = 0;
 }
 
 void XServer::Start()
@@ -70,6 +99,11 @@ void XServer::Stop()
 	XInfo("    XReceiveServer<ID=%d>:Stop() End\n", _ID);
 }
 
+XIGlobalEvent* XServer::GetGlobalObj()
+{
+	return _pGlobalEventObj;
+}
+
 void XServer::AddClient(const std::shared_ptr<XClient> pClient)
 {
 	std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
@@ -81,16 +115,6 @@ int XServer::GetClientNum()
 	return (int)_AllClients.size() + (int)_AllClientsCache.size();
 }
 
-XIGlobalEvent* XServer::GetGlobalObj()
-{
-	return _pGlobalEventObj;
-}
-
-void XServer::AddTask(std::function<void()> pTask)
-{
-	_TaskServer.AddTask(pTask);
-}
-
 void XServer::OnRun(XThread* pThread)
 {
 	XInfo("    XReceiveServer<ID=%d>:OnRun() Begin\n", _ID);
@@ -98,109 +122,160 @@ void XServer::OnRun(XThread* pThread)
 	while (pThread->IsRun())
 	{
 		//必须在Continue之前，负责没有客户连接时会累积时间长度delta。
-		TimeDelta();
+		UpdateFrameTimeDelta();
 
-		//是否有新客户端加入？
-		if (!_AllClientsCache.empty())
-		{
-			std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
-			for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
-			{
-				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
+		int ret = 0;
 
-				//不在这里回掉，使用在accept客户端并添加到缓冲区列表时调用。
-				//if (_pGlobalEventObj)
-				//	_pGlobalEventObj->OnClientJoin(iter->second);
-			}
-			_AllClientsCache.clear();
-
-			_ClientChange = true;
-		}
-
-		//是否有客户端连接？
-		if (_AllClients.empty())
+		//检测是否有新的客户端以及当前是否有客户端。
+		ret = CheckClient();
+		if (ret < 0)
 		{
 			//减少CPU消耗。
-			std::this_thread::sleep_for(std::chrono::microseconds(1));
-
-			continue;
+			XThread::Sleep(1);
 		}
 
-		//检查是否有客户端向服务器发送数据。
-		fd_set fdRead;
-		fd_set fdWrite;
-		
-		if (_ClientChange)
-		{
-			FD_ZERO(&fdRead);
+		//心跳检测。
+		ret = CheckClient();
 
-			_MaxSocketID = 0;
-			for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
-			{
-				FD_SET(iter->first, &fdRead);
-				if (_MaxSocketID < iter->first)
-					_MaxSocketID = iter->first;
-			}
-
-			memcpy(&_fdSetCache, &fdRead, sizeof(fd_set));
-
-			_ClientChange = false;
-		}
-		else
-		{
-			memcpy(&fdRead, &_fdSetCache, sizeof(fd_set));
-		}
-
-		//检测是否有数据向客户端发送。
-		bool bHasCanWriteClient = false;
-		FD_ZERO(&fdWrite);
-		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
-		{
-			if (iter->second->HasData())
-			{
-				FD_SET(iter->first, &fdWrite);
-				bHasCanWriteClient = true;
-			}
-		}
-		//memcpy(&fdWrite, &fdRead, sizeof(fd_set));
-
-		//设置1毫秒间隔，可以提高客户端连接select效率。
-		timeval tv = { 0, 0 };						//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
-		int ret;
-		if (bHasCanWriteClient)
-			ret = select((int)_MaxSocketID + 1, &fdRead, &fdWrite, nullptr, &tv);
-		else
-			ret = select((int)_MaxSocketID + 1, &fdRead, nullptr, nullptr, &tv);
-
-		if (SOCKET_ERROR == ret)
-		{
-			XError("Select!\n");
+		//检测客户端。
+		ret = DoSelect();
+		if (ret < 0)
 			pThread->Exit();
-		}
 
-		RecvData(fdRead);
-		SendData(fdWrite);
+		//接收数据。
+		RecvData();
 
-		CheckTime();
+		//发送数据。
+		SendData();
+
+		//处理数据。
+		DoData();
 	}
 
 	XInfo("    XReceiveServer<ID=%d>:OnRun() End\n", _ID);
 }
 
-void XServer::TimeDelta()
+void XServer::UpdateFrameTimeDelta()
 {
 	//循环计时。
-	_CurTime = XTimer::GetTimeByMicroseconds();
-	_TimeDelta = _CurTime - _LastTime;
-	_LastTime = _CurTime;
+	_CurFrameTime = XTimer::GetTimeByMicroseconds();
+	_FrameTimeDelta = _CurFrameTime - _LastFrameTime;
+	_LastFrameTime = _CurFrameTime;
 }
 
-void XServer::RecvData(fd_set& fdSet)
+int XServer::CheckClient()
 {
-	//接收客户端数据
+	//是否有新客户端加入？
+	if (!_AllClientsCache.empty())
+	{
+		std::lock_guard<std::mutex> lock(_AllClientsCacheMutex);
+		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
+		{
+			_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
+
+			//不在这里回掉，使用在accept客户端并添加到缓冲区列表时调用。
+			//if (_pGlobalEventObj)
+			//	_pGlobalEventObj->OnClientJoin(iter->second);
+		}
+		_AllClientsCache.clear();
+
+		_ClientChange = true;
+	}
+
+	//是否有客户端连接？
+	if (_AllClients.empty())
+	{
+		return -1;
+	}
+
+	return 0;
+}
+
+int XServer::CheckHeart()
+{
+	int ret = 0;
+	//心跳检测。
+	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
+	{
+		if (iter->second->CheckHeartTime(_FrameTimeDelta))
+		{
+			if (_pGlobalEventObj)
+				_pGlobalEventObj->OnClientLeave(iter->second);
+
+			iter = _AllClients.erase(iter);
+			_ClientChange = true;
+
+			++ret;
+			continue;
+		}
+
+		++iter;
+	}
+
+	return ret;
+}
+
+int XServer::DoSelect()
+{
+	//设置_FdRead
+	if (_ClientChange)
+	{
+		FD_ZERO(&_FdRead);
+
+		_MaxSocketID = 0;
+		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+		{
+			FD_SET(iter->first, &_FdRead);
+			if (_MaxSocketID < iter->first)
+				_MaxSocketID = iter->first;
+		}
+
+		memcpy(&_FdSetCache, &_FdRead, sizeof(fd_set));
+
+		_ClientChange = false;
+	}
+	else
+	{
+		memcpy(&_FdRead, &_FdSetCache, sizeof(fd_set));
+	}
+
+	//设置_FdWrite
+	bool bHasCanWriteClient = false;
+	FD_ZERO(&_FdWrite);
+	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
+	{
+		if (iter->second->HasData())
+		{
+			FD_SET(iter->first, &_FdWrite);
+			bHasCanWriteClient = true;
+		}
+	}
+
+	//设置1毫秒间隔，可以提高客户端连接select效率。
+	//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
+	timeval tv = { 0, 0 };
+
+	int ret;
+	if (bHasCanWriteClient)
+		ret = select((int)_MaxSocketID + 1, &_FdRead, &_FdWrite, nullptr, &tv);
+	else
+		ret = select((int)_MaxSocketID + 1, &_FdRead, nullptr, nullptr, &tv);
+
+	if (SOCKET_ERROR == ret)
+	{
+		XError("Select!\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+void XServer::RecvData()
+{
+	//从客户端接收数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
-		if (FD_ISSET(iter->first, &fdSet))
+		if (FD_ISSET(iter->first, &_FdRead))
 		{
 			int ret = iter->second->RecvData();
 			if (ret != 0)			//不等于0，ret为1说明接收缓冲区满了，主动断开连接。
@@ -218,12 +293,12 @@ void XServer::RecvData(fd_set& fdSet)
 	}
 }
 
-void XServer::SendData(fd_set& fdSet)
+void XServer::SendData()
 {	
-	//接收客户端数据
+	//向客户端发送数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
-		if (FD_ISSET(iter->first, &fdSet))
+		if (FD_ISSET(iter->first, &_FdWrite))
 		{
 			int ret = iter->second->SendData();
 			if (ret < 0)			//小于0，ret为1时说明发送缓冲区为空，不应该断开。
@@ -241,25 +316,12 @@ void XServer::SendData(fd_set& fdSet)
 	}
 }
 
-void XServer::CheckTime()
+void XServer::DoData()
 {
-	//计时检测。
-	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
+	//处理客户端接收的数据
+	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 	{
-		//心跳检测！
-		if (iter->second->CheckHeartTime(_TimeDelta))
-		{
-			if (_pGlobalEventObj)
-				_pGlobalEventObj->OnClientLeave(iter->second);
-
-			iter = _AllClients.erase(iter);
-			_ClientChange = true;
-			continue;
-		}
-
-		//计时发送检测！
-		//iter->second->CheckSendTime(delta);
-
-		++iter;
+		iter->second->DoData();
 	}
 }
+

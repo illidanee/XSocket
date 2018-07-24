@@ -11,14 +11,15 @@ class XThread
 	typedef std::function<void(XThread*)> PThreadFunc;
 
 public:
+	static void Sleep(time_t dt);
+
+public:
 	XThread();
 	void Start(PThreadFunc pBegin = nullptr, PThreadFunc pRun = nullptr, PThreadFunc pEnd = nullptr);
 	void Stop();
 	void Exit();
 
 	bool IsRun();
-
-	void Sleep(time_t dt);
 
 private:
 	void OnWork();

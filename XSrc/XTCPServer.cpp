@@ -83,9 +83,9 @@ int XTCPServer::Start()
 		//1-不使用对象池。
 		//std::shared_ptr<XReceiveServer> pServer = std::make_shared<XReceiveServer>();
 		//2-使用对象池。
-		std::shared_ptr<XServer> pServer(new XServer(i));
+		std::shared_ptr<XServer> pServer(new XServer());
 
-		pServer->Init(this);
+		pServer->Init(this, i);
 		pServer->Start();
 		_AllServers.push_back(pServer);
 	}
