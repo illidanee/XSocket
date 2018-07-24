@@ -130,7 +130,7 @@ XIServerEvent* XClient::GetServerObj()
 	return _pServerObj;
 }
 
-std::shared_ptr<XClient> XClient::GetSharedPrt()
+std::shared_ptr<XClient> XClient::GetSharedPtr()
 {
 	return shared_from_this();
 }

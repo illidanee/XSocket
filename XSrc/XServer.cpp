@@ -107,8 +107,10 @@ void XServer::OnRun(XThread* pThread)
 			for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClientsCache.begin(); iter != _AllClientsCache.end(); ++iter)
 			{
 				_AllClients.insert(std::pair<SOCKET, std::shared_ptr<XClient>>(iter->first, iter->second));
-				if (_pGlobalEventObj)
-					_pGlobalEventObj->OnClientJoin(iter->second);
+
+				//不在这里回掉，使用在accept客户端并添加到缓冲区列表时调用。
+				//if (_pGlobalEventObj)
+				//	_pGlobalEventObj->OnClientJoin(iter->second);
 			}
 			_AllClientsCache.clear();
 

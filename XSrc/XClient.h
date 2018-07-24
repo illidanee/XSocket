@@ -36,7 +36,7 @@ public:
 	XIServerEvent* GetServerObj();
 
 	//获取自身的shared_prt
-	std::shared_ptr<XClient> GetSharedPrt();
+	std::shared_ptr<XClient> GetSharedPtr();
 
 private:
 	SOCKET _Socket;								//客户端Socket

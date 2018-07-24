@@ -24,10 +24,10 @@ private:
 	XTMemoryPool<102400, 32>		_MemoryPool32;
 	XTMemoryPool<102400, 64>		_MemoryPool64;
 	XTMemoryPool<102400, 128>		_MemoryPool128;
-	XTMemoryPool<8, 256>			_MemoryPool256;
-	XTMemoryPool<8, 512>			_MemoryPool512;
-	XTMemoryPool<40960, 1024>		_MemoryPool1024;
-	XTMemoryPool<20480, 10240>		_MemoryPool10240;
+	XTMemoryPool<102400, 256>		_MemoryPool256;
+	XTMemoryPool<102400, 512>		_MemoryPool512;
+	XTMemoryPool<51200, 1024>		_MemoryPool1024;
+	XTMemoryPool<51200, 10240>		_MemoryPool10240;
 
 	XMemoryPool* _AllMemoryPools[_MAX_MEMORY_POOL_SIZE_ + 1];
 
