@@ -1,7 +1,7 @@
 ﻿#ifndef __XCONFIG_H__
 #define __XCONFIG_H__
 
-#include <string>
+#include <string.h>
 #include <map>
 
 class XConfig
