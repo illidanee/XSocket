@@ -17,8 +17,9 @@ public:
 
 	int Push(MsgHeader* pMsg);
 	int Pop();
-	bool HasMsg();					//缓冲中有一条完整消息数据。
 	bool HasData();					//缓冲区中有数据。
+	bool HasMsg();					//缓冲区中有一条完整消息数据。
+	bool IsFull();					//缓冲区是否已满。
 	MsgHeader* Front();
 
 private:

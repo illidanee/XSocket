@@ -1,14 +1,15 @@
 ﻿#include "XClient.h"
 
-XClient::XClient(SOCKET client, XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj, int nHeartTime, int nSendTime, int nRecvBufferSize, int nSendBufferSize)
+XClient::XClient(XIGlobalEvent* pGlobalObj, XIServerEvent* pServerObj, SOCKET client, int nHeartTime, int nSendTime, int nRecvBufferSize, int nSendBufferSize)
 	:
-	_Socket(client),
 	_pGlobalObj(pGlobalObj),
 	_pServerObj(pServerObj),
+	_Socket(client),
 	_CurHeartTime(0),
 	_HeartTime(nHeartTime),
 	_CurSendTime(0),
 	_SendTime(nSendTime),
+	_bFlush(false),
 	_RecvBuffer(nRecvBufferSize),
 	_SendBuffer(nSendBufferSize),
 	_CurMsgID(0)
@@ -26,11 +27,9 @@ XClient::~XClient()
 #endif
 }
 
-int XClient::RecvData()
+int XClient::RecvMsg()
 {
 	int nRet = _RecvBuffer.Recv(_Socket);
-	if (nRet != 0)
-		return  nRet;
 
 	if (_pGlobalObj)
 		_pGlobalObj->OnNetRecv(shared_from_this());
@@ -38,41 +37,44 @@ int XClient::RecvData()
 	return nRet;
 }
 
-int XClient::SendData(MsgHeader* pHeader)
-{
-	int nRet = _SendBuffer.Push(pHeader);
-	if (nRet != 0)
-		return nRet;
-
-	if (_pGlobalObj)
-		_pGlobalObj->OnNetMsgDone(shared_from_this(), pHeader);
-
-	return nRet;
-}
-
-int XClient::SendStream(XByteStream* pByteStream)
-{
-	return SendData((MsgHeader*)pByteStream->GetBuffer());
-}
-
-int XClient::SendData()
+int XClient::SendMsg()
 {
 	int nRet = _SendBuffer.Send(_Socket);
-	if (nRet != 0)
-		return nRet;
 
 	//发送了数据
 	if (_pGlobalObj)
 		_pGlobalObj->OnNetSend(shared_from_this());
 
 	ResetSendTime();
+	ResetFlush();
 
 	return 0;
 }
 
-bool XClient::HasMsg()
+void XClient::DoMsg()
 {
-	return _SendBuffer.HasMsg();
+	while (_RecvBuffer.HasMsg())
+	{
+		if (_pGlobalObj)
+			_pGlobalObj->OnNetMsgBegin(shared_from_this(), _RecvBuffer.Front());
+
+		_RecvBuffer.Pop();
+	}
+}
+
+int XClient::SendMsg(MsgHeader* pHeader)
+{
+	int nRet = _SendBuffer.Push(pHeader);
+
+	if (_pGlobalObj)
+		_pGlobalObj->OnNetMsgEnd(shared_from_this(), pHeader);
+
+	return nRet;
+}
+
+int XClient::SendStream(XByteStream* pByteStream)
+{
+	return SendMsg((MsgHeader*)pByteStream->GetBuffer());
 }
 
 bool XClient::HasData()
@@ -80,15 +82,14 @@ bool XClient::HasData()
 	return _SendBuffer.HasData();
 }
 
-void XClient::DoData()
+bool XClient::HasMsg()
 {
-	while (_RecvBuffer.HasMsg())
-	{
-		if (_pGlobalObj)
-			_pGlobalObj->OnNetMsgRecv(shared_from_this(), _RecvBuffer.Front());
+	return _SendBuffer.HasMsg();
+}
 
-		_RecvBuffer.Pop();
-	}
+bool XClient::IsBufferFull()
+{
+	return _SendBuffer.IsFull();
 }
 
 void XClient::ResetHeartTime()
@@ -99,9 +100,8 @@ void XClient::ResetHeartTime()
 bool XClient::CheckHeartTime(time_t t)
 {
 	_CurHeartTime += t;
-	if (_CurHeartTime >= _XCLIENT_HEART_TIME_)
+	if (_CurHeartTime >= _HeartTime)
 	{
-		//XInfo("CheckHeartTime : Client<socket=%d> timeout on time = %d! \n", (int)_Socket, (int)_HeartTime);
 		return true;
 	}
 
@@ -115,12 +115,38 @@ void XClient::ResetSendTime()
 
 void XClient::CheckSendTime(time_t t)
 {
-	_CurSendTime += t;
-	if (_CurSendTime >= _XCLIENT_SEND_TIME_)
+	//只有当客户端缓冲区里有数据时才计时。
+	if (HasData())
 	{
-		//XInfo("CheckSendTime! \n");
-		SendData();
+		_CurSendTime += t;
+		if (_CurSendTime >= _SendTime)
+		{
+			_bFlush = true;
+
+			XInfo("  -----------------CheckSendTime ...\n");
+		}
 	}
+}
+
+void XClient::CheckSendNum()
+{
+	//当发送缓冲区的数据大于一半时，认为需要马上发送了。防止缓冲满。
+	if (IsBufferFull())
+	{
+		_bFlush = true;
+
+		XInfo("  -----------------CheckSendNum ...\n");
+	}	
+}
+
+void XClient::ResetFlush()
+{
+	_bFlush = false;
+}
+
+bool XClient::GetFlush()
+{
+	return _bFlush;
 }
 
 XIGlobalEvent* XClient::GetGlobalObj()

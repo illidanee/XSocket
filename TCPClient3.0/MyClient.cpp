@@ -1,7 +1,7 @@
 #include "MyClient.h"
 
-time_t g_time = 1000;
-time_t g_msgCount = 50;
+time_t g_time = 1000000;
+time_t g_msgCount = 100;
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
@@ -51,12 +51,12 @@ void MyClient::OnNetSend(std::shared_ptr<XClient> pClient)
 	//XWarn("--Client Send£¡\n");
 }
 
-void MyClient::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	DoMsg(pMsgHeader);
 }
 
-void MyClient::OnNetMsgDone(std::shared_ptr<XClient>, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgEnd(std::shared_ptr<XClient>, MsgHeader* pMsgHeader)
 {
 
 }

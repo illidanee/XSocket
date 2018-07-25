@@ -121,6 +121,11 @@ int XBuffer::Pop()
 	return 0;
 }
 
+bool XBuffer::HasData()
+{
+	return _nOffset > 0;
+}
+
 bool XBuffer::HasMsg()
 {
 	if (_nOffset >= sizeof(MsgHeader))
@@ -132,9 +137,9 @@ bool XBuffer::HasMsg()
 	return false;
 }
 
-bool XBuffer::HasData()
+bool XBuffer::IsFull()
 {
-	return _nOffset > 0;
+	return _nOffset >= _nSize / 2;
 }
 
 MsgHeader* XBuffer::Front()

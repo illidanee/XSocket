@@ -28,8 +28,8 @@ private:
 	virtual void OnClientLeave(std::shared_ptr<XClient> pClient);
 	virtual void OnNetRecv(std::shared_ptr<XClient> pClient);
 	virtual void OnNetSend(std::shared_ptr<XClient> pClient);
-	virtual void OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
-	virtual void OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
+	virtual void OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
+	virtual void OnNetMsgEnd(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
 
 	virtual void AddTask(std::function<void()> pTask);
 

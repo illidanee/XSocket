@@ -5,14 +5,14 @@ time_t XTimer::GetTimeByMicroseconds()
 	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 }
 
-int XTimer::XInit()
+int XTimer::Init()
 {
 	UpdateTime();
 
 	return 0;
 }
 
-int XTimer::XDone()
+int XTimer::Done()
 {
 
 	return 0;

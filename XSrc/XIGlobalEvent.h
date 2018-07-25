@@ -13,8 +13,8 @@ public:
 	virtual void OnClientLeave(std::shared_ptr<XClient> pClient) = 0;
 	virtual void OnNetRecv(std::shared_ptr<XClient> pClient) = 0;
 	virtual void OnNetSend(std::shared_ptr<XClient> pClient) = 0;
-	virtual void OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader) = 0;
-	virtual void OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader) = 0;
+	virtual void OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader) = 0;
+	virtual void OnNetMsgEnd(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader) = 0;
 };
 
 #endif

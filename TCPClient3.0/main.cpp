@@ -12,7 +12,7 @@
 //当前客户端数量：8000收发稳定。9000有波动。
 
 const int g_tCount = 1;
-const int g_cCount = 8000;
+const int g_cCount = 5000;
 
 std::atomic_int readyCount = 0;
 std::atomic_int connectCount = 0;
@@ -104,7 +104,7 @@ void ClientThread(XThread* pThread, int id)
 
 		tt += dt.count();
 
-		if (tt > 1000000)
+		if (tt > g_time)
 		{
 			for (int i = 0; i < g_cCount; ++i)
 			{
@@ -114,7 +114,7 @@ void ClientThread(XThread* pThread, int id)
 				}
 			}
 
-			tt -= 1000000;
+			tt -= g_time;
 		}
 
 		XThread::Sleep(1);  //999防止发送数据过快，写满缓冲区造成无法继续发送数据。

@@ -25,7 +25,7 @@ bool XTCPClient::Open()
 		return false;
 	}
 
-	_Client.reset(new XClient(_Socket, this, this));
+	_Client.reset(new XClient(this, this, _Socket));
 
 	return true;
 }
@@ -121,7 +121,7 @@ void XTCPClient::OnRun()
 
 	if (FD_ISSET(_Socket, &fdRead))
 	{
-		int ret = _Client->RecvData();
+		int ret = _Client->RecvMsg();
 		if (ret < 0)
 		{
 			Disconnect();
@@ -130,7 +130,7 @@ void XTCPClient::OnRun()
 
 	if (FD_ISSET(_Socket, &fdWrite))
 	{
-		int ret = _Client->SendData();
+		int ret = _Client->SendMsg();
 		if (ret < 0)
 		{
 			Disconnect();
@@ -140,7 +140,7 @@ void XTCPClient::OnRun()
 
 int XTCPClient::SendData(MsgHeader* pHeader)
 {
-	return _Client->SendData(pHeader);
+	return _Client->SendMsg(pHeader);
 }
 
 int XTCPClient::SendStream(XByteStream* pStream)

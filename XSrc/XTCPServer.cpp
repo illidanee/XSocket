@@ -47,20 +47,19 @@ int XTCPServer::Init()
 	}
 
 	//初始化其他
-	_Timer.XInit();
+	_Timer.Init();
 	_ClientNum = 0;
 	_RecvNum = 0;
 	_SendNum = 0;
-	_RecvPackageNum = 0;
-	_DonePackageNum = 0;
-	_PackageNum = 0;
+	_RecvMsgNum = 0;
+	_SendMsgNum = 0;
 
 	return 0;
 }
 
 int XTCPServer::Done()
 {
-	_Timer.XDone();
+	_Timer.Done();
 
 	return 0;
 }
@@ -134,11 +133,11 @@ void XTCPServer::OnRunLoopBegin()
 {
 	if (_Timer.GetTime() > 1.0)
 	{
-		XInfo("| Client Num = %7d  | Recv Num = %7d  | Send Num = %7d  | RecvPackage Num = %7d  | DonePackage Num = %7d  | Package Num = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvPackageNum, (int)_DonePackageNum, (int)_PackageNum);
+		XInfo("| ClientNum = %7d  | RecvNum = %7d  | SendNum = %7d  | RecvMsgNum = %7d  | SendMsgNum = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvMsgNum, (int)_SendMsgNum);
 		_RecvNum = 0;
 		_SendNum = 0;
-		_RecvPackageNum = 0;
-		_DonePackageNum = 0;
+		_RecvMsgNum = 0;
+		_SendMsgNum = 0;
 		_Timer.UpdateTime();
 	}
 }
@@ -164,20 +163,18 @@ void XTCPServer::OnNetSend(std::shared_ptr<XClient> pClient)
 }
 
 //这里地方的pMsgHeader地址上的内存不安全。随时可能被释放。如果假如任务系统延迟处理会有危险。
-void XTCPServer::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+void XTCPServer::OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	pClient->ResetHeartTime();
 
-	++_RecvPackageNum;
-	++_PackageNum;
+	++_RecvMsgNum;
 
 	OnMsg(pClient, pMsgHeader);
 }
 
-void XTCPServer::OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+void XTCPServer::OnNetMsgEnd(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
-	++_DonePackageNum;
-	--_PackageNum;
+	++_SendMsgNum;
 }
 
 void XTCPServer::Open()
@@ -314,7 +311,7 @@ void XTCPServer::Accept()
 					pLessServer = pServer;
 				}
 			}
-			std::shared_ptr<XClient> pClient(new XClient(client, this, pLessServer.get(), _ClientHeartTime, _ClientSendTime, _ClientRecvBufferSize, _ClientSendBufferSize));
+			std::shared_ptr<XClient> pClient(new XClient(this, pLessServer.get(), client, _ClientHeartTime, _ClientSendTime, _ClientRecvBufferSize, _ClientSendBufferSize));
 			pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
 
 			//在这里调用客户端加入的回调函数。

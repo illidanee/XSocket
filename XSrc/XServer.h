@@ -13,9 +13,6 @@
 class XServer : public XIServerEvent
 {
 public:
-	virtual void AddTask(std::function<void()> pTask);
-
-public:
 	XServer();
 	~XServer();
 
@@ -25,6 +22,10 @@ public:
 	void Start();
 	void Stop();
 
+public:
+	virtual void AddTask(std::function<void()> pTask);
+
+public:
 	XIGlobalEvent* GetGlobalObj();
 
 	void AddClient(const std::shared_ptr<XClient> pClient);
@@ -34,13 +35,13 @@ private:
 	void OnRun(XThread* pThread);
 
 	void UpdateFrameTimeDelta();
-	int CheckClient();
-	int CheckHeart();
+	int CheckClientNum();
+	int CheckClientState();
 	int DoSelect();
-	void RecvData();
-	void SendData();
-	void DoData();
-	
+
+	void RecvMsg();
+	void SendMsg();
+	void DoMsg();
 
 private:
 	XIGlobalEvent* _pGlobalEventObj;								//全局事件对象
@@ -65,8 +66,6 @@ private:
 
 private:
 	XTaskServer _TaskServer;										//服务器对应的任务线程
-
-
 };
 
 #endif

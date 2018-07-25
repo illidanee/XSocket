@@ -32,8 +32,8 @@ protected:
 	virtual void OnClientLeave(std::shared_ptr<XClient> pClient);
 	virtual void OnNetRecv(std::shared_ptr<XClient> pClient);
 	virtual void OnNetSend(std::shared_ptr<XClient> pClient);
-	virtual void OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
-	virtual void OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
+	virtual void OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
+	virtual void OnNetMsgEnd(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
 
 //配置属性
 private:
@@ -59,9 +59,8 @@ private:
 	std::atomic_int _ClientNum;									//客户端计数器
 	std::atomic_int _RecvNum;									//recv()函数调用计数
 	std::atomic_int _SendNum;									//send()函数调用计数
-	std::atomic_int _RecvPackageNum;							//接收数据包计数器
-	std::atomic_int _DonePackageNum;							//处理数据包计数器
-	std::atomic_int _PackageNum;								//剩余任务包计数
+	std::atomic_int _RecvMsgNum;								//接收数据包计数器
+	std::atomic_int _SendMsgNum;								//处理数据包计数器
 
 private:
 	void Open();

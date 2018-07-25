@@ -28,9 +28,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 		}
 		pClient->_CurMsgID++;
 
-		OnNetSend(pClient);
-		OnNetMsgDone(pClient, pMsgHeader);
-		// ...
+		pClient->SendMsg(pMsgHeader);
 	}
 	break;
 	case MSG_BYTESTREAM:

@@ -2,11 +2,6 @@
 
 
 
-void XServer::AddTask(std::function<void()> pTask)
-{
-	_TaskServer.AddTask(pTask);
-}
-
 XServer::XServer()
 	:
 	_pGlobalEventObj(nullptr),
@@ -99,6 +94,11 @@ void XServer::Stop()
 	XInfo("    XReceiveServer<ID=%d>:Stop() End\n", _ID);
 }
 
+void XServer::AddTask(std::function<void()> pTask)
+{
+	_TaskServer.AddTask(pTask);
+}
+
 XIGlobalEvent* XServer::GetGlobalObj()
 {
 	return _pGlobalEventObj;
@@ -121,35 +121,39 @@ void XServer::OnRun(XThread* pThread)
 
 	while (pThread->IsRun())
 	{
+		int ret = 0;
+
 		//必须在Continue之前，负责没有客户连接时会累积时间长度delta。
 		UpdateFrameTimeDelta();
 
-		int ret = 0;
-
 		//检测是否有新的客户端以及当前是否有客户端。
-		ret = CheckClient();
+		ret = CheckClientNum();
 		if (ret < 0)
 		{
-			//减少CPU消耗。
+			//当前没有客户端连接，减少CPU消耗。
 			XThread::Sleep(1);
+			continue;
 		}
 
-		//心跳检测。
-		ret = CheckClient();
+		//客户端状态检测。
+		ret = CheckClientState();
 
-		//检测客户端。
+		//检测客户端，并处理。
 		ret = DoSelect();
 		if (ret < 0)
+		{
 			pThread->Exit();
+			break;
+		}
 
 		//接收数据。
-		RecvData();
+		RecvMsg();
 
 		//发送数据。
-		SendData();
+		SendMsg();
 
 		//处理数据。
-		DoData();
+		DoMsg();
 	}
 
 	XInfo("    XReceiveServer<ID=%d>:OnRun() End\n", _ID);
@@ -163,7 +167,7 @@ void XServer::UpdateFrameTimeDelta()
 	_LastFrameTime = _CurFrameTime;
 }
 
-int XServer::CheckClient()
+int XServer::CheckClientNum()
 {
 	//是否有新客户端加入？
 	if (!_AllClientsCache.empty())
@@ -191,12 +195,12 @@ int XServer::CheckClient()
 	return 0;
 }
 
-int XServer::CheckHeart()
+int XServer::CheckClientState()
 {
 	int ret = 0;
-	//心跳检测。
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); )
 	{
+		//心跳检测。
 		if (iter->second->CheckHeartTime(_FrameTimeDelta))
 		{
 			if (_pGlobalEventObj)
@@ -208,6 +212,12 @@ int XServer::CheckHeart()
 			++ret;
 			continue;
 		}
+		
+		//定时发送数据监测
+		iter->second->CheckSendTime(_FrameTimeDelta);
+
+		//定量发送数据检测
+		iter->second->CheckSendNum();
 
 		++iter;
 	}
@@ -244,7 +254,7 @@ int XServer::DoSelect()
 	FD_ZERO(&_FdWrite);
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 	{
-		if (iter->second->HasData())
+		if (iter->second->GetFlush())
 		{
 			FD_SET(iter->first, &_FdWrite);
 			bHasCanWriteClient = true;
@@ -255,13 +265,13 @@ int XServer::DoSelect()
 	//使用时间间隔可以提高客户端连接速度。使用阻塞模式更快。但此处不能使用组塞模式，需要执行定时检测任务。
 	timeval tv = { 0, 0 };
 
-	int ret;
+	int nRet;
 	if (bHasCanWriteClient)
-		ret = select((int)_MaxSocketID + 1, &_FdRead, &_FdWrite, nullptr, &tv);
+		nRet = select((int)_MaxSocketID + 1, &_FdRead, &_FdWrite, nullptr, &tv);
 	else
-		ret = select((int)_MaxSocketID + 1, &_FdRead, nullptr, nullptr, &tv);
+		nRet = select((int)_MaxSocketID + 1, &_FdRead, nullptr, nullptr, &tv);
 
-	if (SOCKET_ERROR == ret)
+	if (SOCKET_ERROR == nRet)
 	{
 		XError("Select!\n");
 		return -1;
@@ -270,14 +280,14 @@ int XServer::DoSelect()
 	return 0;
 }
 
-void XServer::RecvData()
+void XServer::RecvMsg()
 {
 	//从客户端接收数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
 		if (FD_ISSET(iter->first, &_FdRead))
 		{
-			int ret = iter->second->RecvData();
+			int ret = iter->second->RecvMsg();
 			if (ret != 0)			//不等于0，ret为1说明接收缓冲区满了，主动断开连接。
 			{
 				if (_pGlobalEventObj)
@@ -293,14 +303,14 @@ void XServer::RecvData()
 	}
 }
 
-void XServer::SendData()
+void XServer::SendMsg()
 {	
 	//向客户端发送数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
 		if (FD_ISSET(iter->first, &_FdWrite))
 		{
-			int ret = iter->second->SendData();
+			int ret = iter->second->SendMsg();
 			if (ret < 0)			//小于0，ret为1时说明发送缓冲区为空，不应该断开。
 			{
 				if (_pGlobalEventObj)
@@ -316,12 +326,12 @@ void XServer::SendData()
 	}
 }
 
-void XServer::DoData()
+void XServer::DoMsg()
 {
 	//处理客户端接收的数据
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 	{
-		iter->second->DoData();
+		iter->second->DoMsg();
 	}
 }
 

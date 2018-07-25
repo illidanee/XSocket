@@ -9,8 +9,8 @@ public:
 	static time_t GetTimeByMicroseconds();
 
 public:
-	int XInit();
-	int XDone();
+	int Init();
+	int Done();
 
 	void UpdateTime();
 	double GetTime();
