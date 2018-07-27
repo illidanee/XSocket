@@ -44,6 +44,7 @@ int XBuffer::Recv(SOCKET socket)
 	if (size == -1)
 	{
 		//Socket错误。
+		//XInfo("--%d \n", WSAGetLastError());
 		return -1;
 	}
 	else if (size == 0)

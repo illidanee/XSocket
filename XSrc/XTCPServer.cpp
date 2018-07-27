@@ -129,7 +129,7 @@ void XTCPServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 
 }
 
-void XTCPServer::OnRunLoopBegin()
+void XTCPServer::OnRunBegin()
 {
 	if (_Timer.GetTime() > 1.0)
 	{
@@ -328,7 +328,7 @@ void XTCPServer::OnRun(XThread* pThread)
 
 	while (pThread->IsRun())
 	{
-		OnRunLoopBegin();
+		OnRunBegin();
 
 		fd_set fdRead;
 		FD_ZERO(&fdRead);

@@ -48,7 +48,7 @@ int XClient::SendMsg()
 	ResetSendTime();
 	ResetFlush();
 
-	return 0;
+	return nRet;
 }
 
 void XClient::DoMsg()
@@ -123,7 +123,7 @@ void XClient::CheckSendTime(time_t t)
 		{
 			_bFlush = true;
 
-			XInfo("  -----------------CheckSendTime ...\n");
+			//XInfo("  -----------------CheckSendTime ...\n");
 		}
 	}
 }
@@ -135,13 +135,18 @@ void XClient::CheckSendNum()
 	{
 		_bFlush = true;
 
-		XInfo("  -----------------CheckSendNum ...\n");
+		//XInfo("  -----------------CheckSendNum ...\n");
 	}	
 }
 
 void XClient::ResetFlush()
 {
 	_bFlush = false;
+}
+
+void XClient::Flush()
+{
+	_bFlush = true;
 }
 
 bool XClient::GetFlush()

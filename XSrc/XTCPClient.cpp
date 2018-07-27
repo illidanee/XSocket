@@ -84,7 +84,7 @@ bool XTCPClient::IsRun()
 
 void XTCPClient::OnRun()
 {
-	OnRunLoopBegin();
+	OnRunBegin();
 
 	SOCKET _Socket = _Client->GetSocket();
 

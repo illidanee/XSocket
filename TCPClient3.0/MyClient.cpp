@@ -1,7 +1,10 @@
 #include "MyClient.h"
 
-time_t g_time = 1000000;
-time_t g_msgCount = 100;
+//客户端配置变量
+const int g_tCount = 1;
+const int g_cCount = 10000;
+const time_t g_time = 1000000;
+const time_t g_msgCount = 10;
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
@@ -28,7 +31,7 @@ void MyClient::DoMsg(MsgHeader* pMsgHeader)
 	r.ReadArray(r8, 32);
 }
 
-void MyClient::OnRunLoopBegin()
+void MyClient::OnRunBegin()
 {
 
 }
@@ -66,17 +69,20 @@ void MyClient::AddTask(std::function<void()> pTask)
 
 }
 
+bool MyClient::CanSend()
+{ 
+	return _nCount > 0; 
+}
+
 bool MyClient::Send(MsgHeader* pMsgHeader)
 {
-	if (_nCount > 0)
+	((MsgHeart*)pMsgHeader)->_ID = _MsgID;
+	if (SendData(pMsgHeader) >= 0)
 	{
-		((MsgHeart*)pMsgHeader)->_ID = _MsgID;
-		if (0 == SendData(pMsgHeader))
-		{
-			_nCount--;
-			_MsgID++;
-			return true;
-		}
+		_nCount--;
+		_MsgID++;
+
+		return true;
 	}
 
 	return false;
@@ -84,5 +90,5 @@ bool MyClient::Send(MsgHeader* pMsgHeader)
 
 void MyClient::ResetCount()
 {
-		_nCount = g_msgCount;
+	_nCount = g_msgCount;
 }

@@ -38,6 +38,7 @@ public:
 
 	//是否需要发送数据
 	void ResetFlush();
+	void Flush();
 	bool GetFlush();
 
 public:

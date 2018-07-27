@@ -12,7 +12,7 @@
 
 #define _XSERVER_THREAD_SIZE_ 1					//服务器线程数
 
-#define _XCLIENT_HEART_TIME_ 60000000			//客户端心跳时间
+#define _XCLIENT_HEART_TIME_ 10000000			//客户端心跳时间
 #define _XCLIENT_SEND_TIME_ 3000000				//客户端发送时间
 #define _XCLIENT_RECV_BUFFER_SIZE_ 10240		//缓冲区接收大小
 #define _XCLIENT_SEND_BUFFER_SIZE_ 10240		//缓冲区发送大小

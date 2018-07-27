@@ -9,14 +9,12 @@
 #include <atomic>
 #include <chrono>
 
-//当前客户端数量：8000收发稳定。9000有波动。
-
-const int g_tCount = 1;
-const int g_cCount = 5000;
-
+//统计计数
 std::atomic_int readyCount = 0;
 std::atomic_int connectCount = 0;
 std::atomic_int sendCount = 0;
+std::atomic_int errorCount = 0;
+std::atomic_int loopCount = 0;
 
 void CmdThread(XThread* pThread)
 {
@@ -76,16 +74,24 @@ void ClientThread(XThread* pThread, int id)
 	std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();
 	time_t tt = 0;
 
+
+
 	while (pThread->IsRun())
 	{
-		for (int i = 0; i < g_msgCount; ++i)
+		for (int c = 0; c < g_msgCount; ++c)
 		{
 			for (int i = 0; i < g_cCount; ++i)
 			{
-				if (clients[i]->IsRun())
+				if (clients[i]->IsRun() && clients[i]->CanSend())
 				{
 					if (clients[i]->Send(&heart))
+					{
 						sendCount++;
+					}
+					else
+					{
+						errorCount++;
+					}
 				}
 			}
 		}
@@ -106,17 +112,18 @@ void ClientThread(XThread* pThread, int id)
 
 		if (tt > g_time)
 		{
+			tt -= g_time;
+
 			for (int i = 0; i < g_cCount; ++i)
 			{
 				if (clients[i]->IsRun())
 				{
 					clients[i]->ResetCount();
 				}
-			}
-
-			tt -= g_time;
+			}	
 		}
 
+		loopCount++;
 		XThread::Sleep(1);  //999防止发送数据过快，写满缓冲区造成无法继续发送数据。
 	}
 
@@ -174,15 +181,17 @@ int main()
 
 		tt += dt.count();
 
-		if (tt > 1000000)
+		if (tt > g_time)
 		{
-			XInfo("| send Num = %7d  |\n", (int)sendCount);
+			XInfo("| ConnectNum = %7d  | SendNum = %7d  | ErrorNum = %7d  | LoopNum = %7d  |\n", (int)connectCount,(int)sendCount, (int)errorCount, (int)loopCount);
 			sendCount = 0;
+			errorCount = 0;
+			loopCount = 0;
 
-			tt -= 1000000;
+			tt -= g_time;
 		}
 
-		cmdThread.Sleep(1);
+		XThread::Sleep(1);
 	}
 
 	//停止客户端线程

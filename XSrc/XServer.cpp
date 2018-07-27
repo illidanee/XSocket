@@ -145,6 +145,10 @@ void XServer::OnRun(XThread* pThread)
 			pThread->Exit();
 			break;
 		}
+		else if (ret == 0)
+		{
+			continue;
+		}
 
 		//接收数据。
 		RecvMsg();
@@ -213,11 +217,15 @@ int XServer::CheckClientState()
 			continue;
 		}
 		
-		//定时发送数据监测
-		iter->second->CheckSendTime(_FrameTimeDelta);
+		////定时发送数据监测
+		//iter->second->CheckSendTime(_FrameTimeDelta);
 
-		//定量发送数据检测
-		iter->second->CheckSendNum();
+		////定量发送数据检测
+		//iter->second->CheckSendNum();
+
+		//立即发送
+		if (iter->second->HasData())
+			iter->second->Flush();
 
 		++iter;
 	}
@@ -274,15 +282,37 @@ int XServer::DoSelect()
 	if (SOCKET_ERROR == nRet)
 	{
 		XError("Select!\n");
-		return -1;
+		
 	}
 
-	return 0;
+	return nRet;
 }
 
 void XServer::RecvMsg()
 {
 	//从客户端接收数据
+#ifdef _WIN32
+
+	for (int i = 0; i < (int)_FdRead.fd_count; ++i)
+	{
+		auto iter = _AllClients.find(_FdRead.fd_array[i]);
+		if (iter != _AllClients.end())
+		{
+			int nRet = iter->second->RecvMsg();
+			if (nRet != 0)
+			{
+				if (_pGlobalEventObj)
+					_pGlobalEventObj->OnClientLeave(iter->second);
+
+				_AllClients.erase(iter);
+				_ClientChange = true;
+				continue;
+			}
+		}
+	}
+
+#else
+
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
 		if (FD_ISSET(iter->first, &_FdRead))
@@ -301,11 +331,36 @@ void XServer::RecvMsg()
 
 		++iter;
 	}
+
+#endif
 }
 
 void XServer::SendMsg()
 {	
 	//向客户端发送数据
+#ifdef _WIN32
+
+	for (int i = 0; i < (int)_FdWrite.fd_count; ++i)
+	{
+		auto iter = _AllClients.find(_FdWrite.fd_array[i]);
+		if (iter != _AllClients.end())
+		{
+			int nRet = iter->second->SendMsg();
+			if (nRet < 0)
+			{
+				if (_pGlobalEventObj)
+					_pGlobalEventObj->OnClientLeave(iter->second);
+
+				_AllClients.erase(iter);
+				_ClientChange = true;
+				continue;
+			}
+		}
+
+	}
+
+#else
+
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
 		if (FD_ISSET(iter->first, &_FdWrite))
@@ -324,6 +379,9 @@ void XServer::SendMsg()
 
 		++iter;
 	}
+
+#endif
+
 }
 
 void XServer::DoMsg()

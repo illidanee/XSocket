@@ -8,7 +8,7 @@ class XClient;
 class XIGlobalEvent
 {
 public:
-	virtual void OnRunLoopBegin() = 0;
+	virtual void OnRunBegin() = 0;
 	virtual void OnClientJoin(std::shared_ptr<XClient> pClient) = 0;
 	virtual void OnClientLeave(std::shared_ptr<XClient> pClient) = 0;
 	virtual void OnNetRecv(std::shared_ptr<XClient> pClient) = 0;

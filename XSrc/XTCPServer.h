@@ -27,7 +27,7 @@ public:
 	virtual void OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
 
 protected:
-	virtual void OnRunLoopBegin();
+	virtual void OnRunBegin();
 	virtual void OnClientJoin(std::shared_ptr<XClient> pClient);
 	virtual void OnClientLeave(std::shared_ptr<XClient> pClient);
 	virtual void OnNetRecv(std::shared_ptr<XClient> pClient);
