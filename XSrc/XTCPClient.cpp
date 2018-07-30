@@ -119,6 +119,7 @@ void XTCPClient::OnRun()
 		return;
 	}
 
+	//接收消息
 	if (FD_ISSET(_Socket, &fdRead))
 	{
 		int ret = _Client->RecvMsg();
@@ -128,6 +129,7 @@ void XTCPClient::OnRun()
 		}
 	}
 
+	//发送消息
 	if (FD_ISSET(_Socket, &fdWrite))
 	{
 		int ret = _Client->SendMsg();
@@ -136,6 +138,9 @@ void XTCPClient::OnRun()
 			Disconnect();
 		}
 	}
+
+	//处理消息
+	_Client->DoMsg();
 }
 
 int XTCPClient::SendData(MsgHeader* pHeader)

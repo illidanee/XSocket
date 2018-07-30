@@ -4,7 +4,7 @@
 const int g_tCount = 1;
 const int g_cCount = 10000;
 const time_t g_time = 1000000;
-const time_t g_msgCount = 10;
+const time_t g_msgCount = 100;
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {

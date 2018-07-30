@@ -19,6 +19,7 @@ XMemoryManager::XMemoryManager()
 	InitMemoryPools(256 + 1, 512, &_MemoryPool512);
 	InitMemoryPools(512 + 1, 1024, &_MemoryPool1024);
 	InitMemoryPools(1024 + 1, 10240, &_MemoryPool10240);
+	InitMemoryPools(10240 + 1, 20480, &_MemoryPool20480);
 }
 
 XMemoryManager::XMemoryManager(const XMemoryManager&)

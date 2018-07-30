@@ -3,7 +3,7 @@
 
 #include "XMemoryPool.h"
 
-#define _MAX_MEMORY_POOL_SIZE_ 10240
+#define _MAX_MEMORY_POOL_SIZE_ 20480
 
 /****************************************************************************************************************
 	Date   : 2018/07/23 11:01
@@ -28,6 +28,7 @@ private:
 	XTMemoryPool<102400, 512>		_MemoryPool512;
 	XTMemoryPool<51200, 1024>		_MemoryPool1024;
 	XTMemoryPool<51200, 10240>		_MemoryPool10240;
+	XTMemoryPool<51200, 20480>		_MemoryPool20480;
 
 	XMemoryPool* _AllMemoryPools[_MAX_MEMORY_POOL_SIZE_ + 1];
 
