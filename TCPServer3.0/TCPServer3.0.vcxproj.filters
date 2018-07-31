@@ -79,6 +79,9 @@
     <ClCompile Include="..\XSrc\XConfig.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
+    <ClCompile Include="..\XSrc\XFdSet.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyServer.h">
@@ -163,6 +166,9 @@
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XConfig.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XFdSet.h">
       <Filter>XSrc</Filter>
     </ClInclude>
   </ItemGroup>

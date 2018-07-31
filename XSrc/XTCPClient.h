@@ -30,6 +30,9 @@ private:
 	std::shared_ptr<XClient> _Client;
 
 	bool _bRun;
+
+	XFdSet _FdRead;
+	XFdSet _FdWrite;
 };
 
 #endif

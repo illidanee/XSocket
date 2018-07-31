@@ -58,9 +58,9 @@ private:
 	time_t _FrameTimeDelta;											//每次循环服务器时间间隔
 
 	//此集合占用大量的内存,使对象大小变大。
-	fd_set _FdRead;
-	fd_set _FdWrite;
-	fd_set _FdSetCache;												//fd_set 缓存
+	XFdSet _FdRead;
+	XFdSet _FdWrite;
+	XFdSet _FdSetCache;												//fd_set 缓存
 	bool _ClientChange;												//是否客户端变化
 	SOCKET _MaxSocketID;											//客户端最大Socket
 

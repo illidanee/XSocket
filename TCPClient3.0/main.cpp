@@ -52,7 +52,7 @@ void ClientThread(XThread* pThread, int id)
 		if (!pThread->IsRun())
 			break;
 		
-		if (clients[i]->Open() && clients[i]->Connect("127.0.0.1", 9091))
+		if (clients[i]->Open() && clients[i]->Connect("192.168.0.90", 9091))
 			connectCount++;
 
 		XThread::Sleep(0);

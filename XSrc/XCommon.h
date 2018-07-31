@@ -31,25 +31,6 @@
 	#define SOCKET_ERROR    (-1)
 #endif // _WIN32
 
-
-
-//内存池
-#include "XMemory.h"
-
-//对象池
-#include "XObject.h"
-
-//日志
-#include "XLog.h"
-
-//计时器
-#include "XTimer.h"
-
-//协议头
-#include "MsgProtocol.h"
-
-
-
 //系统网络相关头文件
 #ifdef _WIN32
 #include <windows.h>
@@ -66,6 +47,22 @@
 #include <stdlib.h>
 #include <memory>
 
+//内存池
+#include "XMemory.h"
 
+//对象池
+#include "XObject.h"
+
+//日志
+#include "XLog.h"
+
+//计时器
+#include "XTimer.h"
+
+//协议头
+#include "MsgProtocol.h"
+
+//Fd_set
+#include "XFdSet.h"
 
 #endif

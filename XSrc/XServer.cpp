@@ -31,9 +31,9 @@ void XServer::Init(XIGlobalEvent* pGlobalEventObj, int id)
 	_FrameTimeDelta = 0;
 
 	//其他
-	FD_ZERO(&_FdRead);
-	FD_ZERO(&_FdWrite);
-	FD_ZERO(&_FdSetCache);
+	_FdRead.Zero();
+	_FdWrite.Zero();
+	_FdSetCache.Zero();
 	_ClientChange = false;
 	_MaxSocketID = 0;
 }
@@ -51,9 +51,9 @@ void XServer::Done()
 	//_FrameTimeDelta = 0;
 
 	////其他
-	//FD_ZERO(&_FdRead);
-	//FD_ZERO(&_FdWrite);
-	//FD_ZERO(&_FdSetCache);
+	//_FdRead.Zero();
+	//_FdWrite.Zero();
+	//_FdSetCache.Zero();
 	//_ClientChange = false;
 	//_MaxSocketID = 0;
 }
@@ -238,33 +238,33 @@ int XServer::DoSelect()
 	//设置_FdRead
 	if (_ClientChange)
 	{
-		FD_ZERO(&_FdRead);
+		_FdRead.Zero();
 
 		_MaxSocketID = 0;
 		for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 		{
-			FD_SET(iter->first, &_FdRead);
+			_FdRead.Add(iter->first);
 			if (_MaxSocketID < iter->first)
 				_MaxSocketID = iter->first;
 		}
 
-		memcpy(&_FdSetCache, &_FdRead, sizeof(fd_set));
+		_FdSetCache.Copy(_FdRead);
 
 		_ClientChange = false;
 	}
 	else
 	{
-		memcpy(&_FdRead, &_FdSetCache, sizeof(fd_set));
+		_FdRead.Copy(_FdSetCache);
 	}
 
 	//设置_FdWrite
 	bool bHasCanWriteClient = false;
-	FD_ZERO(&_FdWrite);
+	_FdWrite.Zero();
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end(); ++iter)
 	{
 		if (iter->second->GetFlush())
 		{
-			FD_SET(iter->first, &_FdWrite);
+			_FdWrite.Add(iter->first);
 			bHasCanWriteClient = true;
 		}
 	}
@@ -275,9 +275,9 @@ int XServer::DoSelect()
 
 	int nRet;
 	if (bHasCanWriteClient)
-		nRet = select((int)_MaxSocketID + 1, &_FdRead, &_FdWrite, nullptr, &tv);
+		nRet = select((int)_MaxSocketID + 1, _FdRead.GetFdSet(), _FdWrite.GetFdSet(), nullptr, &tv);
 	else
-		nRet = select((int)_MaxSocketID + 1, &_FdRead, nullptr, nullptr, &tv);
+		nRet = select((int)_MaxSocketID + 1, _FdRead.GetFdSet(), nullptr, nullptr, &tv);
 
 	if (SOCKET_ERROR == nRet)
 	{
@@ -290,12 +290,14 @@ int XServer::DoSelect()
 
 void XServer::RecvMsg()
 {
+	fd_set* pSet = _FdRead.GetFdSet();
+
 	//从客户端接收数据
 #ifdef _WIN32
 
-	for (int i = 0; i < (int)_FdRead.fd_count; ++i)
+	for (int i = 0; i < (int)pSet->fd_count; ++i)
 	{
-		auto iter = _AllClients.find(_FdRead.fd_array[i]);
+		auto iter = _AllClients.find(pSet->fd_array[i]);
 		if (iter != _AllClients.end())
 		{
 			int nRet = iter->second->RecvMsg();
@@ -315,7 +317,7 @@ void XServer::RecvMsg()
 
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
-		if (FD_ISSET(iter->first, &_FdRead))
+		if (_FdRead.Has(iter->first))
 		{
 			int ret = iter->second->RecvMsg();
 			if (ret != 0)			//不等于0，ret为1说明接收缓冲区满了，主动断开连接。
@@ -337,12 +339,14 @@ void XServer::RecvMsg()
 
 void XServer::SendMsg()
 {	
+	fd_set* pSet = _FdWrite.GetFdSet();
+
 	//向客户端发送数据
 #ifdef _WIN32
 
-	for (int i = 0; i < (int)_FdWrite.fd_count; ++i)
+	for (int i = 0; i < (int)pSet->fd_count; ++i)
 	{
-		auto iter = _AllClients.find(_FdWrite.fd_array[i]);
+		auto iter = _AllClients.find(pSet->fd_array[i]);
 		if (iter != _AllClients.end())
 		{
 			int nRet = iter->second->SendMsg();
@@ -356,14 +360,13 @@ void XServer::SendMsg()
 				continue;
 			}
 		}
-
 	}
 
 #else
 
 	for (std::map<SOCKET, std::shared_ptr<XClient>>::iterator iter = _AllClients.begin(); iter != _AllClients.end();)
 	{
-		if (FD_ISSET(iter->first, &_FdWrite))
+		if (_FdWrite.Has(iter->first))
 		{
 			int ret = iter->second->SendMsg();
 			if (ret < 0)			//小于0，ret为1时说明发送缓冲区为空，不应该断开。
@@ -381,7 +384,6 @@ void XServer::SendMsg()
 	}
 
 #endif
-
 }
 
 void XServer::DoMsg()

@@ -290,7 +290,7 @@ void XTCPServer::Accept()
 	}
 	else
 	{
-		if (_ClientNum >= FD_SETSIZE)
+		if (_ClientNum >= _XFDSET_SIZE_)
 		{
 			const char* pAddr = inet_ntoa(sinClient.sin_addr);
 			XWarn("Kill ip : %s \n", pAddr);
@@ -330,13 +330,12 @@ void XTCPServer::OnRun(XThread* pThread)
 	{
 		OnRunBegin();
 
-		fd_set fdRead;
-		FD_ZERO(&fdRead);
-		FD_SET(_Socket, &fdRead);
+		_FdRead.Zero();
+		_FdRead.Add(_Socket);
 
 		//设置10毫秒间隔，可以提高数据接受和发送select效率。
 		timeval tv = { 0, 1 };
-		int ret = select((int)_Socket + 1, &fdRead, NULL, NULL, &tv);
+		int ret = select((int)_Socket + 1, _FdRead.GetFdSet(), NULL, NULL, &tv);
 		if (SOCKET_ERROR == ret)
 		{
 			XError("<Socket=%d>:Select!\n", (int)_Socket);
@@ -348,9 +347,9 @@ void XTCPServer::OnRun(XThread* pThread)
 			continue;
 		}
 
-		if (FD_ISSET(_Socket, &fdRead))
+		if (_FdRead.Has(_Socket))
 		{
-			FD_CLR(_Socket, &fdRead);
+			//_FdRead.Del(_Socket);
 			Accept();
 		}
 	}

@@ -88,24 +88,22 @@ void XTCPClient::OnRun()
 
 	SOCKET _Socket = _Client->GetSocket();
 
-	fd_set fdRead;
-	fd_set fdWrite;
-	FD_ZERO(&fdRead);
-	FD_ZERO(&fdWrite);
+	_FdRead.Zero();
+	_FdWrite.Zero();
 
-	FD_SET(_Socket, &fdRead);
-	
+	_FdRead.Add(_Socket);
+
 	timeval tv = { 0, 0 };
 
 	int ret = 0;
 	if (_Client->HasData())
 	{
-		FD_SET(_Socket, &fdWrite);
-		ret = select((int)_Socket + 1, &fdRead, &fdWrite, nullptr, &tv);
+		_FdWrite.Add(_Socket);
+		ret = select((int)_Socket + 1, _FdRead.GetFdSet(), _FdWrite.GetFdSet(), nullptr, &tv);
 	}
 	else
 	{
-		ret = select((int)_Socket + 1, &fdRead, nullptr, nullptr, &tv);
+		ret = select((int)_Socket + 1, _FdRead.GetFdSet(), nullptr, nullptr, &tv);
 	}
 	
 	if (SOCKET_ERROR == ret)
@@ -120,7 +118,7 @@ void XTCPClient::OnRun()
 	}
 
 	//接收消息
-	if (FD_ISSET(_Socket, &fdRead))
+	if (_FdRead.Has(_Socket))
 	{
 		int ret = _Client->RecvMsg();
 		if (ret < 0)
@@ -130,7 +128,7 @@ void XTCPClient::OnRun()
 	}
 
 	//发送消息
-	if (FD_ISSET(_Socket, &fdWrite))
+	if (_FdWrite.Has(_Socket))
 	{
 		int ret = _Client->SendMsg();
 		if (ret < 0)
