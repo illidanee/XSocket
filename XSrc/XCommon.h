@@ -34,11 +34,13 @@
 //系统网络相关头文件
 #ifdef _WIN32
 #include <windows.h>
+#include <atlsocket.h>
 #include <WinSock2.h>
 #pragma comment(lib, "ws2_32.lib")
 #else
 #include <unistd.h>
 #include <string.h>
+#include <netdb.h>
 #include <arpa/inet.h>
 #endif // _WIN32
 

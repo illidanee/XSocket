@@ -9,66 +9,104 @@ XTCPClient::XTCPClient()
 
 XTCPClient::~XTCPClient()
 {
-
+	 
 }
 
-bool XTCPClient::Open()
+//bool XTCPClient::Open()
+//{
+//	XNet::Go();
+//
+//	assert(_Client == nullptr);
+//
+//	//判断当前网络环境。
+//	const char* pWWW = "ar.aoyikejivr.com";
+//	
+//	struct addrinfo hints;
+//	memset(&hints, 0, sizeof(hints));
+//	hints.ai_family = PF_UNSPEC;
+//	hints.ai_socktype = SOCK_STREAM;
+//	hints.ai_protocol = IPPROTO_TCP;
+//
+//	int error = getaddrinfo(pWWW, nullptr, &hints, &_Addr);
+//	if (error)
+//	{
+//		XError("getaddrinfo!\n");
+//		return false;
+//	}
+//
+//	SOCKET _Socket = socket(_Addr->ai_family, _Addr->ai_socktype, _Addr->ai_protocol);
+//	if (SOCKET_ERROR == _Socket)
+//	{
+//		XError("socket!\n");
+//		return false;
+//	}
+//
+//	_Client.reset(new XClient(this, this, _Socket));
+//
+//
+//	return true;
+//}
+
+bool XTCPClient::Connect(const char* ip, unsigned short port)
 {
+	//优化：已经连接的时候，不在连接。此时如果执行connect会返回SOCKET_ERROR。
+	if (_bRun)
+		return true;
+
+	//初始化网络
 	XNet::Go();
+	
+	//获取网络类型 并根据网络类型是否 ipv4 转 ipv6。
+	struct addrinfo hints;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = PF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+#ifdef _WIN32
+	hints.ai_flags = AI_V4MAPPED | AI_ADDRCONFIG;
+#else
+	hints.ai_flags = AI_DEFAULT;
+#endif
+	
+	int error = getaddrinfo(ip, "http", &hints, &_Addr);
+	if (error)
+	{
+		XError("getaddrinfo!\n");
+		return false;
+	}
 
-	assert(_Client == nullptr);
-
-	SOCKET _Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	//设置端口
+	((sockaddr_in*)_Addr->ai_addr)->sin_port = htons(port);
+	
+	//创建Socket
+	SOCKET _Socket = socket(_Addr->ai_family, _Addr->ai_socktype, _Addr->ai_protocol);
 	if (SOCKET_ERROR == _Socket)
 	{
 		XError("socket!\n");
 		return false;
 	}
 
+	//设置指针对象。
 	_Client.reset(new XClient(this, this, _Socket));
 
-	return true;
-}
-
-bool XTCPClient::Connect(const char* ip, unsigned short port)
-{
-	assert(_Client != nullptr);
-
-	//优化：已经连接的时候，不在连接。此时如果执行connect会返回SOCKET_ERROR。
-	if (_bRun)
-		return true;
-
-	sockaddr_in sinServer = {};
-	sinServer.sin_family = AF_INET;
-#ifdef _WIN32
-	sinServer.sin_addr.S_un.S_addr = inet_addr(ip);
-#else
-	sinServer.sin_addr.s_addr = inet_addr(ip);
-#endif // _WIN32
-	sinServer.sin_port = htons(port);
 	int sinLen = sizeof(sockaddr_in);
-	if (SOCKET_ERROR == connect(_Client->GetSocket(), (sockaddr*)&sinServer, sinLen))
+	if (SOCKET_ERROR == connect(_Client->GetSocket(), _Addr->ai_addr, (int)_Addr->ai_addrlen))
 	{
 		XError("connect!\n");
 		return false;
 	}
 
+	_bRun = true;
+
 	OnClientJoin(_Client->GetSharedPtr());
 
-	_bRun = true;
 	return true;
 }
 
 void XTCPClient::Disconnect()
 {
-	OnClientLeave(_Client->GetSharedPtr());
-
 	_bRun = false;
-}
 
-void XTCPClient::Close()
-{
-	assert(_Client != nullptr);
+	OnClientLeave(_Client->GetSharedPtr());
 
 	if (_Client != nullptr)
 	{
@@ -76,6 +114,17 @@ void XTCPClient::Close()
 		_Client = nullptr;
 	}
 }
+
+//void XTCPClient::Close()
+//{
+//	assert(_Client != nullptr);
+//
+//	if (_Client != nullptr)
+//	{
+//		_Client.reset();
+//		_Client = nullptr;
+//	}
+//}
 
 bool XTCPClient::IsRun()
 {
@@ -124,6 +173,7 @@ void XTCPClient::OnRun()
 		if (ret < 0)
 		{
 			Disconnect();
+			return;
 		}
 	}
 
@@ -134,6 +184,7 @@ void XTCPClient::OnRun()
 		if (ret < 0)
 		{
 			Disconnect();
+			return;
 		}
 	}
 

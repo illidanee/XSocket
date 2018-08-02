@@ -93,6 +93,12 @@
     <ClInclude Include="..\XSrc\XTimer.h">
       <Filter>XSrc</Filter>
     </ClInclude>
+    <ClInclude Include="..\XSrc\XFdSet.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XConfig.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Unity3DPlugin.cpp">
@@ -150,6 +156,12 @@
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XTimer.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\XFdSet.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\XConfig.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
   </ItemGroup>

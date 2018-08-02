@@ -157,6 +157,8 @@
     <ClInclude Include="..\XSrc\XByteStream.h" />
     <ClInclude Include="..\XSrc\XClient.h" />
     <ClInclude Include="..\XSrc\XCommon.h" />
+    <ClInclude Include="..\XSrc\XConfig.h" />
+    <ClInclude Include="..\XSrc\XFdSet.h" />
     <ClInclude Include="..\XSrc\XIGlobalEvent.h" />
     <ClInclude Include="..\XSrc\XIServerEvent.h" />
     <ClInclude Include="..\XSrc\XLog.h" />
@@ -182,6 +184,8 @@
     <ClCompile Include="..\XSrc\XBuffer.cpp" />
     <ClCompile Include="..\XSrc\XByteStream.cpp" />
     <ClCompile Include="..\XSrc\XClient.cpp" />
+    <ClCompile Include="..\XSrc\XConfig.cpp" />
+    <ClCompile Include="..\XSrc\XFdSet.cpp" />
     <ClCompile Include="..\XSrc\XLog.cpp" />
     <ClCompile Include="..\XSrc\XMemory.cpp" />
     <ClCompile Include="..\XSrc\XMemoryBlock.cpp" />

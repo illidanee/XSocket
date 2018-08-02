@@ -15,10 +15,10 @@ public:
 	XTCPClient();
 	~XTCPClient();
 
-	bool Open();
+	//bool Open();
 	bool Connect(const char* ip, unsigned short port);
 	void Disconnect();
-	void Close();
+	//void Close();
 
 	bool IsRun();
 	void OnRun();
@@ -27,12 +27,16 @@ public:
 	int SendStream(XByteStream* pStream);
 
 private:
+	struct addrinfo* _Addr;
+
 	std::shared_ptr<XClient> _Client;
 
 	bool _bRun;
 
 	XFdSet _FdRead;
 	XFdSet _FdWrite;
+
+
 };
 
 #endif

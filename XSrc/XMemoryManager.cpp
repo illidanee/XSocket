@@ -69,6 +69,8 @@ void* XMemoryManager::AllocMemory(size_t nSize)
 
 void XMemoryManager::FreeMemory(void* pMem)
 {
+	assert(nullptr != pMem);
+
 	XMemoryBlock* pMemoryBlock = (XMemoryBlock*)((char*)pMem - sizeof(XMemoryBlock));
 	
 	if (pMemoryBlock->_pMemoryPool)

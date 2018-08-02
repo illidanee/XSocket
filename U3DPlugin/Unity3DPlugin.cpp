@@ -22,7 +22,7 @@ void MyClient::DoMsg(MsgHeader* pMsgHeader)
 		_pMsgCallback(_pObj, pMsgHeader);
 }
 
-void MyClient::OnRunLoopBegin()
+void MyClient::OnRunBegin()
 {
 
 }
@@ -48,12 +48,12 @@ void MyClient::OnNetSend(std::shared_ptr<XClient> pClient)
 
 }
 
-void MyClient::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	DoMsg(pMsgHeader);
 }
 
-void MyClient::OnNetMsgDone(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgEnd(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 
 }
@@ -76,7 +76,7 @@ MyClient* Open(void* pObj, OnMsgCallback pCallback, OnLeaveCallback pLeaveCallba
 {
 	MyClient* pClient = new MyClient();
 	pClient->Init(pObj, pCallback, pLeaveCallback);
-	pClient->Open();
+	//pClient->Open();
 	return pClient;
 }
 
@@ -98,7 +98,7 @@ void Close(MyClient* pClient)
 {
 	if (pClient)
 	{
-		pClient->Close();
+		//pClient->Close();
 		delete pClient;
 		pClient = nullptr;
 	}

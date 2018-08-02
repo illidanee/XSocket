@@ -11,6 +11,10 @@ public:
 		int r1 = CppReadInt8(pStream, 0);
 		printf("r1 = %d \n", r1);
 	}
+	static void OnLeave(void* pObj)
+	{
+
+	}
 };
 
 int main()
@@ -19,25 +23,22 @@ int main()
 
 	Obj* pObj = new Obj();
 
-	MyClient* pClient = Open(pObj, &Obj::OnMsg);
-	Connect(pClient, "192.168.0.99", 9090);
+	MyClient* pClient = Open(pObj, &Obj::OnMsg, &Obj::OnLeave);
+	bool ret = Connect(pClient, "192.168.0.90", 9091);
+
+	XSendByteStream* pStream = CppSendStreamCreate(256);
+	CppWriteInt8(pStream, 1);
+	CppFinish(pStream, MGS_TYPE::MSG_BYTESTREAM);
+	SendStream(pClient, pStream);
+	CppSendStreamClose(pStream);
 
 	while (IsRun(pClient))
 	{
 		OnRun(pClient);
-
-		XSendByteStream* pStream = CppSendStreamCreate(256);
-		CppWriteInt8(pStream, 1);
-		CppFinish(pStream);
-		SendStream(pClient, pStream);
-		CppSendStreamClose(pStream);
-
 		Sleep(1000);
 	}
 
 	Close(pClient);
-
-	delete pClient;
 
 	return 0;
 }

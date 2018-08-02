@@ -2,6 +2,7 @@
 #define __XCONFIG_H__
 
 #include <string.h>
+#include <string>
 #include <map>
 
 class XConfig
