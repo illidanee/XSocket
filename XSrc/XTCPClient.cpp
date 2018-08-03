@@ -85,6 +85,8 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 		return false;
 	}
 
+	XNet::ReuseSocket(_Socket);
+
 	//设置指针对象。
 	_Client.reset(new XClient(this, this, _Socket));
 

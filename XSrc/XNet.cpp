@@ -5,6 +5,17 @@ void XNet::Go()
 	static XNet obj;
 }
 
+int XNet::ReuseSocket(SOCKET s)
+{
+	int flag = 1;
+	int nRet = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (const char *)&flag, sizeof(flag));
+	if (SOCKET_ERROR == nRet) {
+		XError("setsockopt\n");
+		return -1;
+	}
+	return 0;
+}
+
 XNet::XNet()
 {
 //初始化网络环境

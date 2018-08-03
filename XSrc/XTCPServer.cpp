@@ -188,6 +188,7 @@ void XTCPServer::Open()
 	}
 	else
 	{
+		XNet::ReuseSocket(_Socket);
 		XInfo("<Socket=%d>:socket!\n", (int)_Socket);
 	}
 }
@@ -303,6 +304,8 @@ void XTCPServer::Accept()
 		}
 		else
 		{
+			XNet::ReuseSocket(client);
+
 			std::shared_ptr<XServer> pLessServer = _AllServers[0];
 			for (auto pServer : _AllServers)
 			{

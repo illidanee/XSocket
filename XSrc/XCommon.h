@@ -26,6 +26,11 @@
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#define _CRT_SECURE_NO_WARNINGS
 #else
+
+#ifdef __APPLE__
+	#define _DARWIN_UNLIMITED_SELECT			//苹果系统下select不限制数量。
+#endif // !__APPLE__
+
 	#define SOCKET int
 	#define INVALID_SOCKET  (SOCKET)(~0)
 	#define SOCKET_ERROR    (-1)
