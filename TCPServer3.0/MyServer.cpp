@@ -130,7 +130,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
 			if (!connect)
 			{
-				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				XError("XMariaDB::GetInstance().GetConnect() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -144,7 +144,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			int num = connect->SearchStudentByUserName(pUserName);
 			if (num < 0)
 			{
-				printf("****** Error: SearchStudentByUserName() \n");
+				XError("SearchStudentByUserName() num < 0 \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -155,7 +155,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num > 0)
 			{
-				printf("****** Error: SearchStudentByUserName() \n");
+				XError("SearchStudentByUserName() num > 0\n");
 				ret = -2;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -169,7 +169,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			num = connect->SearchStudentBySchoolAndStudentID(pSchool, pStudentID);
 			if (num < 0)
 			{
-				printf("****** Error: SearchStudentBySchoolAndStudentID() \n");
+				XError("SearchStudentBySchoolAndStudentID() num < 0\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -180,7 +180,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num == 0)
 			{
-				printf("****** Error: SearchStudentBySchoolAndStudentID() \n");
+				XError("SearchStudentBySchoolAndStudentID() num == 0\n");
 				ret = -3;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -191,7 +191,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num > 1)
 			{
-				printf("****** Error: SearchStudentBySchoolAndStudentID() \n");
+				XError("SearchStudentBySchoolAndStudentID() num > 1\n");
 				ret = -4;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -205,7 +205,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			num = connect->UpdateStudentBySchoolAndStudentID(pDevicel, pSchool, pMajor, pStudentID, pName, pPhoneNumber, pUserName, pPassword, pDeviceName, pDeviceType);
 			if (num != 1)
 			{
-				printf("****** Error: UpdateStudentBySchoolAndStudentID() \n");
+				XError("UpdateStudentBySchoolAndStudentID() num != 1\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_ENROLL_RES);
@@ -254,7 +254,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
 			if (!connect)
 			{
-				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				XError("XMariaDB::GetInstance().GetConnect() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_LOGIN_RES);
@@ -268,7 +268,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			int num = connect->SearchStudentByUserNameAndPassword(pUserName, pPassword);
 			if (num < 0)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num < 0\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_LOGIN_RES);
@@ -279,7 +279,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num == 0)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num == 0\n");
 				ret = -2;
 				s.WriteInt32(ret);
 				s.Finish(MSG_LOGIN_RES);
@@ -290,7 +290,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num > 1)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num > 1\n");
 				ret = -3;
 				s.WriteInt32(ret);
 				s.Finish(MSG_LOGIN_RES);
@@ -358,7 +358,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
 			if (!connect)
 			{
-				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				XError("XMariaDB::GetInstance().GetConnect() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_SELFINFO_RES);
@@ -377,7 +377,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			int num = (int)connect->SearchInfoByUserName(pUserName, pSchool, pMajor, pStudentID, pName, pPhoneNumber);
 			if (num < 0)
 			{
-				printf("****** Error: SearchInfoByUserName() \n");
+				XError("SearchInfoByUserName() num < 0\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_SELFINFO_RES);
@@ -388,7 +388,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num == 0)
 			{
-				printf("****** Error: SearchInfoByUserName() \n");
+				XError("SearchInfoByUserName() num == 0\n");
 				ret = -2;
 				s.WriteInt32(ret);
 				s.Finish(MSG_SELFINFO_RES);
@@ -399,7 +399,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num > 1)
 			{
-				printf("****** Error: SearchInfoByUserName() \n");
+				XError("SearchInfoByUserName() num > 1\n");
 				ret = -3;
 				s.WriteInt32(ret);
 				s.Finish(MSG_SELFINFO_RES);
@@ -453,7 +453,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
 			if (!connect)
 			{
-				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				XError("XMariaDB::GetInstance().GetConnect() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_FEEDBACK_RES);
@@ -467,7 +467,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			int num = (int)connect->InsertFeedbackByUserName(pUserName, pContent);
 			if (num < 0)
 			{
-				printf("****** Error: InsertFeedbackByUserName() \n");
+				XError("InsertFeedbackByUserName() num < 0\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_FEEDBACK_RES);
@@ -478,7 +478,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num == 0)
 			{
-				printf("****** Error: InsertFeedbackByUserName() \n");
+				XError("InsertFeedbackByUserName() num == 0\n");
 				ret = -2;
 				s.WriteInt32(ret);
 				s.Finish(MSG_FEEDBACK_RES);
@@ -527,7 +527,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
 			if (!connect)
 			{
-				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				XError("XMariaDB::GetInstance().GetConnect() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPASSWORD_RES);
@@ -541,7 +541,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			int num = (int)connect->SearchStudentByUserNameAndPassword(pUserName, pPassword);
 			if (num < 0)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num < 0\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPASSWORD_RES);
@@ -552,7 +552,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num == 0)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num == 0\n");
 				ret = -2;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPASSWORD_RES);
@@ -563,7 +563,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num > 1)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num > 1\n");
 				ret = -3;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPASSWORD_RES);
@@ -577,7 +577,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			num = connect->UpdatePassword(pUserName, pPassword, pNewPasswrod);
 			if (num != 1)
 			{
-				printf("****** Error: UpdatePassword() \n");
+				XError("UpdatePassword() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPASSWORD_RES);
@@ -626,7 +626,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			XMariaDBConnect* connect = XMariaDB::GetInstance().GetConnect();
 			if (!connect)
 			{
-				printf("****** Error: XMariaDB::GetInstance().GetConnect() \n");
+				XError("XMariaDB::GetInstance().GetConnect() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
@@ -640,7 +640,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			int num = (int)connect->SearchStudentByUserNameAndPassword(pUserName, pPassword);
 			if (num < 0)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num < 0\n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
@@ -651,7 +651,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num == 0)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num == 0\n");
 				ret = -2;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
@@ -662,7 +662,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			}
 			else if (num > 1)
 			{
-				printf("****** Error: SearchStudentByUserNameAndPassword() \n");
+				XError("SearchStudentByUserNameAndPassword() num > 1\n");
 				ret = -3;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
@@ -676,7 +676,7 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			num = connect->UpdatePhoneNumber(pUserName, pPassword, pNewPhoneNumber);
 			if (num != 1)
 			{
-				printf("****** Error: UpdatePassword() \n");
+				XError("UpdatePassword() \n");
 				ret = -1;
 				s.WriteInt32(ret);
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
