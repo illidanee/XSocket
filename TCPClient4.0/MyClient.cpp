@@ -25,7 +25,7 @@ void MyClient::DoMsg(MsgHeader* pMsgHeader)
 	r.ReadArray(r8, 32);
 }
 
-void MyClient::OnRunLoopBegin()
+void MyClient::OnRunBegin()
 {
 
 }
@@ -48,12 +48,12 @@ void MyClient::OnNetSend(std::shared_ptr<XClient> pClient)
 
 }
 
-void MyClient::OnNetMsgRecv(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgBegin(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 {
 	DoMsg(pMsgHeader);
 }
 
-void MyClient::OnNetMsgDone(std::shared_ptr<XClient>, MsgHeader* pMsgHeader)
+void MyClient::OnNetMsgEnd(std::shared_ptr<XClient>, MsgHeader* pMsgHeader)
 {
 
 }

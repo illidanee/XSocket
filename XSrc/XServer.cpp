@@ -126,6 +126,9 @@ void XServer::OnRun(XThread* pThread)
 		//必须在Continue之前，负责没有客户连接时会累积时间长度delta。
 		UpdateFrameTimeDelta();
 
+		//客户端状态检测。
+		ret = CheckClientState();
+
 		//检测是否有新的客户端以及当前是否有客户端。
 		ret = CheckClientNum();
 		if (ret < 0)
@@ -134,9 +137,6 @@ void XServer::OnRun(XThread* pThread)
 			XThread::Sleep(1);
 			continue;
 		}
-
-		//客户端状态检测。
-		ret = CheckClientState();
 
 		//检测客户端，并处理。
 		ret = DoSelect();
@@ -281,6 +281,7 @@ int XServer::DoSelect()
 
 	if (SOCKET_ERROR == nRet)
 	{
+		int nError = WSAGetLastError();
 		XError("Select!\n");
 		
 	}

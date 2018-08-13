@@ -150,6 +150,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -161,6 +163,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -175,6 +179,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -186,6 +192,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -197,6 +205,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -211,7 +221,9 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_ENROLL_RES);
 				pClient->SendStream(&s);
 
-				delete[] pBuffer;
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
+				//delete[] pBuffer;
 				return;
 			}
 
@@ -219,6 +231,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			s.Finish(MSG_ENROLL_RES);
 			pClient->SendStream(&s);
 
+			//归还数据库连接池。
+			XMariaDB::GetInstance().PushConnect(connect);
 			//delete[] pBuffer;
 		};
 
@@ -274,6 +288,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -285,6 +301,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -296,6 +314,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_LOGIN_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -325,6 +345,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				}
 			}
 
+			//归还数据库连接池。
+			XMariaDB::GetInstance().PushConnect(connect);
 			//delete[] pBuffer;
 		};
 
@@ -383,6 +405,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -394,6 +418,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -405,6 +431,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_SELFINFO_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -418,6 +446,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			s.Finish(MSG_SELFINFO_RES);
 			pClient->SendStream(&s);
 
+			//归还数据库连接池。
+			XMariaDB::GetInstance().PushConnect(connect);
 			//delete[] pBuffer;
 		};
 
@@ -473,6 +503,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_FEEDBACK_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -484,6 +516,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_FEEDBACK_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -492,6 +526,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			s.Finish(MSG_FEEDBACK_RES);
 			pClient->SendStream(&s);
 
+			//归还数据库连接池。
+			XMariaDB::GetInstance().PushConnect(connect);
 			//delete[] pBuffer;
 		};
 
@@ -533,6 +569,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPASSWORD_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -547,6 +585,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPASSWORD_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -558,6 +598,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPASSWORD_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -569,6 +611,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPASSWORD_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -583,6 +627,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPASSWORD_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -591,6 +637,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			s.Finish(MSG_MODIFYPASSWORD_RES);
 			pClient->SendStream(&s);
 
+			//归还数据库连接池。
+			XMariaDB::GetInstance().PushConnect(connect);
 			//delete[] pBuffer;
 		};
 
@@ -632,6 +680,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -646,6 +696,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -657,6 +709,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -668,6 +722,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -682,6 +738,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 				s.Finish(MSG_MODIFYPHONENUMBER_RES);
 				pClient->SendStream(&s);
 
+				//归还数据库连接池。
+				XMariaDB::GetInstance().PushConnect(connect);
 				//delete[] pBuffer;
 				return;
 			}
@@ -690,6 +748,8 @@ void MyServer::OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader)
 			s.Finish(MSG_MODIFYPHONENUMBER_RES);
 			pClient->SendStream(&s);
 
+			//归还数据库连接池。
+			XMariaDB::GetInstance().PushConnect(connect);
 			//delete[] pBuffer;
 		};
 
