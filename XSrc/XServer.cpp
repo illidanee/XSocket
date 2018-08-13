@@ -281,7 +281,6 @@ int XServer::DoSelect()
 
 	if (SOCKET_ERROR == nRet)
 	{
-		int nError = WSAGetLastError();
 		XError("Select!\n");
 		
 	}
