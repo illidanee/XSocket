@@ -8,6 +8,8 @@
 #include "XClient.h"
 #include "XSendByteStream.h"
 
+#include "XFdSet.h"
+
 //Client¿‡
 class XTCPClient : public XIGlobalEvent, public XIServerEvent
 {

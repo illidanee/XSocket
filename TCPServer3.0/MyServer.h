@@ -2,7 +2,7 @@
 #define __MYSERVER_H__
 
 #include "../XSrc/XCommon.h"
-#include "../XSrc/XTCPServer.h"
+#include "../XSrc/XTCPSelectServer.h"
 #include "../XSrc/XRecvByteStream.h"
 #include "../XSrc/XSendByteStream.h"
 #include "../XSrc/XMariaDB.h"
@@ -10,7 +10,7 @@
 #include <functional>
 
 //自定义Server
-class MyServer : public XTCPServer
+class MyServer : public XTCPSelectServer
 {
 public:
 	MyServer();

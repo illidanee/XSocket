@@ -13,21 +13,24 @@ int main()
 
 
 	MyClient client;
-	client.Connect("192.168.0.99", 9090);
+	client.Connect("192.168.0.90", 9191);
 
 	//≤‚ ‘∑¢ÀÕ ˝æ›
-	XSendByteStream s(1024);
-	s.WriteInt8(1);
-	s.WriteInt16(2);
-	s.WriteInt32(3);
-	s.WriteInt64(4);
-	s.WriteFloat(5.6f);
-	s.WriteDouble(7.8);
-	char b[] = { 'a', 'b', 'c', 'd', 'e' };
-	s.WriteArray(b, sizeof(b));
-	s.WriteArray("client", (int)strlen("client"));
-	s.Finish(MSG_BYTESTREAM);
-	client.SendStream(&s);
+	//XSendByteStream s(1024);
+	//s.WriteInt8(1);
+	//s.WriteInt16(2);
+	//s.WriteInt32(3);
+	//s.WriteInt64(4);
+	//s.WriteFloat(5.6f);
+	//s.WriteDouble(7.8);
+	//char b[] = { 'a', 'b', 'c', 'd', 'e' };
+	//s.WriteArray(b, sizeof(b));
+	//s.WriteArray("client", (int)strlen("client"));
+	//s.Finish(MSG_BYTESTREAM);
+	//client.SendStream(&s);
+
+	MsgHeart msg;
+	client.SendData(&msg);
 
 	while (client.IsRun())
 	{
@@ -47,7 +50,10 @@ int main()
 		//s.Finish(MSG_BYTESTREAM);
 		//client.SendStream(&s);
 
-		std::this_thread::sleep_for(std::chrono::microseconds(1));
+		MsgHeart msg;
+		client.SendData(&msg);
+
+		std::this_thread::sleep_for(std::chrono::microseconds(1000));
 	}
 
 	return 0;

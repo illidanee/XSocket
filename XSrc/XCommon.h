@@ -69,7 +69,4 @@
 //协议头
 #include "MsgProtocol.h"
 
-//Fd_set
-#include "XFdSet.h"
-
 #endif
