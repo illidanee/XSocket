@@ -67,11 +67,11 @@ public:
 			{
 				//输出到终端
 				printf("=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Info", "   ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-				printf(pFormat, args...);
+				printf(pFormat, args..., nullptr);
 
 				//输出到文件
 				fprintf(log._File, "=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Info", "   ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-				fprintf(log._File, pFormat, args...);
+				fprintf(log._File, pFormat, args..., nullptr);
 				fflush(log._File);
 				break;
 			}
@@ -79,11 +79,11 @@ public:
 			{
 				//输出到终端
 				printf("=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Warn", " ! ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-				printf(pFormat, args...);
+				printf(pFormat, args..., nullptr);
 
 				//输出到文件
 				fprintf(log._File, "=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Warn", " ! ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-				fprintf(log._File, pFormat, args...);
+				fprintf(log._File, pFormat, args..., nullptr);
 				fflush(log._File);
 				break;
 			}
@@ -91,11 +91,11 @@ public:
 			{
 				//输出到终端
 				printf("=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Error", " X ", ttt->tm_year + 1900, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-				printf(pFormat, args...);
+				printf(pFormat, args..., nullptr);
 
 				//输出到文件
 				fprintf(log._File, "=>%-5s|%s| [%04d-%02d-%02d_%02d:%02d:%02d] ", "Error", " X ", ttt->tm_year + 1990, ttt->tm_mon + 1, ttt->tm_mday, ttt->tm_hour, ttt->tm_min, ttt->tm_sec);
-				fprintf(log._File, pFormat, args...);
+				fprintf(log._File, pFormat, args..., nullptr);
 				fflush(log._File);
 				break;
 			}

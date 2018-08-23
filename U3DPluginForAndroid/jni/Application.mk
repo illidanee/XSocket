@@ -1,9 +1,10 @@
 #添加STL支持
-APP_STL := gnustl_static
+#APP_STL := gnustl_static
+APP_STL := c++_shared
 #添加C++11支持
 
 #使NDK使用android21版本的函数
-APP_PLATFORM := android-28
+APP_PLATFORM := android-21
 
 APP_CPPFLAGS := -std=c++11 -Wno-error=format-security
 

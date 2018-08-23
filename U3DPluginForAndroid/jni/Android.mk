@@ -21,10 +21,11 @@ LOCAL_SRC_FILES :=	../../U3DPlugin/Unity3DPlugin.cpp \
 					../../XSrc/XNet.cpp \
 					../../XSrc/XServer.cpp \
 					../../XSrc/XTCPClient.cpp \
-					../../XSrc/XTCPServer.cpp \
 					../../XSrc/XSignal.cpp \
 					../../XSrc/XTaskServer.cpp \
 					../../XSrc/XThread.cpp \
-					../../XSrc/XTimer.cpp
+					../../XSrc/XTimer.cpp \
+					../../XSrc/XFdSet.cpp \
+					../../XSrc/XConfig.cpp
 
 include $(BUILD_SHARED_LIBRARY)
