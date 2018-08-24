@@ -24,7 +24,7 @@ int main()
 	Obj* pObj = new Obj();
 
 	MyClient* pClient = Open(pObj, &Obj::OnMsg, &Obj::OnLeave);
-	bool ret = Connect(pClient, "192.168.0.90", 9091);
+	bool ret = Connect(pClient, "192.168.0.99", 9091);
 
 	XSendByteStream* pStream = CppSendStreamCreate(256);
 	CppWriteInt8(pStream, 1);
@@ -35,6 +35,13 @@ int main()
 	while (IsRun(pClient))
 	{
 		OnRun(pClient);
+
+		XSendByteStream* pStream = CppSendStreamCreate(256);
+		CppWriteInt8(pStream, 1);
+		CppFinish(pStream, MGS_TYPE::MSG_BYTESTREAM);
+		SendStream(pClient, pStream);
+		CppSendStreamClose(pStream);
+
 		Sleep(1000);
 	}
 

@@ -84,6 +84,9 @@
     <ClCompile Include="..\XSrc\XTimer.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
+    <ClCompile Include="..\XSrc\XSelectServer.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\U3DPlugin\Unity3DPlugin.h">
@@ -165,6 +168,9 @@
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XTimer.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XSelectServer.h">
       <Filter>XSrc</Filter>
     </ClInclude>
   </ItemGroup>

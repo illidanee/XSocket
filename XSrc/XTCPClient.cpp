@@ -61,11 +61,7 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = PF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-#ifdef _WIN32
 	hints.ai_flags = AI_V4MAPPED | AI_ADDRCONFIG;
-#else
-	hints.ai_flags = AI_DEFAULT;
-#endif
 	
 	int error = getaddrinfo(ip, "http", &hints, &_Addr);
 	if (error)

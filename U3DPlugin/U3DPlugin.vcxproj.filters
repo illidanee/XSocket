@@ -84,9 +84,6 @@
     <ClInclude Include="..\XSrc\XTCPClient.h">
       <Filter>XSrc</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\XTCPServer.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
     <ClInclude Include="..\XSrc\XThread.h">
       <Filter>XSrc</Filter>
     </ClInclude>
@@ -147,9 +144,6 @@
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XTCPClient.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\XTCPServer.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XThread.cpp">
