@@ -61,12 +61,12 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = PF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_V4MAPPED | AI_ADDRCONFIG;
+	hints.ai_flags = 0;
 	
 	int error = getaddrinfo(ip, "http", &hints, &_Addr);
 	if (error)
 	{
-		XError("getaddrinfo!\n");
+		XError("getaddrinfo: error = %d; Infos = %s!\n", error, gai_strerror(error));
 		return false;
 	}
 
