@@ -170,6 +170,7 @@
     <ClInclude Include="..\XSrc\XObject.h" />
     <ClInclude Include="..\XSrc\XObjectPool.h" />
     <ClInclude Include="..\XSrc\XRecvByteStream.h" />
+    <ClInclude Include="..\XSrc\XSelectServer.h" />
     <ClInclude Include="..\XSrc\XSendByteStream.h" />
     <ClInclude Include="..\XSrc\XServer.h" />
     <ClInclude Include="..\XSrc\XSignal.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\XSrc\XMemoryPool.cpp" />
     <ClCompile Include="..\XSrc\XNet.cpp" />
     <ClCompile Include="..\XSrc\XRecvByteStream.cpp" />
+    <ClCompile Include="..\XSrc\XSelectServer.cpp" />
     <ClCompile Include="..\XSrc\XSendByteStream.cpp" />
     <ClCompile Include="..\XSrc\XServer.cpp" />
     <ClCompile Include="..\XSrc\XSignal.cpp" />

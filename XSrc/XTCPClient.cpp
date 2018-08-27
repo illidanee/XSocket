@@ -66,7 +66,8 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	int error = getaddrinfo(ip, "http", &hints, &_Addr);
 	if (error)
 	{
-		XError("getaddrinfo: error = %d; Infos = %s!\n", error, gai_strerror(error));
+		//XError("getaddrinfo: error = %d; Infos = %s!\n", error, gai_strerror(error));
+		XError("getaddrinfo!");
 		return false;
 	}
 

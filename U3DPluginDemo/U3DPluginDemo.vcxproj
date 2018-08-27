@@ -169,7 +169,6 @@
     <ClCompile Include="..\XSrc\XSignal.cpp" />
     <ClCompile Include="..\XSrc\XTaskServer.cpp" />
     <ClCompile Include="..\XSrc\XTCPClient.cpp" />
-    <ClCompile Include="..\XSrc\XTCPServer.cpp" />
     <ClCompile Include="..\XSrc\XThread.cpp" />
     <ClCompile Include="..\XSrc\XTimer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -200,7 +199,6 @@
     <ClInclude Include="..\XSrc\XSignal.h" />
     <ClInclude Include="..\XSrc\XTaskServer.h" />
     <ClInclude Include="..\XSrc\XTCPClient.h" />
-    <ClInclude Include="..\XSrc\XTCPServer.h" />
     <ClInclude Include="..\XSrc\XThread.h" />
     <ClInclude Include="..\XSrc\XTimer.h" />
   </ItemGroup>

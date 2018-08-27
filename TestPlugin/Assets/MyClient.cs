@@ -10,21 +10,6 @@ public class MyClient : CppTcpClient {
 
         Open();
         Connect();
-
-        //测试发送数据
-        CppSendStream s = new CppSendStream();
-        s.WriteInt8(1);
-        s.WriteInt16(2);
-        s.WriteInt32(3);
-        s.WriteInt64(4);
-        s.WriteFloat(5.6f);
-        s.WriteDouble(7.8);
-        byte[] bs = Encoding.UTF8.GetBytes("你好");
-        s.WriteBytes(bs);
-        s.WriteString("Client!");
-
-        s.Finish(MGS_TYPE.MSG_BYTESTREAM);
-        SendStream(s.Obj);
     }
 	
     private void OnDestroy()
@@ -66,6 +51,19 @@ public class MyClient : CppTcpClient {
 
     public override void OnUpdate()
     {
+        //测试发送数据
+        CppSendStream s = new CppSendStream();
+        s.WriteInt8(1);
+        s.WriteInt16(2);
+        s.WriteInt32(3);
+        s.WriteInt64(4);
+        s.WriteFloat(5.6f);
+        s.WriteDouble(7.8);
+        byte[] bs = Encoding.UTF8.GetBytes("你好");
+        s.WriteBytes(bs);
+        s.WriteString("Client!");
 
+        s.Finish(MGS_TYPE.MSG_BYTESTREAM);
+        SendStream(s.Obj);
     }
 }

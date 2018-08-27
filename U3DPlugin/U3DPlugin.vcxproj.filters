@@ -96,6 +96,9 @@
     <ClInclude Include="..\XSrc\XConfig.h">
       <Filter>XSrc</Filter>
     </ClInclude>
+    <ClInclude Include="..\XSrc\XSelectServer.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Unity3DPlugin.cpp">
@@ -156,6 +159,9 @@
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XConfig.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\XSelectServer.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
   </ItemGroup>

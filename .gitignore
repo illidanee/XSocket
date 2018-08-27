@@ -37,6 +37,7 @@ U3DPluginForAndroid/libs/*
 U3DPluginForAndroid/obj/*
 U3DPluginForAndroid/x64/*
 
+TestPlugin/.vs/*
 TestPlugin/Library/*
 TestPlugin/Temp/*
 
