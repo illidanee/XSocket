@@ -53,6 +53,10 @@ public:
 		//输出到文件
 		XLog& log = GetInstance();								//log必须使用类型，因为构造函数被私有。
 
+		//没有生成文件时不初始化 - 没有此句，如果使用逻辑不正确，在DLL上可能导致崩溃。
+		if (log._File == nullptr)
+			return;
+
 		//log 必须使用引用。否则会阻塞住。
 		log.AddTask([&log, type, pFormat, args...]() {				//log必须使用类型，因为构造函数被私有。
 
