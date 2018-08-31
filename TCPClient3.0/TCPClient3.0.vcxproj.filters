@@ -76,6 +76,12 @@
     <ClCompile Include="..\XSrc\XFdSet.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
+    <ClCompile Include="..\XSrc\XSelectServer.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\XTCPSelectServer.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyClient.h">
@@ -157,6 +163,12 @@
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XFdSet.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XSelectServer.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\XSrc\XTCPSelectServer.h">
       <Filter>XSrc</Filter>
     </ClInclude>
   </ItemGroup>

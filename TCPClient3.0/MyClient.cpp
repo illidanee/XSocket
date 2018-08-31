@@ -2,9 +2,9 @@
 
 //客户端配置变量
 const int g_tCount = 1;
-const int g_cCount = 8000;
+const int g_cCount = 1000;
 const time_t g_time = 1000000;
-const time_t g_msgCount = 100;
+const time_t g_msgCount = 1;
 
 void MyClient::DoMsg(MsgHeader* pMsgHeader)
 {
