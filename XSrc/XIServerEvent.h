@@ -1,7 +1,7 @@
 ﻿#ifndef __XISERVEREVENT_H__
 #define __XISERVEREVENT_H__
 
-#include <functional>
+#include "XCommon.h"
 
 class XIServerEvent
 {

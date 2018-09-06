@@ -71,7 +71,7 @@ protected:
 
 	void Accept();
 
-	virtual void OnRun(XThread* pThread) = 0;
+	virtual void VOnRun(XThread* pThread) = 0;
 };
 
 

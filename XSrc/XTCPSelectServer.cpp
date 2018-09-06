@@ -1,8 +1,8 @@
 ﻿#include "XTCPSelectServer.h"
 
-void XTCPSelectServer::OnRun(XThread* pThread)
+void XTCPSelectServer::VOnRun(XThread* pThread)
 {
-	XInfo("---------------------------------------------------------------------------------------------------- XServer:OnRun() Begin\n");
+	XInfo("-------------------------------------------------------------------------------- XTCPSelectServer:OnRun() Begin\n");
 
 	while (pThread->IsRun())
 	{
@@ -32,7 +32,7 @@ void XTCPSelectServer::OnRun(XThread* pThread)
 		}
 	}
 
-	XInfo("---------------------------------------------------------------------------------------------------- XServer:OnRun() End\n");
+	XInfo("-------------------------------------------------------------------------------- XTCPSelectServer:OnRun() End\n");
 }
 
 

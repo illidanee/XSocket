@@ -53,6 +53,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <memory>
+#include <functional>
 
 //内存池
 #include "XMemory.h"

@@ -12,7 +12,7 @@ class XTCPSelectServer : public XTCPServer
 
 	XFdSet _FdRead;												
 
-	virtual void OnRun(XThread* pThread);
+	virtual void VOnRun(XThread* pThread);
 };
 
 

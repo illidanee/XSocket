@@ -2,7 +2,6 @@
 
 XTCPServer::XTCPServer()
 	:
-	_Socket(INVALID_SOCKET),
 	_IP(_IP_),
 	_Port(_PORT_),
 	_LQN(_LQN_),
@@ -10,7 +9,8 @@ XTCPServer::XTCPServer()
 	_ClientHeartTime(_XCLIENT_HEART_TIME_),
 	_ClientSendTime(_XCLIENT_SEND_TIME_),
 	_ClientRecvBufferSize(_XCLIENT_RECV_BUFFER_SIZE_),
-	_ClientSendBufferSize(_XCLIENT_SEND_BUFFER_SIZE_)
+	_ClientSendBufferSize(_XCLIENT_SEND_BUFFER_SIZE_),
+	_Socket(INVALID_SOCKET)
 {
 }
 
@@ -66,7 +66,7 @@ int XTCPServer::Done()
 
 int XTCPServer::Start()
 {
-	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() Begin \n");
+	XInfo("-------------------------------------------------------------------------------- XTCPServer:Start() Begin \n");
 
 	//初始化网络环境
 	XNet::Go();
@@ -93,18 +93,18 @@ int XTCPServer::Start()
 	_Thread.Start(
 		nullptr,
 		[this](XThread* pThread) {
-			OnRun(pThread);
+			VOnRun(pThread);
 		},
 		nullptr
 	);
 
-	XInfo("---------------------------------------------------------------------------------------------------- XServer:Start() End \n");
+	XInfo("-------------------------------------------------------------------------------- XTCPServer:Start() End \n");
 	return 0;
 }
 
 int XTCPServer::Stop()
 {
-	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() Begin \n");
+	XInfo("-------------------------------------------------------------------------------- XTCPServer:Stop() Begin \n");
 
 	//关闭监听线程
 	_Thread.Stop();
@@ -120,7 +120,7 @@ int XTCPServer::Stop()
 	//销毁服务器
 	Close();
 
-	XInfo("---------------------------------------------------------------------------------------------------- XServer:Stop() End \n");
+	XInfo("-------------------------------------------------------------------------------- XTCPServer:Stop() End \n");
 	return 0;
 }
 
@@ -133,7 +133,7 @@ void XTCPServer::OnRunBegin()
 {
 	if (_Timer.GetTime() > 1.0)
 	{
-		XInfo("| ClientNum = %7d  | RecvNum = %7d  | SendNum = %7d  | RecvMsgNum = %7d  | SendMsgNum = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvMsgNum, (int)_SendMsgNum);
+		XInfo("| Client = %7d  | Recv = %7d  | Send = %7d  | RecvMsg = %7d  | SendMsg = %7d  |\n", (int)_ClientNum, (int)_RecvNum, (int)_SendNum, (int)_RecvMsgNum, (int)_SendMsgNum);
 		_RecvNum = 0;
 		_SendNum = 0;
 		_RecvMsgNum = 0;

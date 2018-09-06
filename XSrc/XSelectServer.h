@@ -6,7 +6,7 @@
 
 class XSelectServer : public XServer
 {
-	virtual int DoNetEvent();
+	virtual int VDoNetEvent();
 
 	void RecvMsg();
 	void SendMsg();

@@ -1,6 +1,6 @@
 ﻿#include "XSelectServer.h"
 
-int XSelectServer::DoNetEvent()
+int XSelectServer::VDoNetEvent()
 {
 	//设置_FdRead
 	if (_ClientChange)

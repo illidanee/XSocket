@@ -13,9 +13,6 @@
 class MyServer : public XTCPSelectServer
 {
 public:
-	MyServer();
-	~MyServer();
-
 	virtual void OnMsg(std::shared_ptr<XClient> pClient, MsgHeader* pMsgHeader);
 };
 
