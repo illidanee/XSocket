@@ -88,7 +88,7 @@ void XLog::Stop()
 			_CV.wait(lock, [this]()->bool {
 				return _WakeNum > 0;
 			});
-			--_WakeNum;
+            --_WakeNum;
 		}
 	}
 }

@@ -19,8 +19,8 @@ public:
 	void Init(XIGlobalEvent* pGlobalEventObj, int id);
 	void Done();
 
-	virtual int VInit();
-	virtual int VDone();
+    virtual int VInit();
+    virtual int VDone();
 
 	void Start();
 	void Stop();
@@ -34,7 +34,7 @@ public:
 	void AddClient(const std::shared_ptr<XClient> pClient);
 	int GetClientNum();
 
-	virtual int VClientJoin(std::shared_ptr<XClient> pClient);
+    virtual int VClientJoin(std::shared_ptr<XClient> pClient);
 protected:
 	void OnRun(XThread* pThread);
 

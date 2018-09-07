@@ -291,7 +291,7 @@ void XTCPServer::Accept()
 	}
 	else
 	{
-		if (_ClientNum >= _XFDSET_SIZE_)
+		if (_ClientNum >= _MAX_SOCKET_SIZE_)
 		{
 			const char* pAddr = inet_ntoa(sinClient.sin_addr);
 			XWarn("Kill ip : %s \n", pAddr);
@@ -316,7 +316,7 @@ void XTCPServer::Accept()
 			}
 			std::shared_ptr<XClient> pClient(new XClient(this, pLessServer.get(), client, _ClientHeartTime, _ClientSendTime, _ClientRecvBufferSize, _ClientSendBufferSize));
 			pLessServer->AddClient(std::shared_ptr<XClient>(pClient));
-
+            pLessServer->VClientJoin(pClient);
 			//在这里调用客户端加入的回调函数。
 			//	当Accept后，将client加入到缓冲区列表中时就认为客户端已经连接服务器了。
 			//	如果当client从缓冲区列表中加入到正式客户端列表中时调用，会产生计数延迟。
@@ -325,7 +325,7 @@ void XTCPServer::Accept()
 	}
 }
 
-//void XTCPServer::OnRun(XThread* pThread)
+//void XTCPServer::VOnRun(XThread* pThread)
 //{
 //	XInfo("---------------------------------------------------------------------------------------------------- XServer:OnRun() Begin\n");
 //

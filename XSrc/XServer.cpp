@@ -36,8 +36,8 @@ void XServer::Init(XIGlobalEvent* pGlobalEventObj, int id)
 	//_FdSetCache.Zero();
 	_ClientChange = false;
 	//_MaxSocketID = 0;
-
-	VInit();
+    
+    VInit();
 }
 
 void XServer::Done()
@@ -58,19 +58,20 @@ void XServer::Done()
 	//_FdSetCache.Zero();
 	//_ClientChange = false;
 	//_MaxSocketID = 0;
-
-	VDone();
+    
+    VDone();
 }
 
 int XServer::VInit()
 {
-	return 0;
+    return 0;
 }
 
 int XServer::VDone()
 {
-	return 0;
+    return 0;
 }
+
 
 void XServer::Start()
 {
@@ -215,7 +216,7 @@ int XServer::CheckClientNum()
 
 int XServer::VClientJoin(std::shared_ptr<XClient> pClient)
 {
-	return 0;
+    return 0;
 }
 
 int XServer::CheckClientState()
@@ -242,7 +243,7 @@ int XServer::CheckClientState()
 		//定量发送数据检测
 		iter->second->CheckSendNum();
 
-		////立即发送
+		//立即发送
 		//if (iter->second->HasData())
 		//	iter->second->Flush();
 
