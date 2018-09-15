@@ -19,10 +19,10 @@
 
 #define _XMARIADB_CONNECT_NUM_ 1000				//数据库连接池数
 
-#define _MAX_SOCKET_SIZE_ 10240               //Epoll模式下可以较大，Select模式下等于FD_SETSIZE
+#define _MAX_SOCKET_SIZE_ 1024               //Epoll模式下可以较大，Select模式下等于FD_SETSIZE
 //系统相关宏定义
 #ifdef _WIN32
-	#define FD_SETSIZE 10240
+	#define FD_SETSIZE 1024
 	#define WIN32_LEAN_AND_MEAN
 	#define _WINSOCK_DEPRECATED_NO_WARNINGS
 	#define _CRT_SECURE_NO_WARNINGS

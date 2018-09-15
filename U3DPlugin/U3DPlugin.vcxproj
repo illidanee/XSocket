@@ -155,6 +155,7 @@
     <ClInclude Include="..\XSrc\XBuffer.h" />
     <ClInclude Include="..\XSrc\XByteStream.h" />
     <ClInclude Include="..\XSrc\XClient.h" />
+    <ClInclude Include="..\XSrc\XCommon.h" />
     <ClInclude Include="..\XSrc\XConfig.h" />
     <ClInclude Include="..\XSrc\XFdSet.h" />
     <ClInclude Include="..\XSrc\XLog.h" />

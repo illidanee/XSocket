@@ -72,6 +72,9 @@
     <ClInclude Include="..\XSrc\XTCPClient.h">
       <Filter>XSrc</Filter>
     </ClInclude>
+    <ClInclude Include="..\XSrc\XCommon.h">
+      <Filter>XSrc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Unity3DPlugin.cpp">
