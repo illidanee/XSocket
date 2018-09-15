@@ -21,9 +21,6 @@
     <ClInclude Include="Unity3DPlugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\MsgProtocol.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
     <ClInclude Include="..\XSrc\XBuffer.h">
       <Filter>XSrc</Filter>
     </ClInclude>
@@ -33,13 +30,10 @@
     <ClInclude Include="..\XSrc\XClient.h">
       <Filter>XSrc</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\XCommon.h">
+    <ClInclude Include="..\XSrc\XConfig.h">
       <Filter>XSrc</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\XIGlobalEvent.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XIServerEvent.h">
+    <ClInclude Include="..\XSrc\XFdSet.h">
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XLog.h">
@@ -60,28 +54,13 @@
     <ClInclude Include="..\XSrc\XNet.h">
       <Filter>XSrc</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\XObject.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XObjectPool.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
     <ClInclude Include="..\XSrc\XRecvByteStream.h">
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XSendByteStream.h">
       <Filter>XSrc</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\XServer.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
     <ClInclude Include="..\XSrc\XSignal.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XTaskServer.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XTCPClient.h">
       <Filter>XSrc</Filter>
     </ClInclude>
     <ClInclude Include="..\XSrc\XThread.h">
@@ -90,13 +69,7 @@
     <ClInclude Include="..\XSrc\XTimer.h">
       <Filter>XSrc</Filter>
     </ClInclude>
-    <ClInclude Include="..\XSrc\XFdSet.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XConfig.h">
-      <Filter>XSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\XSrc\XSelectServer.h">
+    <ClInclude Include="..\XSrc\XTCPClient.h">
       <Filter>XSrc</Filter>
     </ClInclude>
   </ItemGroup>
@@ -111,6 +84,12 @@
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XClient.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\XConfig.cpp">
+      <Filter>XSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\XSrc\XFdSet.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XLog.cpp">
@@ -137,16 +116,7 @@
     <ClCompile Include="..\XSrc\XSendByteStream.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
-    <ClCompile Include="..\XSrc\XServer.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
     <ClCompile Include="..\XSrc\XSignal.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\XTaskServer.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\XTCPClient.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\XSrc\XThread.cpp">
@@ -155,13 +125,7 @@
     <ClCompile Include="..\XSrc\XTimer.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
-    <ClCompile Include="..\XSrc\XFdSet.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\XConfig.cpp">
-      <Filter>XSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\XSrc\XSelectServer.cpp">
+    <ClCompile Include="..\XSrc\XTCPClient.cpp">
       <Filter>XSrc</Filter>
     </ClCompile>
   </ItemGroup>

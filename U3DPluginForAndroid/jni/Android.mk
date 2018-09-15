@@ -19,10 +19,8 @@ LOCAL_SRC_FILES :=	../../U3DPlugin/Unity3DPlugin.cpp \
 					../../XSrc/XMemoryPool.cpp \
 					../../XSrc/XClient.cpp \
 					../../XSrc/XNet.cpp \
-					../../XSrc/XServer.cpp \
 					../../XSrc/XTCPClient.cpp \
 					../../XSrc/XSignal.cpp \
-					../../XSrc/XTaskServer.cpp \
 					../../XSrc/XThread.cpp \
 					../../XSrc/XTimer.cpp \
 					../../XSrc/XFdSet.cpp \
