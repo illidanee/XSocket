@@ -63,7 +63,7 @@ bool XTCPClient::Connect(const char* ip, unsigned short port)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = 0;
 	
-	int error = getaddrinfo(ip, "http", &hints, &_Addr);
+	int error = getaddrinfo(ip, "80", &hints, &_Addr);
 	if (error)
 	{
 		//XError("getaddrinfo: error = %d; Infos = %s!\n", error, gai_strerror(error));

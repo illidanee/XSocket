@@ -4,7 +4,7 @@ APP_STL := c++_static
 #添加C++11支持
 
 #使NDK使用android21版本的函数
-APP_PLATFORM := android-21
+APP_PLATFORM := android-16
 
 APP_CPPFLAGS := -std=c++11
 

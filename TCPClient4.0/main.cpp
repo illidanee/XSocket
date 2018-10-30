@@ -13,7 +13,7 @@ int main()
 
 
 	MyClient client;
-	client.Connect("192.168.0.90", 9191);
+	client.Connect("47.94.18.115", 9090);
 
 	//²âÊÔ·¢ËÍÊı¾İ
 	//XSendByteStream s(1024);
